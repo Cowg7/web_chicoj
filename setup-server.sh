@@ -70,7 +70,7 @@ if ! command -v docker &> /dev/null; then
     
     # Instalar Docker
     apt-get update
-    apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+    apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin docker-buildx-plugin
     
     # Iniciar Docker
     systemctl start docker
@@ -81,11 +81,48 @@ else
     print_success "Docker ya está instalado"
 fi
 
-# 4. Verificar instalación de Docker
+# 4. Instalar/Verificar Docker Compose Plugin
+print_info "Verificando Docker Compose..."
+if ! docker compose version &> /dev/null; then
+    print_info "Docker Compose no está instalado. Instalando..."
+    
+    # Instalar Docker Compose Plugin
+    apt-get update
+    apt-get install -y docker-compose-plugin docker-buildx-plugin
+    
+    # Verificar instalación
+    if docker compose version &> /dev/null; then
+        print_success "Docker Compose instalado correctamente"
+    else
+        print_error "Error al instalar Docker Compose"
+        print_info "Intentando método alternativo..."
+        
+        # Método alternativo: instalar manualmente
+        DOCKER_COMPOSE_VERSION=$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep 'tag_name' | cut -d\" -f4)
+        mkdir -p /usr/local/lib/docker/cli-plugins
+        curl -SL "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-linux-$(uname -m)" \
+            -o /usr/local/lib/docker/cli-plugins/docker-compose
+        chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+        
+        if docker compose version &> /dev/null; then
+            print_success "Docker Compose instalado correctamente (método alternativo)"
+        else
+            print_error "No se pudo instalar Docker Compose. Por favor instálalo manualmente."
+            exit 1
+        fi
+    fi
+else
+    print_success "Docker Compose ya está instalado"
+fi
+
+# 5. Verificar instalación de Docker
+echo ""
+print_info "Versiones instaladas:"
 docker --version
 docker compose version
+echo ""
 
-# 5. Crear usuario para deployment (opcional pero recomendado)
+# 6. Crear usuario para deployment (opcional pero recomendado)
 print_info "Creando usuario 'chicoj' para deployment..."
 if ! id -u chicoj &>/dev/null; then
     useradd -m -s /bin/bash chicoj
@@ -96,7 +133,7 @@ else
     usermod -aG docker chicoj
 fi
 
-# 6. Configurar firewall
+# 7. Configurar firewall
 print_info "Configurando firewall UFW..."
 ufw --force enable
 ufw default deny incoming
@@ -115,7 +152,7 @@ ufw allow 443/tcp comment 'HTTPS'
 ufw reload
 print_success "Firewall configurado"
 
-# 7. Configurar swap (recomendado para VPS pequeños)
+# 8. Configurar swap (recomendado para VPS pequeños)
 print_info "Configurando swap..."
 if [ ! -f /swapfile ]; then
     # Crear swap de 2GB
@@ -129,7 +166,7 @@ else
     print_info "Swap ya existe"
 fi
 
-# 8. Optimizar configuración del kernel para Docker
+# 9. Optimizar configuración del kernel para Docker
 print_info "Optimizando configuración del kernel..."
 cat >> /etc/sysctl.conf <<EOF
 
@@ -143,13 +180,13 @@ EOF
 sysctl -p
 print_success "Kernel optimizado"
 
-# 9. Crear directorio para la aplicación
+# 10. Crear directorio para la aplicación
 print_info "Creando directorio para la aplicación..."
 mkdir -p /opt/chicoj
 chown chicoj:chicoj /opt/chicoj
 print_success "Directorio creado: /opt/chicoj"
 
-# 10. Configurar logrotate para Docker
+# 11. Configurar logrotate para Docker
 print_info "Configurando logrotate para Docker..."
 cat > /etc/docker/daemon.json <<EOF
 {
@@ -164,14 +201,14 @@ EOF
 systemctl restart docker
 print_success "Logrotate configurado"
 
-# 11. Instalar fail2ban (protección contra ataques)
+# 12. Instalar fail2ban (protección contra ataques)
 print_info "Instalando fail2ban..."
 apt-get install -y fail2ban
 systemctl enable fail2ban
 systemctl start fail2ban
 print_success "Fail2ban instalado"
 
-# 12. Configurar timezone
+# 13. Configurar timezone
 print_info "Configurando timezone..."
 timedatectl set-timezone America/Guatemala
 print_success "Timezone configurado a America/Guatemala"
