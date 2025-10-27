@@ -17,6 +17,9 @@ backups/
 *.sql
 *.sql.gz
 
+# Excepciones - NO ignorar migraciones de Prisma
+!**/prisma/migrations/**/*.sql
+
 # Certificados SSL
 certbot/
 
