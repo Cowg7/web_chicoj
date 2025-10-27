@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Empleados</title>
+  <link rel="stylesheet" href="/css/base.css?v=20251025c">
+  <link rel="stylesheet" href="/css/components.css?v=20251025c">
+  <link rel="stylesheet" href="/css/utilities.css?v=20251025">
+  <link rel="stylesheet" href="/css/estilos-empleados-control.css">
+</head>
+<body>
+  <div class="contenedor-app">
+
+    <!-- Header -->
+    <header class="encabezado">
+      <div class="brand">
+        <div class="logo-placeholder" aria-label="Logo"></div>
+        <h1>Restaurante Chicooj</h1>
+      </div>
+      <nav class="acciones" aria-label="Acciones">
+        <a class="btn btn-outline" href="/main.html">Inicio</a>
+        <a class="btn btn-primary" href="/templates/login.html">Cerrar sesión</a>
+      </nav>
+    </header>
+
+    <!-- Contenido -->
+    <main class="contenido" role="main">
+      <section class="tabla-container">
+        <div class="tabla-header">
+          <h2>Lista de empleados</h2>
+          <a class="btn btn-success" href="/templates/administracion/agregar_empleados.html">+ Agregar empleado</a>
+        </div>
+
+        <!-- Lista tipo tabla -->
+        <div class="tabla-empleados" role="table" aria-label="Empleados">
+          <!-- Encabezados -->
+          <div class="fila encabezados" role="row">
+            <div class="col col-id" role="columnheader">ID</div>
+            <div class="col col-nombre" role="columnheader">Nombre</div>
+            <div class="col col-apellidos" role="columnheader">Apellidos</div>
+            <div class="col col-edad" role="columnheader">Edad</div>
+            <div class="col col-correo" role="columnheader">Correo</div>
+            <div class="col col-acciones" role="columnheader">Acciones</div>
+          </div>
+
+          <!-- Fila 1 -->
+          <div class="fila" role="row">
+            <div class="col col-id" role="cell">1</div>
+            <div class="col col-nombre" role="cell">Juan</div>
+            <div class="col col-apellidos" role="cell">Pérez López</div>
+            <div class="col col-edad" role="cell">26</div>
+            <div class="col col-correo" role="cell">juan.perez@correo.com</div>
+            <div class="col col-acciones" role="cell">
+              <a class="btn btn-outline" href="/templates/empleados.html?id=1">Editar</a>
+            </div>
+          </div>
+
+          <!-- Fila 2 -->
+          <div class="fila" role="row">
+            <div class="col col-id" role="cell">2</div>
+            <div class="col col-nombre" role="cell">Alma</div>
+            <div class="col col-apellidos" role="cell">Rax Tzunun</div>
+            <div class="col col-edad" role="cell">31</div>
+            <div class="col col-correo" role="cell">alma.rax@correo.com</div>
+            <div class="col col-acciones" role="cell">
+              <a class="btn btn-outline" href="/templates/empleados.html?id=2">Editar</a>
+            </div>
+          </div>
+
+          <!-- Fila 3 -->
+          <div class="fila" role="row">
+            <div class="col col-id" role="cell">3</div>
+            <div class="col col-nombre" role="cell">Diego</div>
+            <div class="col col-apellidos" role="cell">Caal Xol</div>
+            <div class="col col-edad" role="cell">22</div>
+            <div class="col col-correo" role="cell">d.caax@correo.com</div>
+            <div class="col col-acciones" role="cell">
+              <a class="btn btn-outline" href="/templates/empleados.html?id=3">Editar</a>
+            </div>
+          </div>
+
+          <!-- Más filas… -->
+        </div>
+      </section>
+    </main>
+
+    <footer class="pie-pagina">
+      <p>© Derechos Reservados</p>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/scripts/config.js"></script>
+  <script src="/scripts/api.js"></script>
+  <script src="/scripts/empleados-control.js"></script>
+</body>
+</html>

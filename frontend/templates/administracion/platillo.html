@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Platillos</title>
+  <link rel="stylesheet" href="/css/base.css?v=20251025b">
+  <link rel="stylesheet" href="/css/components.css?v=20251025b">
+  <link rel="stylesheet" href="/css/utilities.css?v=20251025">
+  <link rel="stylesheet" href="/css/estilos-platillos.css?v=20251025">
+</head>
+<body>
+  <div class="contenedor-app">
+
+    <!-- Header con logo y barra -->
+    <header class="encabezado">
+      <div class="brand">
+        <!-- Reemplaza por tu logo -->
+        <div class="logo-placeholder"></div>
+        <h1>Restaurante Chicooj</h1>
+      </div>
+
+      <nav class="acciones">
+        <a class="btn btn-outline" href="/main.html">Inicio</a>
+        <a class="btn btn-outline" href="/templates/usuarios.html">Usuarios</a>
+        <a class="btn btn-outline" href="#">Ayuda</a>
+        <a class="btn btn-primary" href="/templates/login.html">Cerrar Sesión</a>
+      </nav>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="contenido">
+      <section class="formulario-card">
+        <div class="encabezado-form">
+          <h2>Ingrese Datos de Platillo</h2>
+          <a href="/templates/administracion/control-platillos.html" class="btn btn-outline btn-regresar">← Regresar</a>
+        </div>
+
+        <form class="formulario" id="form-platillo">
+          <div class="seccion_platillo">
+            
+            <!-- ID -->
+            <div class="campo-grupo">
+              <label for="platillo-id">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                </svg>
+                ID
+              </label>
+              <input id="platillo-id" type="text" readonly value="AUTO">
+            </div>
+
+            <!-- Nombre -->
+            <div class="campo-grupo">
+              <label for="platillo-nombre">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                Nombre <span class="required">*</span>
+              </label>
+              <input id="platillo-nombre" type="text" placeholder="Ejemplo: Pollo asado" required>
+            </div>
+
+            <!-- Área -->
+            <div class="campo-grupo">
+              <label for="platillo-area">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                Área <span class="required">*</span>
+              </label>
+              <select id="platillo-area" required>
+                <option value="">Seleccionar área...</option>
+                <!-- Se llenarán dinámicamente -->
+              </select>
+            </div>
+
+            <!-- Precio -->
+            <div class="campo-grupo">
+              <label for="platillo-precio">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="1" x2="12" y2="23"></line>
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+                Precio <span class="required">*</span>
+              </label>
+              <input id="platillo-precio" type="number" step="0.01" min="0" placeholder="Ejemplo: 25.00" required>
+            </div>
+
+            <!-- Descripción -->
+            <div class="campo-grupo campo-full">
+              <label for="platillo-descripcion">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                Descripción
+              </label>
+              <textarea id="platillo-descripcion" rows="3" placeholder="Breve descripción del platillo (opcional)"></textarea>
+            </div>
+
+          </div>
+
+          <div class="boton">
+            <button type="submit" class="btn btn-success">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                <polyline points="7 3 7 8 15 8"></polyline>
+              </svg>
+              Guardar Platillo
+            </button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <footer class="pie-pagina">
+      <p>© Derechos Reservados</p>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/scripts/config.js?v=20251025"></script>
+  <script src="/scripts/api.js?v=20251025"></script>
+  <script src="/scripts/platillos.js?v=20251025b"></script>
+
+</body>
+</html>

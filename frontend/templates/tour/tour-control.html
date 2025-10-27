@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Listado de Tickets</title>
+  <link rel="stylesheet" href="/css/base.css?v=20251025c">
+  <link rel="stylesheet" href="/css/components.css?v=20251025c">
+  <link rel="stylesheet" href="/css/utilities.css?v=20251025">
+  <link rel="stylesheet" href="/css/estilos-tour-control.css?v=20251025c">
+</head>
+<body>
+  <div class="contenedor-app">
+    <header class="encabezado">
+      <div class="brand">
+        <div class="logo-placeholder"></div>
+        <h1>Restaurante Chicooj</h1>
+      </div>
+      <nav class="acciones">
+        <a class="btn btn-outline" href="/main.html">Inicio</a>
+        <a class="btn btn-primary" href="/templates/login.html">Cerrar sesión</a>
+      </nav>
+    </header>
+
+    <main class="contenido">
+      <section class="tabla-container">
+        <h2>Tickets Registrados</h2>
+
+        <!-- Botón superior -->
+        <div class="tabla-actions">
+          <a class="btn btn-outline" href="/templates/tour/tour.html" id="btn-editar">Editar seleccionado</a>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filtros">
+          <div class="campo">
+            <label for="f-fecha-desde">Desde</label>
+            <input id="f-fecha-desde" type="date">
+          </div>
+          <div class="campo">
+            <label for="f-fecha-hasta">Hasta</label>
+            <input id="f-fecha-hasta" type="date">
+          </div>
+          <div class="campo">
+            <label for="f-servicio">Servicio</label>
+            <select id="f-servicio">
+              <option value="">Todos los servicios</option>
+              <option value="Recorrido">Recorrido</option>
+              <option value="Recorrido y Canopy">Recorrido y Canopy</option>
+              <option value="Solo Canopy">Solo Canopy</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label for="f-tipo">Tipo visitante</label>
+            <select id="f-tipo">
+              <option value="">Todos</option>
+              <option value="Nacional">Nacional</option>
+              <option value="Extranjero">Extranjero</option>
+              <option value="Estudiante">Estudiante</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" type="button" id="btn-aplicar-filtros">Buscar</button>
+          <button class="btn btn-outline" type="button" id="btn-limpiar-filtros">Limpiar</button>
+        </div>
+
+        <!-- Tabla -->
+        <div class="tabla-orden">
+          <table id="tabla-tickets">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Servicio</th>
+                <th>Precio Servicio</th>
+                <th>Tipo visitante</th>
+                <th>Cantidad visitante</th>
+                <th>Idioma</th>
+                <th>Observaciones</th>
+                <th>Precio total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Los datos se cargarán dinámicamente -->
+              <tr>
+                <td colspan="9" style="text-align: center; padding: 20px;">
+                  Cargando tickets...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <footer class="pie-pagina">
+      <p>© Derechos Reservados</p>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/scripts/config.js"></script>
+  <script src="/scripts/api.js"></script>
+  <script src="/scripts/tour-control.js?v=20251025a"></script>
+</body>
+</html>

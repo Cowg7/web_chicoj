@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Usuarios</title>
+  <link rel="stylesheet" href="/css/base.css?v=20251025c">
+  <link rel="stylesheet" href="/css/components.css?v=20251025c">
+  <link rel="stylesheet" href="/css/utilities.css?v=20251025">
+  <link rel="stylesheet" href="/css/estilos-control-usuarios.css">
+</head>
+<body>
+  <div class="contenedor-app">
+
+    <!-- Header -->
+    <header class="encabezado">
+      <div class="brand">
+        <div class="logo-placeholder" aria-label="Logo"></div>
+        <h1>Restaurante Chicooj</h1>
+      </div>
+      <nav class="acciones" aria-label="Acciones">
+        <a class="btn btn-outline" href="/main.html">Inicio</a>
+        <a class="btn btn-primary" href="/templates/login.html">Cerrar sesión</a>
+      </nav>
+    </header>
+
+    <!-- Contenido -->
+    <main class="contenido" role="main">
+      <section class="tabla-container">
+        <div class="tabla-header">
+          <h2>Lista de usuarios</h2>
+          <div class="acciones-header">
+            <a class="btn btn-outline" href="/templates/administracion/agregar_roles.html">+ Agregar rol</a>
+            <a class="btn btn-success" href="/templates/administracion/agregar_usuarios.html">+ Agregar usuario</a>
+          </div>
+        </div>
+
+        <!-- Lista tipo tabla -->
+        <div class="tabla-usuarios" role="table" aria-label="Usuarios">
+          <!-- Encabezados -->
+          <div class="fila encabezados" role="row">
+            <div class="col col-id" role="columnheader">ID</div>
+            <div class="col col-empleado" role="columnheader">Empleado</div>
+            <div class="col col-usuario" role="columnheader">Usuario</div>
+            <div class="col col-rol" role="columnheader">Rol</div>
+            <div class="col col-acciones" role="columnheader">Acciones</div>
+          </div>
+
+          <!-- Fila 1 -->
+          <div class="fila" role="row">
+            <div class="col col-id" role="cell">1</div>
+            <div class="col col-empleado" role="cell">Pedro López</div>
+            <div class="col col-usuario" role="cell">@pedro</div>
+            <div class="col col-rol" role="cell"><span class="badge badge-admin">Administrador</span></div>
+            <div class="col col-acciones" role="cell">
+              <a class="btn btn-outline" href="/templates/administracion/agregar_usuarios.html?id=1">Editar</a>
+            </div>
+          </div>
+
+          <!-- Fila 2 -->
+          <div class="fila" role="row">
+            <div class="col col-id" role="cell">2</div>
+            <div class="col col-empleado" role="cell">Diego Caal</div>
+            <div class="col col-usuario" role="cell">@dcaal</div>
+            <div class="col col-rol" role="cell"><span class="badge badge-mesero">Mesero</span></div>
+            <div class="col col-acciones" role="cell">
+              <a class="btn btn-outline" href="/templates/administracion/agregar_usuarios.html?id=2">Editar</a>
+            </div>
+          </div>
+
+          <!-- Fila 3 -->
+          <div class="fila" role="row">
+            <div class="col col-id" role="cell">3</div>
+            <div class="col col-empleado" role="cell">Alma Rax</div>
+            <div class="col col-usuario" role="cell">@arax</div>
+            <div class="col col-rol" role="cell"><span class="badge badge-caja">Caja</span></div>
+            <div class="col col-acciones" role="cell">
+              <a class="btn btn-outline" href="/templates/administracion/agregar_usuarios.html?id=3">Editar</a>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </main>
+
+    <footer class="pie-pagina">
+      <p>© Derechos Reservados</p>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/scripts/config.js"></script>
+  <script src="/scripts/api.js"></script>
+  <script src="/scripts/control-usuarios.js"></script>
+</body>
+</html>

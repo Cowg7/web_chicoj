@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Comanda</title>
+  <link rel="stylesheet" href="/css/base.css?v=20251025c">
+  <link rel="stylesheet" href="/css/components.css?v=20251025c">
+  <link rel="stylesheet" href="/css/utilities.css?v=20251025">
+  <link rel="stylesheet" href="/css/estilos-comanda.css?v=20251025c">
+
+</head>
+<body>
+  <div class="contenedor-app">
+    <header class="encabezado">
+      <div class="brand">
+        <div class="logo-placeholder" aria-label="Logo"></div>
+        <h1>Restaurante Chicooj</h1>
+      </div>
+      <nav class="acciones" aria-label="Acciones">
+        <a class="btn btn-primary" href="/templates/login.html">Cerrar sesión</a>
+      </nav>
+    </header>
+
+    <main class="contenido" role="main">
+      <section class="form-card">
+        <h2>Ingrese Datos de Orden</h2>
+
+        <div class="formulario" autocomplete="off" id="form-comanda">
+          <fieldset class="seccion seccion_orden">
+            <legend>Orden</legend>
+            <label for="no-orden">No. Orden</label>
+            <input id="no-orden" type="text" inputmode="numeric" placeholder="Automático" readonly>
+            <label for="fecha">Fecha</label>
+            <input id="fecha" type="date" readonly>
+            <label for="No_mesa">Numero de Mesa</label>
+            <select id="mesa" required>
+              <option value="">Seleccionar mesa...</option>
+            </select>
+          </fieldset>
+
+          <h2>Ingrese Datos de Comanda</h2>
+          <fieldset class="seccion seccion_comanda">
+            <legend>Comanda</legend>
+            
+            <!-- Fila 1: Área y Platillo -->
+            <div class="campo-grupo">
+              <label for="aria-label">Area de platillos</label>
+              <select id="aria-label">
+                <option value="">Seleccionar…</option>
+              </select>
+            </div>
+
+            <div class="campo-grupo">
+              <label for="platillo">Platillo</label>
+              <select id="platillo">
+                <option value="">Seleccionar…</option>
+              </select>
+            </div>
+
+            <!-- Fila 2: Cantidad, Precio, Subtotal -->
+            <div class="campo-grupo">
+              <label for="cantidad">Cantidad</label>
+              <input id="cantidad" type="number" min="1" step="1" placeholder="1" value="1">
+            </div>
+
+            <div class="campo-grupo">
+              <label for="precio">Precio</label>
+              <input id="precio" type="number" min="0" step="0.01" placeholder="0.00" readonly>
+            </div>
+
+            <div class="campo-grupo">
+              <label for="subtotal">Subtotal</label>
+              <input id="subtotal" type="number" min="0" step="0.01" placeholder="0.00" readonly>
+            </div>
+
+            <!-- Fila 3: Observaciones (ancho completo) -->
+            <div class="campo-grupo campo-full">
+              <label for="observaciones">Observaciones</label>
+              <input id="observaciones" type="text" placeholder="sin queso, sin sal…">
+            </div>
+          </fieldset>
+
+         
+          <!-- Sección de Extras MOVIDA ARRIBA de la tabla -->
+          <fieldset class="seccion seccion_extras">
+            <legend>Extras</legend>
+
+            <label for="extra-observacion">Observación extra</label>
+            <input id="extra-observacion" type="text" placeholder="Ej.: Empaque / Propina / Recargo">
+
+            <label for="extra-precio">Precio extra</label>
+            <input id="extra-precio" type="text"placeholder="0.00">
+
+         
+            
+
+            <div class="extras-lista" id="extras-lista" aria-live="polite"></div>
+          </fieldset>
+          
+           <div class="grupo-botones">
+            <button type="button" class="btn btn-success">Agregar</button>
+          </div>
+
+          <!-- Tabla de comandas       -->
+          <div class="tabla-orden" aria-live="polite">
+            <table id="tabla-comanda">
+              <thead>
+                <tr>
+                  <th>Cantidad</th>
+                  <th>Platillo</th>
+                  <th>Observaciones</th>
+                  <th>Precio</th>
+                  <th>Observacion Extra</th>
+                  <th>Precio Extra</th>
+                  <th>Subtotal</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Los items se agregarán dinámicamente aquí -->
+              </tbody>
+            </table>
+          </div>
+          
+        <div class="contenedor_orden_estado">
+
+          <div class="contenedor_estado">
+            <label for="estado">Estado de orden</label>
+            <input id="estado" type="text" value="Pendiente" readonly>
+          </div>
+
+          <div class="total_orden">
+            <label for="total">Total de Orden:</label>
+            <input id="total" type="number" min="0" step="0.01" value="0.00" readonly>
+          </div>
+          
+        </div>
+
+          <div class="boton_guardar">
+            <button class="btn btn-primary" type="submit" id="btn-submit-order">Enviar Orden</button>
+            <a href="/templates/mesero/comanda-control.html" class="btn btn-outline">Visualizar Órdenes</a>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <footer class="pie-pagina">
+      <p>© Derechos Reservados</p>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/scripts/config.js?v=20251025"></script>
+  <script src="/scripts/api.js?v=20251025"></script>
+  <script src="/scripts/access-control.js"></script>
+  <script src="/scripts/comanda.js?v=20251025b"></script>
+</body>
+</html>

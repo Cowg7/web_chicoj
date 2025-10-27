@@ -1,0 +1,305 @@
+/* ====================================
+   ESTILOS COCINA-INICIO - Menú de Áreas
+   ==================================== */
+
+/* Título de la Sección */
+.titulo-seccion {
+  text-align: center;
+  font-size: 2rem;
+  color: var(--text);
+  margin-bottom: var(--spacing-xl);
+  font-weight: 700;
+}
+
+/* Grid de Opciones */
+.grid-opciones {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-xl);
+  align-items: stretch;
+}
+
+/* Cards de Opción */
+.card-opcion {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow);
+  padding: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--spacing-md);
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Efecto hover */
+.card-opcion::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(135deg, #4A90E2 0%, #5BC0DE 100%);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--transition-base);
+}
+
+.card-opcion:hover::before {
+  transform: scaleX(1);
+}
+
+.card-opcion:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--primary);
+}
+
+.card-opcion h3 {
+  color: var(--text);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.card-opcion .desc {
+  color: var(--text-light);
+  font-size: 1rem;
+  line-height: 1.6;
+  flex: 1;
+  margin: 0;
+}
+
+.card-opcion .btn {
+  margin-top: auto;
+  min-width: 160px;
+}
+
+/* Iconos de área (opcional si agregas iconos) */
+.card-opcion-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4A90E2 0%, #2E5C8A 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  color: white;
+  margin-bottom: var(--spacing-sm);
+  box-shadow: var(--shadow);
+}
+
+/* Variantes por área */
+.card-opcion[data-area="cocina"] .card-opcion-icon {
+  background: linear-gradient(135deg, #F0AD4E 0%, #D9941A 100%);
+}
+
+.card-opcion[data-area="bebidas"] .card-opcion-icon {
+  background: linear-gradient(135deg, #5BC0DE 0%, #46B8DA 100%);
+}
+
+.card-opcion[data-area="coffee"] .card-opcion-icon {
+  background: linear-gradient(135deg, #5CB85C 0%, #4A9D4A 100%);
+}
+
+/* Badge adicional */
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.brand-text .badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border: 1px solid #cfe3d6;
+  border-radius: var(--r-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--brand);
+  background: rgba(10, 142, 50, 0.05);
+  width: fit-content;
+}
+
+.brand-text h1 {
+  font-size: 1.5rem;
+  color: var(--brand);
+  margin: 0;
+}
+
+/* ====================================
+   RESPONSIVE BREAKPOINTS
+   ==================================== */
+
+/* Desktop (>= 1024px) */
+@media (min-width: 1024px) {
+  .grid-opciones {
+  grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .titulo-seccion {
+    font-size: 2.25rem;
+  }
+  
+  .card-opcion {
+    padding: var(--spacing-2xl);
+  }
+}
+
+/* Tablet (640px - 1023px) */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .grid-opciones {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .titulo-seccion {
+    font-size: 1.75rem;
+  }
+  
+  .card-opcion {
+    padding: var(--spacing-lg);
+  }
+  
+  .card-opcion h3 {
+    font-size: 1.35rem;
+  }
+}
+
+/* Mobile (< 640px) */
+@media (max-width: 639px) {
+  .grid-opciones {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
+  
+  .titulo-seccion {
+    font-size: 1.5rem;
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .card-opcion {
+    padding: var(--spacing-lg);
+  }
+  
+  .card-opcion h3 {
+    font-size: 1.25rem;
+  }
+  
+  .card-opcion .desc {
+    font-size: 0.9375rem;
+  }
+  
+  .card-opcion .btn {
+    width: 100%;
+    min-width: 0;
+  }
+  
+  .card-opcion-icon {
+    width: 64px;
+    height: 64px;
+    font-size: 2rem;
+  }
+  
+  /* Header ajustes */
+  .brand-text h1 {
+    font-size: 1.125rem;
+  }
+  
+  .brand-text .badge {
+    font-size: 0.6875rem;
+    padding: 3px 8px;
+  }
+  
+  .logo-placeholder {
+    width: 56px;
+    height: 42px;
+  }
+}
+
+/* Extra small mobile (< 375px) */
+@media (max-width: 374px) {
+  .titulo-seccion {
+    font-size: 1.25rem;
+  }
+  
+  .card-opcion {
+    padding: var(--spacing-md);
+  }
+  
+  .card-opcion h3 {
+    font-size: 1.125rem;
+  }
+}
+
+/* ====================================
+   ANIMACIONES
+   ==================================== */
+
+/* Entrada escalonada de cards */
+.card-opcion {
+  animation: fadeInUp 0.6s ease both;
+}
+
+.card-opcion:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.card-opcion:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.card-opcion:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ====================================
+   ACCESIBILIDAD
+   ==================================== */
+
+/* Focus visible para navegación por teclado */
+.card-opcion:focus-within {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.card-opcion .btn:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ====================================
+   PRINT STYLES
+   ==================================== */
+
+@media print {
+  .card-opcion {
+    page-break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+  
+  .card-opcion::before {
+    display: none;
+  }
+  
+  .card-opcion .btn {
+    display: none;
+  }
+}

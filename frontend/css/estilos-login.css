@@ -1,0 +1,149 @@
+:root{
+  --bg:#f6f8fb; --panel:#fff; --brand:#0a8e32;
+  --primary:#0d6efd; --primary-700:#0b5ed7;
+  --success:#198754; --success-700:#157347;
+  --text:#1f2d3d; --muted:#6c7a89; --border:#e4e8ef;
+  --r-lg:18px; --r-md:12px; --shadow:0 8px 24px rgba(16,24,40,.08);
+  --focus:0 0 0 3px rgba(13,110,253,.25);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,sans-serif;
+  color:var(--text);
+  background:var(--bg);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+/* ===== Contenedor general ===== */
+.contenedor-app{
+  width:100%;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+
+/* ===== Header (logo opcional arriba) ===== */
+.encabezado{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  margin-bottom:20px;
+}
+.logo-placeholder{
+  width:72px;
+  height:60px;
+  border-radius:10px;
+  background:url('/imgs/coffe_tour.jpg') center/cover no-repeat;
+  box-shadow:0 2px 4px rgba(0,0,0,0.1);
+}
+.brand h1{
+  font-size:1.4rem;
+  color:var(--brand);
+  margin:0;
+}
+
+/* ===== Card principal de login ===== */
+.login-card{
+  width:100%;
+  max-width:420px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);
+  box-shadow:var(--shadow);
+  padding:30px 28px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+.login-card h2{
+  margin:0 0 18px;
+  color:#0b2c1a;
+  font-size:1.5rem;
+  text-align:center;
+}
+
+.formulario{
+  display:grid;
+  gap:18px;
+  width:100%;
+}
+
+label{
+  font-weight:600;
+  font-size:.95rem;
+  color:#12263a;
+}
+
+input{
+  width:100%;
+  padding:12px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  font-size:15px;
+  outline:none;
+  transition:border-color .2s, box-shadow .2s;
+}
+input:focus{
+  border-color:var(--primary);
+  box-shadow:var(--focus);
+}
+
+/* ===== Botones ===== */
+.boton{
+  display:flex;
+  justify-content:center;
+}
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:10px 14px;
+  border-radius:999px;
+  font-weight:600;
+  text-decoration:none;
+  border:1px solid transparent;
+  transition:.15s;
+  width:100%;
+  text-align:center;
+}
+.btn-success{
+  background:var(--success);
+  color:#fff;
+}
+.btn-success:hover{background:var(--success-700)}
+
+.btn-outline{
+  background:#fff;
+  color:#0a1f44;
+  border-color:#d8e3ef;
+}
+.btn-outline:hover{
+  background:#f1f5fa;
+}
+
+/* ===== Enlace de recuperación ===== */
+.recuperar{
+  display:flex;
+  justify-content:center;
+}
+.recuperar .btn{
+  width:auto;
+  font-size:.9rem;
+}
+
+/* ===== Footer ===== */
+.pie-pagina{
+  margin-top:24px;
+  color:#3a4856;
+  font-size:.9rem;
+  text-align:center;
+}

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Usuarios</title>
+  <link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/components.css">
+<link rel="stylesheet" href="/css/utilities.css">
+  <link rel="stylesheet" href="/css/estilos-form-usuarios.css">
+</head>
+<body>
+  <div class="contenedor-app">
+    <!-- Header con logo + nav a la derecha -->
+    <header class="encabezado">
+      <div class="brand">
+        <div class="logo-placeholder" aria-label="Logo"></div>
+        <h1>Restaurante Chicooj</h1>
+      </div>
+      <nav class="acciones" aria-label="Acciones">
+        <a class="btn btn-outline" href="/main.html">Inicio</a>
+        <a class="btn btn-primary" href="/templates/login.html">Cerrar sesión</a>
+      </nav>
+    </header>
+
+    <main class="contenido" role="main">
+      <section class="form-card">
+        <div class="encabezado-form">
+          <h2>Agregar Usuarios</h2>
+          <!-- Botón Regresar -->
+          <a href="/templates/administracion/control-usuarios.html" class="btn btn-outline btn-regresar">
+            ← Regresar
+          </a>
+        </div>
+
+        <form class="formulario" autocomplete="off" id="form-usuarios">
+          <!-- Grupo Persona -->
+          <fieldset class="seccion campo_persona">
+            <legend>Persona</legend>
+
+            <label for="empleado">Seleccione Empleado</label>
+            <select id="empleado" required>
+              <option value="">Seleccionar…</option>
+              <option>Pedro López</option>
+              <option>Diego Caal</option>
+              <option>Alma Rax</option>
+              <option>Jesica Quinillo</option>
+            </select>
+
+            <label for="rol">Rol</label>
+            <select id="rol" required>
+              <option value="">Seleccionar…</option>
+              <option>Administrador</option>
+              <option>Mesero</option>
+              <option>Caja</option>
+              <option>Encargado_Tour</option>
+            </select>
+          </fieldset>
+
+          <!-- Usuario -->
+          <fieldset class="seccion campos_usuario">
+            <legend>Cuenta</legend>
+            <label for="usuario">Usuario</label>
+            <input id="usuario" type="text" placeholder="ej.: jquijano" required>
+          </fieldset>
+
+          <!-- Contraseña -->
+          <fieldset class="seccion campos_contrasenia">
+            <legend>Seguridad</legend>
+            <label for="pwd">Contraseña</label>
+            <input id="pwd" type="password" placeholder="Mínimo 8 caracteres" required>
+
+            <label for="pwd2">Confirmar contraseña</label>
+            <input id="pwd2" type="password" placeholder="Repite la contraseña" required>
+          </fieldset>
+
+          <div class="boton">
+            <button type="submit" class="btn btn-success">Ingresar</button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <footer class="pie-pagina">
+      <p>© Derechos Reservados</p>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/scripts/config.js"></script>
+  <script src="/scripts/api.js"></script>
+  <script src="/scripts/agregar-usuarios.js"></script>
+</body>
+</html>

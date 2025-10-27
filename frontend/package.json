@@ -1,0 +1,26 @@
+{
+  "name": "chicoj-frontend",
+  "version": "1.0.0",
+  "description": "Sistema de gestión para Restaurante Chicoj - Frontend",
+  "scripts": {
+    "dev": "http-server -p 8080 -c-1 -o",
+    "start": "http-server -p 8080",
+    "preview": "http-server -p 8080 -o /index.html"
+  },
+  "keywords": [
+    "restaurant",
+    "pos",
+    "kds",
+    "tours",
+    "management"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
+
+
+
+

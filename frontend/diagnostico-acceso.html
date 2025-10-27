@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diagnóstico de Acceso</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #3a9b7a;
+      margin-bottom: 20px;
+    }
+    .section {
+      margin-bottom: 30px;
+      padding: 15px;
+      background: #f9f9f9;
+      border-left: 4px solid #3a9b7a;
+    }
+    .info {
+      margin: 10px 0;
+      padding: 10px;
+      background: white;
+      border-radius: 4px;
+    }
+    .label {
+      font-weight: bold;
+      color: #333;
+    }
+    .value {
+      color: #666;
+      margin-left: 10px;
+    }
+    .error {
+      color: #f44336;
+      background: #ffebee;
+      padding: 10px;
+      border-radius: 4px;
+      margin: 10px 0;
+    }
+    .success {
+      color: #4caf50;
+      background: #e8f5e9;
+      padding: 10px;
+      border-radius: 4px;
+      margin: 10px 0;
+    }
+    button {
+      background: #3a9b7a;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover {
+      background: #2d7a5f;
+    }
+    .btn-danger {
+      background: #f44336;
+    }
+    .btn-danger:hover {
+      background: #d32f2f;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔍 Diagnóstico de Acceso y Roles</h1>
+    
+    <div class="section">
+      <h2>📋 Información del Usuario</h2>
+      <div id="user-info"></div>
+    </div>
+
+    <div class="section">
+      <h2>🔑 Token de Autenticación</h2>
+      <div id="token-info"></div>
+    </div>
+
+    <div class="section">
+      <h2>🚪 Rutas Permitidas</h2>
+      <div id="routes-info"></div>
+    </div>
+
+    <div class="section">
+      <h2>📍 Ruta Actual</h2>
+      <div id="current-route"></div>
+    </div>
+
+    <div class="section">
+      <h2>🛠️ Acciones</h2>
+      <button onclick="testCajaAccess()">Probar Acceso a Caja</button>
+      <button onclick="testReportesAccess()">Probar Acceso a Reportes</button>
+      <button onclick="testComandaAccess()">Probar Acceso a Comanda</button>
+      <button onclick="clearStorage()" class="btn-danger">Limpiar Storage</button>
+      <button onclick="location.reload()">Recargar</button>
+    </div>
+
+    <div id="test-results"></div>
+  </div>
+
+  <script src="/scripts/config.js"></script>
+  <script src="/scripts/api.js"></script>
+  
+  <script>
+    // Obtener información del localStorage
+    function getUserInfo() {
+      // CORREGIDO: Usar las keys correctas que usa AuthManager
+      const token = localStorage.getItem('auth_token');  // ← con guion bajo
+      const userStr = localStorage.getItem('user_data'); // ← con guion bajo
+      
+      let user = null;
+      try {
+        user = userStr ? JSON.parse(userStr) : null;
+      } catch (e) {
+        console.error('Error parsing user data:', e);
+      }
+      
+      // Debug
+      console.log('🔍 Keys en localStorage:', Object.keys(localStorage));
+      console.log('🔑 Token encontrado:', token ? 'SÍ' : 'NO');
+      console.log('👤 User encontrado:', user ? 'SÍ' : 'NO');
+      if (user) {
+        console.log('📋 User data:', user);
+      }
+      
+      return { token, user };
+    }
+
+    // Mostrar información del usuario
+    function displayUserInfo() {
+      const { token, user } = getUserInfo();
+      const userInfoDiv = document.getElementById('user-info');
+      const tokenInfoDiv = document.getElementById('token-info');
+      const routesInfoDiv = document.getElementById('routes-info');
+      const currentRouteDiv = document.getElementById('current-route');
+
+      // Usuario
+      if (user) {
+        userInfoDiv.innerHTML = `
+          <div class="success">✅ Usuario autenticado</div>
+          <div class="info">
+            <div class="label">Usuario:</div>
+            <div class="value">${user.usuario_nombre || user.username || 'N/A'}</div>
+          </div>
+          <div class="info">
+            <div class="label">Rol:</div>
+            <div class="value">${user.rol || user.role || 'N/A'}</div>
+          </div>
+          <div class="info">
+            <div class="label">ID:</div>
+            <div class="value">${user.id_usuario || user.id || 'N/A'}</div>
+          </div>
+          <div class="info">
+            <div class="label">Datos completos:</div>
+            <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px; overflow-x: auto;">${JSON.stringify(user, null, 2)}</pre>
+          </div>
+        `;
+      } else {
+        userInfoDiv.innerHTML = '<div class="error">❌ No hay usuario en localStorage</div>';
+      }
+
+      // Token
+      if (token) {
+        tokenInfoDiv.innerHTML = `
+          <div class="success">✅ Token presente</div>
+          <div class="info">
+            <div class="label">Token (primeros 50 chars):</div>
+            <div class="value" style="word-break: break-all;">${token.substring(0, 50)}...</div>
+          </div>
+        `;
+      } else {
+        tokenInfoDiv.innerHTML = '<div class="error">❌ No hay token en localStorage</div>';
+      }
+
+      // Rutas según rol
+      if (user && user.rol) {
+        const rol = user.rol.toLowerCase();
+        const roleConfig = {
+          'cajero': ['/templates/caja/caja.html', '/templates/reportes/reportes.html'],
+          'mesero': ['/templates/mesero/mesero_comanda.html', '/templates/mesero/comanda-control.html'],
+          'cocina': ['/templates/cocina/cocina.html?area=Cocina'],
+          'bebidas': ['/templates/cocina/cocina.html?area=Bebidas'],
+          'coffee': ['/templates/cocina/cocina.html?area=Coffee'],
+          'tour': ['/templates/tour/tour.html', '/templates/tour/tour-control.html'],
+          'administrador': ['TODAS LAS RUTAS']
+        };
+
+        const allowedRoutes = roleConfig[rol] || ['Rol no reconocido'];
+        routesInfoDiv.innerHTML = `
+          <div class="info">
+            <div class="label">Rol detectado:</div>
+            <div class="value">${rol}</div>
+          </div>
+          <div class="info">
+            <div class="label">Rutas permitidas:</div>
+            <ul>
+              ${allowedRoutes.map(r => `<li>${r}</li>`).join('')}
+            </ul>
+          </div>
+        `;
+      } else {
+        routesInfoDiv.innerHTML = '<div class="error">❌ No se puede determinar el rol</div>';
+      }
+
+      // Ruta actual
+      currentRouteDiv.innerHTML = `
+        <div class="info">
+          <div class="label">URL completa:</div>
+          <div class="value">${window.location.href}</div>
+        </div>
+        <div class="info">
+          <div class="label">Pathname:</div>
+          <div class="value">${window.location.pathname}</div>
+        </div>
+      `;
+    }
+
+    // Probar acceso a caja
+    function testCajaAccess() {
+      const { user } = getUserInfo();
+      const resultsDiv = document.getElementById('test-results');
+      
+      if (!user) {
+        resultsDiv.innerHTML = '<div class="error">❌ No hay usuario autenticado</div>';
+        return;
+      }
+
+      const rol = (user.rol || '').toLowerCase();
+      
+      if (rol === 'cajero' || rol === 'administrador') {
+        resultsDiv.innerHTML = '<div class="success">✅ Tu rol permite acceso a caja. Redirigiendo...</div>';
+        setTimeout(() => {
+          window.location.href = '/templates/caja/caja.html';
+        }, 1500);
+      } else {
+        resultsDiv.innerHTML = `<div class="error">❌ Tu rol (${rol}) NO tiene acceso a caja</div>`;
+      }
+    }
+
+    // Probar acceso a reportes
+    function testReportesAccess() {
+      const { user } = getUserInfo();
+      const resultsDiv = document.getElementById('test-results');
+      
+      if (!user) {
+        resultsDiv.innerHTML = '<div class="error">❌ No hay usuario autenticado</div>';
+        return;
+      }
+
+      const rol = (user.rol || '').toLowerCase();
+      
+      if (rol === 'cajero' || rol === 'gerente' || rol === 'administrador') {
+        resultsDiv.innerHTML = '<div class="success">✅ Tu rol permite acceso a reportes. Redirigiendo...</div>';
+        setTimeout(() => {
+          window.location.href = '/templates/reportes/reportes.html';
+        }, 1500);
+      } else {
+        resultsDiv.innerHTML = `<div class="error">❌ Tu rol (${rol}) NO tiene acceso a reportes</div>`;
+      }
+    }
+
+    // Probar acceso a comanda
+    function testComandaAccess() {
+      const { user } = getUserInfo();
+      const resultsDiv = document.getElementById('test-results');
+      
+      if (!user) {
+        resultsDiv.innerHTML = '<div class="error">❌ No hay usuario autenticado</div>';
+        return;
+      }
+
+      const rol = (user.rol || '').toLowerCase();
+      
+      if (rol === 'mesero' || rol === 'administrador') {
+        resultsDiv.innerHTML = '<div class="success">✅ Tu rol permite acceso a comanda. Redirigiendo...</div>';
+        setTimeout(() => {
+          window.location.href = '/templates/mesero/mesero_comanda.html';
+        }, 1500);
+      } else {
+        resultsDiv.innerHTML = `<div class="error">❌ Tu rol (${rol}) NO tiene acceso a comanda</div>`;
+      }
+    }
+
+    // Limpiar storage
+    function clearStorage() {
+      if (confirm('¿Estás seguro? Esto cerrará tu sesión y tendrás que volver a iniciar sesión.')) {
+        localStorage.clear();
+        sessionStorage.clear();
+        alert('Storage limpiado. Redirigiendo a login...');
+        window.location.href = '/templates/login.html';
+      }
+    }
+
+    // Cargar al inicio
+    displayUserInfo();
+  </script>
+</body>
+</html>
+

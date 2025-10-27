@@ -1,0 +1,425 @@
+/* ====================================
+   ESTILOS TOUR-CONTROL - Listado de Tickets
+   ==================================== */
+
+/* Filtros de Búsqueda */
+.filtros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+  align-items: end;
+  margin-bottom: var(--spacing-xl);
+  padding: var(--spacing-lg);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow);
+}
+
+.filtros .campo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.filtros .campo label {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--text);
+}
+
+.filtros input,
+.filtros select {
+  padding: 12px 14px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: #fff;
+  font-size: 16px;
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.filtros input:focus,
+.filtros select:focus {
+  border-color: var(--primary);
+  box-shadow: var(--focus);
+}
+
+/* Botones de Filtro */
+.filtros-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  align-items: end;
+  grid-column: 1 / -1;
+  justify-content: center;
+  margin-top: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.filtros-actions .btn {
+  min-width: 120px;
+}
+
+/* Tabla de Tickets */
+.tabla-container {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow);
+  padding: var(--spacing-lg);
+}
+
+.tabla-container h2 {
+  text-align: center;
+  margin: 0 0 var(--spacing-lg) 0;
+  color: var(--text);
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.tabla-orden {
+  overflow-x: auto;
+  border-radius: var(--r-md);
+  background: var(--panel);
+  -webkit-overflow-scrolling: touch;
+}
+
+.tabla-orden table {
+  width: 100%;
+  min-width: 1000px;
+  border-collapse: collapse;
+}
+
+.tabla-orden thead {
+  background: linear-gradient(135deg, #4A90E2 0%, #2E5C8A 100%);
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.tabla-orden th {
+  padding: 16px 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  white-space: nowrap;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.tabla-orden td {
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+  font-size: 0.9375rem;
+}
+
+.tabla-orden tbody tr {
+  transition: background-color var(--transition-fast);
+}
+
+.tabla-orden tbody tr:nth-child(even) {
+  background: #fafbfc;
+}
+
+.tabla-orden tbody tr:hover {
+  background: #f0f6ff;
+  cursor: pointer;
+}
+
+.tabla-orden tbody tr.selected {
+  background: #e3f2fd;
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+
+/* Columnas específicas */
+.tabla-orden td:nth-child(1) {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.tabla-orden td:nth-child(6) {
+  font-weight: 600;
+  color: var(--success);
+}
+
+/* Empty State */
+.tabla-orden tbody:empty::after {
+  content: 'No hay tickets registrados';
+  display: block;
+  text-align: center;
+  padding: var(--spacing-2xl);
+  color: var(--muted);
+  font-style: italic;
+  font-size: 1.125rem;
+}
+
+/* Badges de Servicio */
+.servicio-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: var(--r-full);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.servicio-badge.recorrido {
+  background: #e8f5e9;
+  color: #388e3c;
+}
+
+.servicio-badge.canopy {
+  background: #fff3e0;
+  color: #f57c00;
+}
+
+.servicio-badge.completo {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+/* Botones de Acción */
+.tabla-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+.tabla-actions h2 {
+  margin: 0;
+  flex: 1;
+  min-width: 200px;
+}
+
+.tabla-actions .btn {
+  min-width: 140px;
+}
+
+/* ====================================
+   RESPONSIVE BREAKPOINTS
+   ==================================== */
+
+/* Desktop (>= 1024px) */
+@media (min-width: 1024px) {
+  .filtros {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .filtros-actions {
+    justify-content: flex-end;
+    margin-top: 0;
+  }
+  
+  .tabla-orden table {
+    min-width: 1200px;
+  }
+}
+
+/* Tablet (640px - 1023px) */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .filtros {
+    grid-template-columns: repeat(2, 1fr);
+    padding: var(--spacing-md);
+  }
+  
+  .tabla-container {
+    padding: var(--spacing-md);
+  }
+  
+  .tabla-container h2 {
+    font-size: 1.5rem;
+  }
+  
+  .tabla-orden table {
+    min-width: 900px;
+    font-size: 0.875rem;
+  }
+  
+  .tabla-orden th,
+  .tabla-orden td {
+    padding: 12px 10px;
+  }
+}
+
+/* Mobile (< 640px) */
+@media (max-width: 639px) {
+  .filtros {
+    grid-template-columns: 1fr;
+    padding: var(--spacing-md);
+  }
+  
+  .filtros-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .filtros-actions .btn {
+    width: 100%;
+    min-width: 0;
+  }
+  
+  .tabla-container {
+    padding: var(--spacing-md);
+  }
+  
+  .tabla-container h2 {
+    font-size: 1.25rem;
+  }
+  
+  .tabla-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .tabla-actions h2 {
+    text-align: center;
+    min-width: 0;
+  }
+  
+  .tabla-actions .btn {
+    width: 100%;
+  }
+  
+  /* Tabla con scroll horizontal */
+  .tabla-orden {
+    position: relative;
+    margin: 0 -var(--spacing-md);
+    padding: 0 var(--spacing-md);
+  }
+  
+  .tabla-orden::after {
+    content: '← Desliza para ver más →';
+    position: sticky;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(74, 144, 226, 0.1);
+    color: #4A90E2;
+    text-align: center;
+    padding: var(--spacing-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: var(--r-sm);
+    margin-top: var(--spacing-sm);
+  }
+  
+  .tabla-orden table {
+    min-width: 800px;
+    font-size: 0.8125rem;
+  }
+  
+  .tabla-orden th,
+  .tabla-orden td {
+    padding: 10px 8px;
+  }
+  
+  .servicio-badge {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+  }
+}
+
+/* Extra small mobile (< 375px) */
+@media (max-width: 374px) {
+  .filtros {
+    padding: var(--spacing-sm);
+  }
+  
+  .tabla-container {
+    padding: var(--spacing-sm);
+  }
+  
+  .tabla-container h2 {
+    font-size: 1.125rem;
+  }
+  
+  .tabla-orden table {
+    min-width: 700px;
+    font-size: 0.75rem;
+  }
+  
+  .tabla-orden th,
+  .tabla-orden td {
+    padding: 8px 6px;
+  }
+}
+
+/* ====================================
+   ESTADOS ESPECIALES
+   ==================================== */
+
+/* Animación al seleccionar fila */
+@keyframes rowSelected {
+  0%, 100% {
+    background: #e3f2fd;
+  }
+  50% {
+    background: #bbdefb;
+  }
+}
+
+.tabla-orden tbody tr.just-selected {
+  animation: rowSelected 0.6s ease;
+}
+
+/* ====================================
+   ACCESIBILIDAD
+   ==================================== */
+
+/* Focus visible para navegación por teclado */
+.tabla-orden tbody tr:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: -2px;
+}
+
+.filtros input:focus-visible,
+.filtros select:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ====================================
+   PRINT STYLES
+   ==================================== */
+
+@media print {
+  .filtros,
+  .tabla-actions .btn {
+    display: none !important;
+  }
+  
+  .tabla-container {
+    box-shadow: none;
+    border: none;
+    padding: 0;
+  }
+  
+  .tabla-orden {
+    overflow: visible;
+  }
+  
+  .tabla-orden table {
+    min-width: 100%;
+    font-size: 10pt;
+  }
+  
+  .tabla-orden thead {
+    background: #4A90E2 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  .tabla-orden tbody tr {
+    page-break-inside: avoid;
+  }
+  
+  .tabla-orden tbody tr:hover {
+    background: transparent;
+  }
+}

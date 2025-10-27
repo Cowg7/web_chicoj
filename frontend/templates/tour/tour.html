@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nuevo Ticket</title>
+  <link rel="stylesheet" href="/css/base.css?v=20251025c">
+  <link rel="stylesheet" href="/css/components.css?v=20251025c">
+  <link rel="stylesheet" href="/css/utilities.css?v=20251025">
+  <link rel="stylesheet" href="/css/estilos-tour.css?v=20251025">
+</head>
+<body>
+  <div class="contenedor-app">
+    <header class="encabezado">
+      <div class="brand">
+        <div class="logo-placeholder" aria-label="Logo"></div>
+        <h1>Restaurante Chicooj</h1>
+      </div>
+      <nav class="acciones" aria-label="Acciones">
+        <a class="btn btn-primary" href="/templates/login.html">Cerrar sesión</a>
+      </nav>
+    </header>
+
+    <main class="contenido">
+      <section class="form-card">
+        <h2>Crear Ticket</h2>
+        <form class="formulario" id="form-ticket" autocomplete="off" novalidate>
+          <fieldset class="seccion">
+            <legend>Datos del Ticket</legend>
+
+            <label for="id-tour">No.</label>
+            <input id="id-tour" type="text" value="AUTO" readonly style="background-color: #f0f0f0;">
+
+            <label for="fecha">Fecha</label>
+            <input id="fecha" type="date" required>
+
+            <label for="servicio">Tipo de Servicio</label>
+            <select id="servicio" required>
+              <option value="">Seleccionar servicio…</option>
+              <option value="Recorrido">Recorrido</option>
+              <option value="Recorrido y Canopy">Recorrido y Canopy</option>
+              <option value="Solo Canopy">Solo Canopy</option>
+            </select>
+
+            <label for="precio-servicio">Precio por persona</label>
+            <input id="precio-servicio" type="number" step="0.01" placeholder="0.00" required>
+
+            <label for="tipo">Tipo de visitante</label>
+            <select id="tipo" required>
+              <option value="">Seleccionar…</option>
+              <option value="Nacional">Nacional</option>
+              <option value="Extranjero">Extranjero</option>
+              <option value="Estudiante">Estudiante</option>
+            </select>
+
+            <label for="cantidad-visitante">Cantidad de visitantes</label>
+            <input id="cantidad-visitante" type="number" min="1" required>
+
+            <label for="idioma">Idioma</label>
+            <input id="idioma" type="text" placeholder="Español, Inglés, Q'eqchi', etc." required>
+
+            <label for="observaciones">Observaciones</label>
+            <textarea id="observaciones" rows="3" placeholder="Información adicional (opcional)"></textarea>
+
+            <label for="precio-total">Precio Total</label>
+            <input id="precio-total" type="number" step="0.01" readonly placeholder="0.00" style="background-color: #f0f0f0; font-weight: bold;">
+          </fieldset>
+
+          <div class="botones-acciones">
+            <button type="submit" class="btn btn-success">Guardar Ticket</button>
+            <!-- 🔹 Botón agregado para visualizar registros -->
+            <a href="/templates/tour/tour-control.html" class="btn btn-outline">Visualizar Tickets</a>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <footer class="pie-pagina">
+      <p>© Derechos Reservados</p>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/scripts/config.js"></script>
+  <script src="/scripts/api.js"></script>
+  <script src="/scripts/access-control.js"></script>
+  <script src="/scripts/tour.js?v=20251025c"></script>
+</body>
+</html>

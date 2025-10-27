@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Sistema de gestión para Restaurante Chicooj" />
+  <title>Iniciar Sesión - Chicooj</title>
+  <link rel="stylesheet" href="/css/base.css?v=20251025c" />
+  <link rel="stylesheet" href="/css/components.css?v=20251025c" />
+  <link rel="stylesheet" href="/css/utilities.css?v=20251025" />
+  <style>
+    /* Estilos específicos para Login */
+    body {
+      background: linear-gradient(135deg, #4A90E2 0%, #2E5C8A 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--spacing-md);
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 440px;
+      animation: fadeInUp 0.6s ease;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: var(--spacing-xl);
+      color: white;
+    }
+
+    .login-logo {
+      width: 100px;
+      height: 75px;
+      margin: 0 auto var(--spacing-md);
+      border-radius: var(--r-lg);
+      background: url('/imgs/coffe_tour.jpg') center/cover no-repeat;
+      box-shadow: var(--shadow-xl);
+      border: 4px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .login-header h1 {
+      font-size: 2rem;
+      margin: 0 0 var(--spacing-sm) 0;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      color: white;
+    }
+
+    .login-header p {
+      margin: 0;
+      opacity: 0.95;
+      font-size: 1.125rem;
+    }
+
+    .login-card {
+      background: var(--panel);
+      border-radius: var(--r-xl);
+      padding: var(--spacing-2xl);
+      box-shadow: var(--shadow-xl);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .login-card h2 {
+      text-align: center;
+      margin: 0 0 var(--spacing-lg) 0;
+      color: var(--text);
+      font-size: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: var(--spacing-sm);
+      font-weight: 600;
+      color: var(--text);
+      font-size: 0.9375rem;
+    }
+
+    .input-with-icon {
+      position: relative;
+    }
+
+    .input-with-icon input {
+      padding-left: 44px;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.25rem;
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .error-message {
+      min-height: 24px;
+      padding: var(--spacing-sm);
+      margin: var(--spacing-md) 0;
+      border-radius: var(--r-md);
+      background: #ffebee;
+      color: #c62828;
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-align: center;
+      display: none;
+      animation: shake 0.4s ease;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 14px;
+      font-size: 1.0625rem;
+      margin-top: var(--spacing-md);
+      background: linear-gradient(135deg, var(--success) 0%, var(--success-700) 100%);
+      border: none;
+      box-shadow: var(--shadow);
+    }
+
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .divider {
+      text-align: center;
+      margin: var(--spacing-lg) 0;
+      position: relative;
+    }
+
+    .divider::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .divider span {
+      position: relative;
+      background: var(--panel);
+      padding: 0 var(--spacing-md);
+      color: var(--muted);
+      font-size: 0.875rem;
+    }
+
+    .forgot-password {
+      text-align: center;
+      margin-top: var(--spacing-lg);
+    }
+
+    .forgot-password a {
+      color: var(--primary);
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 0.9375rem;
+      transition: color var(--transition-fast);
+    }
+
+    .forgot-password a:hover {
+      color: var(--primary-700);
+      text-decoration: underline;
+    }
+
+    .login-footer {
+      text-align: center;
+      margin-top: var(--spacing-xl);
+      color: white;
+      font-size: 0.875rem;
+      opacity: 0.9;
+    }
+
+    .demo-info {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: var(--r-md);
+      padding: var(--spacing-md);
+      margin-top: var(--spacing-lg);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .demo-info h3 {
+      margin: 0 0 var(--spacing-sm) 0;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: white;
+      opacity: 0.95;
+    }
+
+    .demo-credentials {
+      display: grid;
+      gap: var(--spacing-xs);
+      font-size: 0.8125rem;
+      color: white;
+      opacity: 0.9;
+    }
+
+    .demo-credentials code {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+    }
+
+    /* Responsive */
+    @media (max-width: 639px) {
+      .login-container {
+        max-width: 100%;
+      }
+
+      .login-card {
+        padding: var(--spacing-lg);
+        border-radius: var(--r-lg);
+      }
+
+      .login-header h1 {
+        font-size: 1.5rem;
+      }
+
+      .login-header p {
+        font-size: 1rem;
+      }
+
+      .login-logo {
+        width: 80px;
+        height: 60px;
+      }
+
+      .demo-info {
+        font-size: 0.75rem;
+      }
+    }
+
+    /* Loading spinner en botón */
+    .btn-login.loading {
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    .btn-login.loading::after {
+      content: '';
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      margin-left: var(--spacing-sm);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <!-- Header con Logo -->
+    <div class="login-header">
+      <div class="login-logo" aria-label="Logo Restaurante Chicooj"></div>
+      <h1>Restaurante Chicooj</h1>
+      <p>Sistema de Gestión</p>
+    </div>
+
+    <!-- Card de Login -->
+    <div class="login-card">
+      <h2> Iniciar Sesión</h2>
+
+      <form id="form-login" novalidate>
+         <!-- Usuario -->
+         <div class="form-group">
+           <label for="usuario">Usuario</label>
+           <div class="input-with-icon">
+             <span class="input-icon">
+               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                 <circle cx="12" cy="7" r="4"></circle>
+               </svg>
+             </span>
+             <input 
+               id="usuario" 
+               type="text" 
+               placeholder="Ingresa tu usuario" 
+               required 
+               autocomplete="username"
+               autofocus
+             />
+           </div>
+         </div>
+
+         <!-- Contraseña -->
+         <div class="form-group">
+           <label for="password">Contraseña</label>
+           <div class="input-with-icon">
+             <span class="input-icon">
+               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                 <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+               </svg>
+             </span>
+             <input 
+               id="password" 
+               type="password" 
+               placeholder="Ingresa tu contraseña" 
+               required 
+               autocomplete="current-password"
+             />
+           </div>
+         </div>
+
+        <!-- Mensaje de error -->
+        <div id="msg" class="error-message" role="alert" aria-live="polite"></div>
+
+        <!-- Botón de submit -->
+        <button type="submit" class="btn btn-login btn-success">
+          Ingresar
+        </button>
+
+        <!-- Divider -->
+        <div class="divider">
+          <span>o</span>
+        </div>
+
+        <!-- Link de recuperación -->
+        <div class="forgot-password">
+          <a href="/templates/recuperacion.html">¿Olvidaste tu contraseña?</a>
+        </div>
+      </form>
+
+
+    <!-- Footer -->
+    <div class="login-footer">
+      <p>© 2025 Restaurante Chicooj. Todos los derechos reservados.</p>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/scripts/config.js?v=20251025"></script>
+  <script src="/scripts/api.js?v=20251025"></script>
+  <script src="/scripts/login.js?v=20251025" defer></script>
+</body>
+</html>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reportes - Chicoj</title>
+  <link rel="stylesheet" href="/css/base.css?v=20251025c">
+  <link rel="stylesheet" href="/css/components.css?v=20251025c">
+  <link rel="stylesheet" href="/css/utilities.css?v=20251025">
+  <style>
+    .reportes-main {
+      padding: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .filter-panel {
+      background: white;
+      padding: 1.5rem;
+      border-radius: var(--r-md);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+    .filter-panel h2 {
+      margin: 0 0 1.5rem 0;
+      color: var(--primary);
+      font-size: 1.3rem;
+    }
+    .filter-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .filter-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #333;
+    }
+    .filter-group input,
+    .filter-group select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      font-size: 1rem;
+    }
+    .filter-group input:focus,
+    .filter-group select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+    }
+    .filter-actions {
+      display: flex;
+      gap: 1rem;
+    }
+    .filter-actions button {
+      padding: 0.75rem 2rem;
+      border: none;
+      border-radius: var(--r-sm);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+    .btn-generar {
+      background: var(--primary);
+      color: white;
+    }
+    .btn-generar:hover {
+      background: #1976D2;
+      transform: translateY(-2px);
+    }
+    .btn-limpiar {
+      background: #f5f5f5;
+      color: #333;
+    }
+    .btn-limpiar:hover {
+      background: #e0e0e0;
+    }
+    .btn-pdf {
+      background: #d32f2f;
+      color: white;
+    }
+    .btn-pdf:hover {
+      background: #b71c1c;
+      transform: translateY(-2px);
+    }
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .report-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: var(--r-md);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+    .report-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+    .report-card h3 {
+      margin: 0 0 1rem 0;
+      color: #333;
+      font-size: 1.2rem;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: var(--primary);
+      text-align: center;
+      margin: 1rem 0;
+    }
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .report-table th {
+      background: #f5f5f5;
+      padding: 0.75rem;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 2px solid var(--border);
+    }
+    .report-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #eee;
+    }
+    .report-table tr:hover {
+      background: #f9f9f9;
+    }
+    .chart-placeholder {
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      border-radius: var(--r-sm);
+      color: #666;
+      font-style: italic;
+      font-size: 0.9rem;
+    }
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: #999;
+    }
+    .error {
+      text-align: center;
+      padding: 2rem;
+      color: var(--danger);
+    }
+    .no-data {
+      text-align: center;
+      padding: 2rem;
+      color: #999;
+      font-style: italic;
+    }
+    .icon-stat {
+      font-size: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="contenedor-app">
+    <!-- Header -->
+    <header class="encabezado">
+      <div class="brand">
+        <div class="logo-placeholder" aria-label="Logo"></div>
+        <h1>Restaurante Chicooj</h1>
+      </div>
+      <nav class="acciones" aria-label="Acciones">
+        <a class="btn btn-outline" href="/main.html">Inicio</a>
+        <a class="btn btn-primary" href="/templates/login.html">Cerrar sesión</a>
+      </nav>
+    </header>
+
+    <main class="reportes-main" role="main">
+      <!-- Panel de Filtros -->
+      <div class="filter-panel">
+        <h2> Reportes y Estadísticas</h2>
+        <div class="filter-group">
+          <div>
+            <label for="fecha_desde">Fecha Desde:</label>
+            <input type="date" id="fecha_desde">
+          </div>
+          <div>
+            <label for="fecha_hasta">Fecha Hasta:</label>
+            <input type="date" id="fecha_hasta">
+          </div>
+          <div>
+            <label for="tipo_reporte">Tipo de Reporte:</label>
+            <select id="tipo_reporte">
+              <option value="general">General</option>
+              <option value="ventas">Ventas</option>
+              <option value="platillos">Platillos Más Vendidos</option>
+              <option value="horas">Horas Pico</option>
+              <option value="areas">Ingresos por Área</option>
+            </select>
+          </div>
+        </div>
+        <div class="filter-actions">
+          <button class="btn-generar" id="btn-generar"> Generar Reporte</button>
+          <button class="btn-limpiar" id="btn-limpiar"> Limpiar Filtros</button>
+          <button class="btn-pdf" id="btn-generar-pdf"> Descargar PDF</button>
+        </div>
+      </div>
+
+      <!-- Dashboard -->
+      <div class="dashboard-grid">
+        <!-- Ventas Totales -->
+        <div class="report-card">
+          <h3><span class="icon-stat"></span> Ventas Totales</h3>
+          <div class="stat-value" id="stat-ventas-totales">Q 0.00</div>
+          <div class="chart-placeholder" id="chart-ventas">
+            Cargando datos...
+          </div>
+        </div>
+
+        <!-- Órdenes Completadas -->
+        <div class="report-card">
+          <h3><span class="icon-stat"></span> Órdenes Completadas</h3>
+          <div class="stat-value" id="stat-ordenes-totales">0</div>
+          <div class="chart-placeholder" id="chart-ordenes">
+            Cargando datos...
+          </div>
+        </div>
+
+        <!-- Ticket Promedio -->
+        <div class="report-card">
+          <h3><span class="icon-stat"></span> Ticket Promedio</h3>
+          <div class="stat-value" id="stat-ticket-promedio">Q 0.00</div>
+          <div class="chart-placeholder" id="chart-ticket">
+            Cargando datos...
+          </div>
+        </div>
+      </div>
+
+      <!-- Platillos Más Vendidos -->
+      <div class="report-card">
+        <h3><span class="icon-stat"></span> Top 10 - Platillos Más Vendidos</h3>
+        <div style="margin-bottom: 2rem;">
+          <canvas id="chart-platillos" style="max-height: 400px;"></canvas>
+        </div>
+        <div id="content-platillos">
+          <div class="loading">Cargando datos...</div>
+        </div>
+      </div>
+
+      <!-- Horas Pico -->
+      <div class="report-card">
+        <h3><span class="icon-stat"></span> Horas Pico</h3>
+        <div style="margin-bottom: 2rem;">
+          <canvas id="chart-horas" style="max-height: 400px;"></canvas>
+        </div>
+        <div id="content-horas">
+          <div class="loading">Cargando datos...</div>
+        </div>
+      </div>
+
+      <!-- Ingresos por Área -->
+      <div class="report-card">
+        <h3><span class="icon-stat"></span> Ingresos por Área</h3>
+        <div style="margin-bottom: 2rem;">
+          <canvas id="chart-areas" style="max-height: 400px;"></canvas>
+        </div>
+        <div id="content-areas">
+          <div class="loading">Cargando datos...</div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="pie-pagina">
+      <p>© Derechos Reservados</p>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="/scripts/config.js?v=20251025"></script>
+  <script src="/scripts/api.js?v=20251025"></script>
+  <script src="/scripts/access-control.js"></script>
+  <script src="/scripts/reportes.js?v=20251025f"></script>
+</body>
+</html>

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Caja - Chicoj</title>
+  <link rel="stylesheet" href="/css/base.css?v=20251025c">
+  <link rel="stylesheet" href="/css/components.css?v=20251025c">
+  <link rel="stylesheet" href="/css/utilities.css?v=20251025">
+  <style>
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+      padding: 0 2rem;
+    }
+    .stat-card {
+      background: linear-gradient(135deg, #5d71cc 0%, #4673b6 100%);
+      padding: 1.5rem;
+      border-radius: var(--r-md);
+      text-align: center;
+      color: white;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+    .stat-card h3 {
+      margin: 0 0 0.5rem 0;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      opacity: 0.9;
+    }
+    .stat-card .value {
+      font-size: 2rem;
+      font-weight: bold;
+    }
+    .tabs-container {
+      padding: 0 2rem;
+    }
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid var(--border);
+    }
+    .tab {
+      padding: 1rem 2rem;
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      font-weight: 600;
+      color: #666;
+      transition: all 0.3s;
+    }
+    .tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+    .tab:hover {
+      color: var(--primary);
+    }
+    .tab-content {
+      display: none;
+      padding: 0 2rem 2rem;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .orders-table {
+      background: white;
+      border-radius: var(--r-md);
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .orders-table table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .orders-table th {
+      background: var(--primary);
+      color: white;
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+    }
+    .orders-table td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .orders-table tr:hover {
+      background: #f9f9f9;
+    }
+    .btn-finalizar {
+      background: var(--success);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: var(--r-sm);
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .btn-finalizar:hover {
+      background: #45a049;
+    }
+    .btn-ver-detalles {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: var(--r-sm);
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .btn-ver-detalles:hover {
+      background: #1976D2;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      overflow-y: auto;
+    }
+    .modal-content {
+      background: white;
+      margin: 2rem auto;
+      padding: 2rem;
+      border-radius: var(--r-md);
+      max-width: 600px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--border);
+    }
+    .modal-header h2 {
+      margin: 0;
+      color: var(--primary);
+    }
+    .close {
+      font-size: 2rem;
+      cursor: pointer;
+      color: #999;
+      font-weight: 300;
+      line-height: 1;
+    }
+    .close:hover {
+      color: #333;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #333;
+    }
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      font-size: 1rem;
+    }
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+    }
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    .form-actions button {
+      flex: 1;
+      padding: 0.75rem;
+      border: none;
+      border-radius: var(--r-sm);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+    .btn-submit {
+      background: var(--success);
+      color: white;
+    }
+    .btn-submit:hover {
+      background: #45a049;
+      transform: translateY(-2px);
+    }
+    .btn-cancel {
+      background: var(--danger);
+      color: white;
+    }
+    .btn-cancel:hover {
+      background: #da190b;
+      transform: translateY(-2px);
+    }
+    .detalle-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+    }
+    .detalle-table th {
+      background: #f5f5f5;
+      padding: 0.5rem;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+      font-size: 0.9rem;
+    }
+    .detalle-table td {
+      padding: 0.5rem;
+      border-bottom: 1px solid #eee;
+    }
+    .detalle-container {
+      max-height: 300px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="contenedor-app">
+    <!-- Header -->
+    <header class="encabezado">
+      <div class="brand">
+        <div class="logo-placeholder" aria-label="Logo"></div>
+        <h1>Restaurante Chicooj</h1>
+      </div>
+      <nav class="acciones" aria-label="Acciones">
+        <a class="btn btn-outline" href="/main.html">Inicio</a>
+        <a class="btn btn-primary" href="/templates/login.html">Cerrar sesión</a>
+      </nav>
+    </header>
+
+    <main class="contenido" role="main">
+      <section class="seccion">
+        <h2 style="margin-bottom: 1.5rem; color: var(--primary);"> Caja - Sistema de Cobros</h2>
+
+        <!-- Estadísticas del día -->
+        <div class="stats-container">
+          <div class="stat-card">
+            <h3>Ventas del Día</h3>
+            <div class="value" id="stat-ventas-dia">Q 0.00</div>
+          </div>
+          <div class="stat-card">
+            <h3>Órdenes Completadas</h3>
+            <div class="value" id="stat-ordenes-dia">0</div>
+          </div>
+          <div class="stat-card">
+            <h3>Órdenes Pendientes</h3>
+            <div class="value" id="stat-pendientes">0</div>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs-container">
+          <div class="tabs">
+            <button class="tab active" data-tab="pendientes">Órdenes Pendientes</button>
+            <button class="tab" data-tab="historial">Historial del Día</button>
+          </div>
+
+          <!-- Tab: Órdenes Pendientes -->
+          <div class="tab-content active" id="tab-pendientes">
+            <div class="orders-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>No. Orden</th>
+                    <th>Mesa</th>
+                    <th>Fecha</th>
+                    <th>Total</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="tabla-pendientes">
+                  <tr>
+                    <td colspan="5" style="text-align: center; padding: 2rem; color: #999;">
+                      Cargando órdenes pendientes...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Tab: Historial -->
+          <div class="tab-content" id="tab-historial">
+            <div class="orders-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>No. Orden</th>
+                    <th>Mesa</th>
+                    <th>Fecha</th>
+                    <th>Total</th>
+                    <th>Método de Pago</th>
+                    <th>Detalles</th>
+                  </tr>
+                </thead>
+                <tbody id="tabla-historial">
+                  <tr>
+                    <td colspan="6" style="text-align: center; padding: 2rem; color: #999;">
+                      Cargando historial...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="pie-pagina">
+      <p>© Derechos Reservados</p>
+    </footer>
+  </div>
+
+  <!-- Modal para finalizar pago -->
+  <div id="modal-pago" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Finalizar Pago</h2>
+        <span class="close">&times;</span>
+      </div>
+      <form id="form-pago">
+        <input type="hidden" id="orden-id" name="orden_id">
+        
+        <div class="form-group">
+          <label>No. Orden:</label>
+          <input type="text" id="modal-orden-numero" readonly>
+        </div>
+
+        <div class="form-group">
+          <label>Mesa:</label>
+          <input type="text" id="modal-orden-mesa" readonly>
+        </div>
+
+        <div class="form-group">
+          <label>Total a Pagar:</label>
+          <input type="text" id="modal-orden-total" readonly>
+        </div>
+
+        <!-- Detalles de platillos -->
+        <div class="form-group">
+          <label style="font-size: 1.1rem; color: #333;"> Detalle de Platillos:</label>
+          <div class="detalle-container">
+            <table class="detalle-table">
+              <thead>
+                <tr>
+                  <th>Cant.</th>
+                  <th>Platillo</th>
+                  <th style="text-align: right;">Precio Unit.</th>
+                  <th style="text-align: right;">Subtotal</th>
+                </tr>
+              </thead>
+              <tbody id="modal-detalle-platillos">
+                <tr>
+                  <td colspan="4" style="text-align: center; padding: 1rem; color: #999;">
+                    Cargando detalles...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="metodo_pago">Método de Pago: *</label>
+          <select id="metodo_pago" name="metodo_pago" required>
+            <option value="">Seleccionar...</option>
+            <option value="Efectivo">Efectivo</option>
+            <option value="Tarjeta">Tarjeta</option>
+            <option value="Transferencia">Transferencia</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="monto_recibido">Monto Recibido: *</label>
+          <input type="number" id="monto_recibido" name="monto_recibido" step="0.01" required>
+        </div>
+
+        <div class="form-group">
+          <label for="cambio_devuelto">Cambio:</label>
+          <input type="text" id="cambio_devuelto" name="cambio_devuelto" readonly value="Q 0.00">
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" id="btn-cancelar-pago">Cancelar</button>
+          <button type="submit" class="btn-submit">✓ Finalizar Pago</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="/scripts/config.js"></script>
+  <script src="/scripts/api.js"></script>
+  <script src="/scripts/access-control.js"></script>
+  <script src="/scripts/caja.js?v=20251025b"></script>
+</body>
+</html>

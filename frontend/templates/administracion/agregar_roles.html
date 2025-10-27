@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agregar Rol</title>
+  <link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/components.css">
+<link rel="stylesheet" href="/css/utilities.css">
+  <link rel="stylesheet" href="/css/estilos-roles.css">
+</head>
+<body>
+  <div class="contenedor-app">
+
+    <!-- Header -->
+    <header class="encabezado">
+      <div class="brand">
+        <div class="logo-placeholder" aria-label="Logo"></div>
+        <h1>Restaurante Chicooj</h1>
+      </div>
+      <nav class="acciones" aria-label="Acciones">
+        <a class="btn btn-outline" href="/main.html">Inicio</a>
+        <a class="btn btn-primary" href="/templates/login.html">Cerrar sesión</a>
+      </nav>
+    </header>
+
+    <!-- Contenido -->
+    <main class="contenido" role="main">
+      <section class="form-card">
+        <div class="encabezado-form">
+          <h2>Agregar Rol</h2>
+          <a href="/templates/administracion/control-usuarios.html" class="btn btn-outline btn-regresar">
+            ← Regresar
+          </a>
+        </div>
+
+        <form class="formulario" autocomplete="off" id="form-roles">
+          <fieldset class="seccion campo_rol">
+            <legend>Datos del Rol</legend>
+
+            <label for="id">ID</label>
+            <input id="id" type="number" placeholder="Autogenerado" readonly>
+
+            <label for="nombre_rol">Nombre del Rol</label>
+            <input id="nombre_rol" type="text" placeholder="Ejemplo: Administrador" required>
+
+            <label for="descripcion">Descripción</label>
+            <textarea id="descripcion" rows="3" placeholder="Breve descripción del rol" required></textarea>
+          </fieldset>
+
+          <div class="boton">
+            <button type="submit" class="btn btn-success">Guardar Rol</button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="pie-pagina">
+      <p>© Derechos Reservados</p>
+    </footer>
+  </div>
+</body>
+</html>

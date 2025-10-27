@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Platillos</title>
+  <link rel="stylesheet" href="/css/base.css?v=20251025b">
+  <link rel="stylesheet" href="/css/components.css?v=20251025b">
+  <link rel="stylesheet" href="/css/utilities.css?v=20251025">
+  <link rel="stylesheet" href="/css/estilos-control-platillos.css?v=20251025">
+</head>
+<body>
+  <div class="contenedor-app">
+
+    <!-- Header -->
+    <header class="encabezado">
+      <div class="brand">
+        <div class="logo-placeholder" aria-label="Logo"></div>
+        <h1>Restaurante Chicooj</h1>
+      </div>
+      <nav class="acciones" aria-label="Acciones">
+        <a class="btn btn-outline" href="/main.html">Inicio</a>
+        <a class="btn btn-primary" href="/templates/login.html">Cerrar sesión</a>
+      </nav>
+    </header>
+
+    <!-- Contenido -->
+    <main class="contenido" role="main">
+      <section class="tabla-container">
+        <div class="tabla-header">
+          <h2>Lista de platillos</h2>
+          <a class="btn btn-success" href="/templates/administracion/platillo.html">+ Agregar platillo</a>
+        </div>
+
+        <!-- Lista tipo tabla (se llena dinámicamente con platillos agrupados por área) -->
+        <div class="tabla-platillos" role="table" aria-label="Platillos">
+          <div style="text-align: center; padding: 40px; color: var(--muted);">
+            <p>Cargando platillos...</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="pie-pagina">
+      <p>© Derechos Reservados</p>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/scripts/config.js?v=20251025"></script>
+  <script src="/scripts/api.js?v=20251025"></script>
+  <script src="/scripts/control-platillos.js?v=20251025b"></script>
+</body>
+</html>

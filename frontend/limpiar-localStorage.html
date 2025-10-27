@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Limpiar localStorage - Chicoj</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+    .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      margin: 10px 5px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+    .btn-danger {
+      background: #f44336;
+      color: white;
+    }
+    .btn-danger:hover {
+      background: #da190b;
+    }
+    .btn-warning {
+      background: #FF9800;
+      color: white;
+    }
+    .btn-warning:hover {
+      background: #e68900;
+    }
+    .btn-success {
+      background: #4CAF50;
+      color: white;
+    }
+    .btn-success:hover {
+      background: #45a049;
+    }
+    .info-box {
+      background: #e3f2fd;
+      border-left: 4px solid #2196F3;
+      padding: 15px;
+      margin: 20px 0;
+    }
+    .current-values {
+      background: #f5f5f5;
+      padding: 15px;
+      border-radius: 4px;
+      margin: 20px 0;
+      font-family: monospace;
+    }
+    .success-msg {
+      background: #4CAF50;
+      color: white;
+      padding: 15px;
+      border-radius: 4px;
+      margin: 20px 0;
+      display: none;
+    }
+    .error-msg {
+      background: #f44336;
+      color: white;
+      padding: 15px;
+      border-radius: 4px;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔧 Herramienta de Limpieza - Sistema Chicoj</h1>
+    
+    <div class="info-box">
+      <p><strong>¿Para qué sirve esto?</strong></p>
+      <p>Esta herramienta limpia los valores guardados en el navegador que pueden estar causando problemas, especialmente el error de "coffe_shop" en el área de Coffee.</p>
+    </div>
+
+    <h2>Valores Actuales en localStorage:</h2>
+    <div class="current-values" id="current-values">
+      Cargando...
+    </div>
+
+    <h2>Acciones:</h2>
+    
+    <button class="btn btn-warning" onclick="limpiarKdsArea()">
+      🧹 Limpiar solo "kds_area"
+    </button>
+    
+    <button class="btn btn-danger" onclick="limpiarTodo()">
+      🗑️ Limpiar TODO el localStorage (incluye sesión)
+    </button>
+    
+    <button class="btn btn-success" onclick="mostrarValores()">
+      🔄 Actualizar valores
+    </button>
+
+    <div class="success-msg" id="success-msg"></div>
+
+    <div class="info-box" style="margin-top: 30px;">
+      <p><strong>⚠️ Importante:</strong></p>
+      <ul>
+        <li><strong>"Limpiar solo kds_area"</strong> - Limpia solo el área de cocina guardada. Tu sesión se mantiene.</li>
+        <li><strong>"Limpiar TODO"</strong> - Limpia todo, incluyendo tu sesión. Tendrás que volver a iniciar sesión.</li>
+      </ul>
+    </div>
+
+    <div style="margin-top: 30px;">
+      <a href="/templates/login.html" style="color: #2196F3; text-decoration: none; font-weight: bold;">← Volver al Login</a>
+    </div>
+  </div>
+
+  <script>
+    function mostrarValores() {
+      const currentValuesDiv = document.getElementById('current-values');
+      const allKeys = Object.keys(localStorage);
+      
+      if (allKeys.length === 0) {
+        currentValuesDiv.innerHTML = '<em style="color: #999;">localStorage está vacío</em>';
+        return;
+      }
+
+      let html = '<strong>Valores guardados:</strong><br><br>';
+      
+      allKeys.forEach(key => {
+        const value = localStorage.getItem(key);
+        const displayValue = value.length > 100 ? value.substring(0, 100) + '...' : value;
+        
+        // Resaltar valores problemáticos
+        let style = '';
+        if (key === 'kds_area' && (value === 'coffe_shop' || value === 'coffee_shop' || value === 'bar')) {
+          style = 'color: #f44336; font-weight: bold;';
+        }
+        
+        html += `<div style="${style}"><strong>${key}:</strong> ${displayValue}</div>`;
+      });
+      
+      currentValuesDiv.innerHTML = html;
+    }
+
+    function limpiarKdsArea() {
+      const oldValue = localStorage.getItem('kds_area');
+      
+      if (!oldValue) {
+        mostrarMensaje('No hay valor de "kds_area" para limpiar', 'info');
+        return;
+      }
+
+      localStorage.removeItem('kds_area');
+      mostrarMensaje(`✅ "kds_area" limpiado (valor anterior: "${oldValue}")`, 'success');
+      mostrarValores();
+    }
+
+    function limpiarTodo() {
+      const confirmacion = confirm(
+        '⚠️ ADVERTENCIA: Esto limpiará TODO el localStorage, incluyendo tu sesión.\n\n' +
+        'Tendrás que volver a iniciar sesión.\n\n' +
+        '¿Estás seguro?'
+      );
+
+      if (!confirmacion) return;
+
+      const itemsCount = Object.keys(localStorage).length;
+      localStorage.clear();
+      mostrarMensaje(`✅ localStorage limpiado completamente (${itemsCount} items eliminados)`, 'success');
+      mostrarValores();
+    }
+
+    function mostrarMensaje(mensaje, tipo) {
+      const successMsg = document.getElementById('success-msg');
+      successMsg.textContent = mensaje;
+      successMsg.style.display = 'block';
+      
+      if (tipo === 'info') {
+        successMsg.style.background = '#2196F3';
+      } else {
+        successMsg.style.background = '#4CAF50';
+      }
+
+      setTimeout(() => {
+        successMsg.style.display = 'none';
+      }, 5000);
+    }
+
+    // Mostrar valores al cargar
+    window.addEventListener('DOMContentLoaded', () => {
+      mostrarValores();
+
+      // Detectar automáticamente si hay problemas
+      const kdsArea = localStorage.getItem('kds_area');
+      if (kdsArea && (kdsArea === 'coffe_shop' || kdsArea === 'coffee_shop' || kdsArea === 'bar')) {
+        const errorBox = document.createElement('div');
+        errorBox.className = 'error-msg';
+        errorBox.innerHTML = `
+          <strong>⚠️ PROBLEMA DETECTADO:</strong><br>
+          El valor de "kds_area" es "${kdsArea}", lo cual está causando el error 404.<br>
+          <strong>Recomendación:</strong> Haz click en "🧹 Limpiar solo kds_area" para solucionarlo.
+        `;
+        document.querySelector('.container').insertBefore(errorBox, document.querySelector('h2'));
+      }
+    });
+  </script>
+</body>
+</html>
+

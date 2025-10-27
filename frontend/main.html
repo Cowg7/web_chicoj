@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inicio</title>
+<link rel="stylesheet" href="/css/base.css?v=20251025b">
+<link rel="stylesheet" href="/css/components.css?v=20251025b">
+<link rel="stylesheet" href="/css/utilities.css?v=20251025">
+  <link rel="stylesheet" href="/css/estilos-inicio.css?v=20251025">
+</head>
+<body>
+  <div class="contenedor-app">
+
+    <!-- Header con espacio de logo -->
+    <header class="encabezado">
+      <div class="brand">
+        <div class="logo-placeholder" aria-label="Espacio para el logo"></div>
+        <div class="brand-text">
+          <span class="badge">Somos</span>
+          <h1>Restaurante Chicooj</h1>
+        </div>
+      </div>
+
+      <nav class="acciones" aria-label="Acciones principales">
+        <a class="btn btn-outline" href="/templates/administracion/menu_usuarios.html">Gestionar Usuarios</a>
+        <a class="btn btn-outline" href="#">Ayuda</a>
+        <a class="btn btn-primary" href="/templates/login.html">Cerrar sesión</a>
+      </nav>
+    </header>
+
+    <!-- Contenido central -->
+    <main class="contenido" role="main">
+      <h2 class="titulo-seccion">Panel de Administración</h2>
+
+      <section class="grid-opciones">
+        <!-- Tarjeta 1 -->
+        <article class="card-opcion">
+          <h3>Administrador de Platillos</h3>
+          <div class="media">
+            <img src="imgs/platillos.jpg" alt="Imagen de platillos">
+          </div>
+          <p class="desc">Crea, edita y organiza el menú.</p>
+          <a class="btn btn-primary" href="/templates/administracion/control-platillos.html">Administrar Platillos</a>
+        </article>
+
+        <!-- Tarjeta 2 -->
+        <article class="card-opcion">
+          <h3>Administrador de Tours</h3>
+          <div class="media">
+            <img src="imgs/tour.jpg" alt="Imagen de tour">
+          </div>
+          <p class="desc">Gestiona horarios, rutas y reservas.</p>
+          <a class="btn btn-primary" href="/templates/tour/tour-control.html">Administrar Tours</a>
+        </article>
+
+        <!-- Nueva tarjeta 3 -->
+        <article class="card-opcion">
+          <h3>Administrador de Cocina</h3>
+          <div class="media">
+            <img src="imgs/cocina.jpg" alt="Imagen de cocina">
+          </div>
+          <p class="desc">Controla órdenes, tiempos y estados de platillos.</p>
+          <a class="btn btn-primary" href="/templates/cocina/menu_cocina.html">Administrar Cocina</a>
+        </article>
+
+        <!-- 🔹 Nueva tarjeta 4 -->
+        <article class="card-opcion">
+          <h3>Administrador de Comandas Restaurante</h3>
+          <div class="media">
+            <img src="imgs/comandas.jpg" alt="Imagen de comandas">
+          </div>
+          <p class="desc">Registra órdenes, calcula totales y genera reportes.</p>
+          <a class="btn btn-primary" href="/templates/mesero/comanda-control.html">Administrar Comandas</a>
+        </article>
+
+        <!-- 🔹 Nueva tarjeta 5: Caja -->
+        <article class="card-opcion">
+          <h3> Caja</h3>
+          <div class="media">
+            <img src="imgs/caja.png" alt="Imagen de caja">
+          </div>
+          <p class="desc">Gestiona pagos, comprobantes y cierre de caja.</p>
+          <a class="btn btn-primary" href="/templates/caja/caja.html">Ir a Caja</a>
+        </article>
+
+        <!-- 🔹 Nueva tarjeta 6: Reportes -->
+        <article class="card-opcion">
+          <h3> Reportes y Estadísticas</h3>
+          <div class="media">
+            <img src="imgs/reportes.jpg" alt="Imagen de reportes">
+          </div>
+          <p class="desc">Visualiza ventas, platillos más vendidos y análisis.</p>
+          <a class="btn btn-primary" href="/templates/reportes/reportes.html">Ver Reportes</a>
+        </article>
+      </section>
+    </main>
+
+    <footer class="pie-pagina">
+      <p>© Derechos Reservados</p>
+    </footer>
+  </div>
+</body>
+</html>

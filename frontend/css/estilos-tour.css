@@ -1,0 +1,300 @@
+/* ====================================
+   ESTILOS TOUR - Formulario de Tickets
+   ==================================== */
+
+/* Contenido Centrado */
+.contenido {
+  max-width: 800px;
+  width: 100%;
+  margin: var(--spacing-xl) auto;
+  padding: 0 var(--spacing-lg);
+}
+
+/* Form Card */
+.form-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-lg);
+  padding: var(--spacing-2xl);
+  width: 100%;
+}
+
+.form-card h2 {
+  text-align: center;
+  margin: 0 0 var(--spacing-xl) 0;
+  color: var(--text);
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+/* Formulario */
+.formulario {
+  display: grid;
+  gap: var(--spacing-lg);
+}
+
+/* Sección del formulario */
+.seccion {
+  background: #fbfdff;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--spacing-lg);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-md);
+  align-items: start;
+}
+
+.seccion legend {
+  font-weight: 700;
+  color: var(--text);
+  padding: 0 var(--spacing-sm);
+  grid-column: 1 / -1;
+  margin-bottom: var(--spacing-sm);
+  font-size: 1.125rem;
+}
+
+/* Campos del formulario */
+.campo-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.campo-form label {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--text);
+}
+
+.campo-form input,
+.campo-form select,
+.campo-form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: #fff;
+  font-size: 16px;
+  font-family: inherit;
+  color: var(--text);
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.campo-form input:focus,
+.campo-form select:focus,
+.campo-form textarea:focus {
+  border-color: var(--primary);
+  box-shadow: var(--focus);
+}
+
+.campo-form input[readonly] {
+  background: #f8f9fa;
+  color: var(--text-light);
+  cursor: not-allowed;
+}
+
+.campo-form textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Campos que ocupan ancho completo */
+.campo-full {
+  grid-column: 1 / -1;
+}
+
+/* Campos que ocupan 2 columnas */
+.campo-half {
+  grid-column: span 2;
+}
+
+/* Botones de Acciones */
+.botones-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+}
+
+.botones-acciones .btn {
+  min-width: 160px;
+}
+
+/* ====================================
+   RESPONSIVE BREAKPOINTS
+   ==================================== */
+
+/* Desktop (>= 1024px) */
+@media (min-width: 1024px) {
+  .contenido {
+    max-width: 900px;
+  }
+  
+  .form-card {
+    padding: var(--spacing-2xl) var(--spacing-xl);
+  }
+  
+  .form-card h2 {
+    font-size: 2rem;
+  }
+}
+
+/* Tablet (640px - 1023px) */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .contenido {
+    max-width: 700px;
+  }
+  
+  .seccion {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .form-card {
+    padding: var(--spacing-xl);
+  }
+  
+  .form-card h2 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Mobile (< 640px) */
+@media (max-width: 639px) {
+  .contenido {
+    max-width: 100%;
+    padding: 0 var(--spacing-md);
+  }
+  
+  .form-card {
+    padding: var(--spacing-lg);
+    border-radius: var(--r-lg);
+  }
+  
+  .form-card h2 {
+    font-size: 1.35rem;
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .seccion {
+    grid-template-columns: 1fr;
+    padding: var(--spacing-md);
+  }
+  
+  .campo-half,
+  .campo-full {
+    grid-column: 1 / -1;
+  }
+  
+  /* Campos con altura mínima para touch */
+  .campo-form input,
+  .campo-form select {
+    min-height: 44px;
+    font-size: 16px; /* Evita zoom en iOS */
+  }
+  
+  .botones-acciones {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  
+  .botones-acciones .btn {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+/* Extra small mobile (< 375px) */
+@media (max-width: 374px) {
+  .form-card {
+    padding: var(--spacing-md);
+  }
+  
+  .form-card h2 {
+    font-size: 1.25rem;
+  }
+  
+  .seccion {
+    padding: var(--spacing-sm);
+  }
+}
+
+/* ====================================
+   ANIMACIONES
+   ==================================== */
+
+/* Entrada del formulario */
+.form-card {
+  animation: fadeInUp 0.6s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ====================================
+   VALIDACIÓN
+   ==================================== */
+
+/* Input con error */
+.campo-form input.error,
+.campo-form select.error {
+  border-color: var(--danger);
+}
+
+.campo-form .error-message {
+  color: var(--danger);
+  font-size: 0.8125rem;
+  margin-top: var(--spacing-xs);
+}
+
+/* Input válido */
+.campo-form input.valid,
+.campo-form select.valid {
+  border-color: var(--success);
+}
+
+/* ====================================
+   ACCESIBILIDAD
+   ==================================== */
+
+/* Focus visible para navegación por teclado */
+.campo-form input:focus-visible,
+.campo-form select:focus-visible,
+.campo-form textarea:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ====================================
+   PRINT STYLES
+   ==================================== */
+
+@media print {
+  .botones-acciones,
+  .encabezado .acciones {
+    display: none !important;
+  }
+  
+  .form-card {
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+  
+  .campo-form input[readonly] {
+    border: none;
+    border-bottom: 1px solid #000;
+    background: transparent;
+    padding: 4px 0;
+  }
+}
