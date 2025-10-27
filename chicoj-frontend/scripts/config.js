@@ -2,16 +2,12 @@
 
 // Detectar URL base automáticamente
 function getBaseURL() {
+  const protocol = window.location.protocol; // http: o https:
   const hostname = window.location.hostname;
   
-  // Si accede desde localhost, usar localhost
-  if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    return 'http://localhost:3000/api';
-  }
-  
-  // Si accede desde otra IP (celular/otra PC), usar esa IP
-  // Esto asume que el backend está en el mismo servidor, puerto 3000
-  return `http://${hostname}:3000/api`;
+  // En producción, usar el mismo protocolo y hostname (sin puerto)
+  // Nginx actúa como reverse proxy y redirige /api/ al backend
+  return `${protocol}//${hostname}/api`;
 }
 
 // URL base de la API
