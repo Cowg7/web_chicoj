@@ -91,7 +91,7 @@ services:
     ports:
       - "${PGADMIN_PORT:-5050}:80"
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@chicoj.com}
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@coopechicoj.com}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
       PGADMIN_CONFIG_SERVER_MODE: "False"
     depends_on:

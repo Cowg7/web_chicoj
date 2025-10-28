@@ -62,3 +62,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
 # Script de inicio que ejecuta migraciones y luego inicia el servidor
 CMD ["sh", "-c", "npx prisma migrate deploy && node src/server.js"]
 
+
