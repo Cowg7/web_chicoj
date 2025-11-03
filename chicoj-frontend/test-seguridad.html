@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test de Seguridad - Chicoj</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    h1 {
+      color: #667eea;
+      margin-bottom: 20px;
+      font-size: 2em;
+    }
+    h2 {
+      color: #333;
+      margin: 30px 0 15px 0;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #667eea;
+    }
+    .test-group {
+      margin: 20px 0;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border-left: 4px solid #667eea;
+    }
+    .test-link {
+      display: block;
+      margin: 10px 0;
+      padding: 12px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      text-decoration: none;
+      color: #333;
+      transition: all 0.3s;
+    }
+    .test-link:hover {
+      border-color: #667eea;
+      background: #f0f4ff;
+      transform: translateX(5px);
+    }
+    .test-link code {
+      background: #2d3748;
+      color: #68d391;
+      padding: 3px 8px;
+      border-radius: 3px;
+      font-size: 13px;
+    }
+    .status {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 10px;
+    }
+    .should-block {
+      background: #fee;
+      color: #c00;
+    }
+    .should-work {
+      background: #efe;
+      color: #0a0;
+    }
+    .instructions {
+      background: #fff3cd;
+      border: 2px solid #ffc107;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .instructions h3 {
+      color: #856404;
+      margin-bottom: 10px;
+    }
+    .result-box {
+      margin-top: 10px;
+      padding: 15px;
+      background: #e3f2fd;
+      border-radius: 5px;
+      font-family: monospace;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔒 Test de Seguridad - Sistema Chicoj</h1>
+    
+    <div class="instructions">
+      <h3>📋 Instrucciones:</h3>
+      <p><strong>Haz click en cada enlace de abajo.</strong> Los enlaces marcados con <span class="should-block">DEBE BLOQUEARSE</span> deberían mostrar <strong>404 Not Found</strong>.</p>
+      <p>Los enlaces marcados con <span class="should-work">DEBE FUNCIONAR</span> deberían cargar correctamente.</p>
+    </div>
+
+    <h2>❌ TEST 1: Listado de Directorios (DEBE ESTAR BLOQUEADO)</h2>
+    <div class="test-group">
+      <a href="/templates/" class="test-link" target="_blank">
+        <code>/templates/</code>
+        <span class="status should-block">DEBE BLOQUEARSE</span>
+      </a>
+      
+      <a href="/scripts/" class="test-link" target="_blank">
+        <code>/scripts/</code>
+        <span class="status should-block">DEBE BLOQUEARSE</span>
+      </a>
+      
+      <a href="/css/" class="test-link" target="_blank">
+        <code>/css/</code>
+        <span class="status should-block">DEBE BLOQUEARSE</span>
+      </a>
+      
+      <a href="/docs/" class="test-link" target="_blank">
+        <code>/docs/</code>
+        <span class="status should-block">DEBE BLOQUEARSE</span>
+      </a>
+      
+      <div class="result-box">
+        <strong>Resultado esperado:</strong> 404 Not Found (sin lista de archivos)
+      </div>
+    </div>
+
+    <h2>❌ TEST 2: Archivos .md (DEBEN ESTAR BLOQUEADOS)</h2>
+    <div class="test-group">
+      <a href="/docs/LOGOUT_SEGURO.md" class="test-link" target="_blank">
+        <code>/docs/LOGOUT_SEGURO.md</code>
+        <span class="status should-block">DEBE BLOQUEARSE</span>
+      </a>
+      
+      <a href="/docs/SISTEMA_CATEGORIAS.md" class="test-link" target="_blank">
+        <code>/docs/SISTEMA_CATEGORIAS.md</code>
+        <span class="status should-block">DEBE BLOQUEARSE</span>
+      </a>
+      
+      <a href="/scripts/README.md" class="test-link" target="_blank">
+        <code>/scripts/README.md</code>
+        <span class="status should-block">DEBE BLOQUEARSE</span>
+      </a>
+      
+      <div class="result-box">
+        <strong>Resultado esperado:</strong> 404 Not Found
+      </div>
+    </div>
+
+    <h2>❌ TEST 3: Archivos Sensibles (DEBEN ESTAR BLOQUEADOS)</h2>
+    <div class="test-group">
+      <a href="/.env" class="test-link" target="_blank">
+        <code>/.env</code>
+        <span class="status should-block">DEBE BLOQUEARSE</span>
+      </a>
+      
+      <a href="/.gitignore" class="test-link" target="_blank">
+        <code>/.gitignore</code>
+        <span class="status should-block">DEBE BLOQUEARSE</span>
+      </a>
+      
+      <a href="/docker-compose.yml" class="test-link" target="_blank">
+        <code>/docker-compose.yml</code>
+        <span class="status should-block">DEBE BLOQUEARSE</span>
+      </a>
+      
+      <div class="result-box">
+        <strong>Resultado esperado:</strong> 404 Not Found
+      </div>
+    </div>
+
+    <h2>✅ TEST 4: Archivos Públicos (DEBEN FUNCIONAR)</h2>
+    <div class="test-group">
+      <a href="/css/base.css" class="test-link" target="_blank">
+        <code>/css/base.css</code>
+        <span class="status should-work">DEBE FUNCIONAR</span>
+      </a>
+      
+      <a href="/scripts/config.js" class="test-link" target="_blank">
+        <code>/scripts/config.js</code>
+        <span class="status should-work">DEBE FUNCIONAR</span>
+      </a>
+      
+      <a href="/assets/favicon.svg" class="test-link" target="_blank">
+        <code>/assets/favicon.svg</code>
+        <span class="status should-work">DEBE FUNCIONAR</span>
+      </a>
+      
+      <div class="result-box">
+        <strong>Resultado esperado:</strong> Archivo se carga correctamente
+      </div>
+    </div>
+
+    <h2>✅ TEST 5: URLs Sin .html (DEBEN FUNCIONAR)</h2>
+    <div class="test-group">
+      <a href="/templates/login" class="test-link" target="_blank">
+        <code>/templates/login</code> (sin .html)
+        <span class="status should-work">DEBE FUNCIONAR</span>
+      </a>
+      
+      <a href="/main" class="test-link" target="_blank">
+        <code>/main</code> (sin .html)
+        <span class="status should-work">DEBE FUNCIONAR</span>
+      </a>
+      
+      <a href="/index" class="test-link" target="_blank">
+        <code>/index</code> (sin .html)
+        <span class="status should-work">DEBE FUNCIONAR</span>
+      </a>
+      
+      <div class="result-box">
+        <strong>Resultado esperado:</strong> Carga la página HTML correctamente
+      </div>
+    </div>
+
+    <h2>📊 Resultados</h2>
+    <div class="test-group">
+      <div id="results" style="padding: 20px; background: white; border-radius: 5px;">
+        <p><strong>Abre la consola del navegador (F12)</strong> para ver los resultados de cada test.</p>
+        <p>Los tests se ejecutarán automáticamente al hacer click en los enlaces.</p>
+      </div>
+    </div>
+
+    <div class="instructions">
+      <h3>⚠️ Si los Tests Fallan:</h3>
+      <ol style="margin-left: 20px; line-height: 1.8;">
+        <li>Verifica que nginx se reinició: <code>docker compose restart nginx</code></li>
+        <li>Verifica la configuración: <code>docker compose exec nginx nginx -t</code></li>
+        <li>Ve a: <code>/templates/</code> - Si ves lista de archivos, <strong>autoindex</strong> no está funcionando</li>
+        <li>Ve a: <code>/docs/LOGOUT_SEGURO.md</code> - Si ves el contenido, el bloqueo de .md no está funcionando</li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    console.log('🧪 Test de Seguridad Cargado');
+    
+    // Interceptar clicks para mostrar resultados
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('.test-link')) {
+        const link = e.target.closest('.test-link');
+        const url = link.href;
+        const code = link.querySelector('code').textContent;
+        
+        console.log('🔍 Testing:', code);
+        
+        // Hacer fetch para ver el resultado
+        setTimeout(async () => {
+          try {
+            const response = await fetch(url);
+            console.log(`   → Status: ${response.status}`);
+            
+            if (response.status === 404) {
+              console.log('   ✅ BLOQUEADO correctamente (404)');
+            } else if (response.status === 200) {
+              console.log('   ✅ ACCESIBLE (200)');
+            } else {
+              console.log(`   ⚠️ Status inesperado: ${response.status}`);
+            }
+          } catch (error) {
+            console.error('   ❌ Error:', error);
+          }
+        }, 100);
+      }
+    });
+  </script>
+</body>
+</html>
+

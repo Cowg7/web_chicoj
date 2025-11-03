@@ -36,7 +36,7 @@
   async function init() {
     // Verificar autenticación
     if (!AuthManager.isAuthenticated()) {
-      window.location.href = '/templates/login.html';
+      window.location.href = '/templates/login';
       return;
     }
 
@@ -112,7 +112,7 @@
       btnLogout.addEventListener('click', (e) => {
         e.preventDefault();
         AuthManager.logout();
-        window.location.href = '/templates/login.html';
+        window.location.href = '/templates/login';
       });
     }
 
@@ -300,7 +300,14 @@
                 class="btn btn-small" 
                 onclick="window.cajaApp.verDetallesHistorial(${order.id_orden})"
                 title="Ver ${comandasCount} platillo(s)">
-                📋 Ver Detalles (${comandasCount})
+                📋 Ver
+              </button>
+              <button 
+                class="btn btn-small btn-pdf-orden" 
+                onclick="window.cajaApp.descargarTicketPDF(${order.id_orden})"
+                title="Descargar ticket PDF"
+                style="background: #d32f2f; margin-left: 0.5rem;">
+                📄 PDF
               </button>
             </td>
           </tr>
@@ -634,10 +641,163 @@
     }
   }
 
+  // Generar ticket PDF de una orden
+  async function descargarTicketPDF(orderId) {
+    try {
+      console.log('📄 Generando ticket PDF para orden:', orderId);
+
+      // Obtener detalles completos de la orden
+      const response = await API.orders.getById(orderId);
+      const orden = response.data || response;
+      const comandas = orden.comandas || [];
+
+      if (comandas.length === 0) {
+        alert('⚠️ Esta orden no tiene items para generar ticket');
+        return;
+      }
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF('p', 'mm', [80, 200]); // Tamaño ticket (80mm ancho)
+
+      let y = 10;
+
+      // Encabezado del ticket
+      doc.setFontSize(14);
+      doc.setFont(undefined, 'bold');
+      doc.text('Restaurante Chicooj', 40, y, { align: 'center' });
+      y += 6;
+
+      doc.setFontSize(9);
+      doc.setFont(undefined, 'normal');
+      doc.text('Sistema de Gestión', 40, y, { align: 'center' });
+      y += 5;
+
+      // Línea separadora
+      doc.setDrawColor(0);
+      doc.setLineWidth(0.5);
+      doc.line(5, y, 75, y);
+      y += 5;
+
+      // Información de la orden
+      doc.setFontSize(10);
+      doc.setFont(undefined, 'bold');
+      doc.text(`TICKET #${String(orden.id_orden).padStart(5, '0')}`, 40, y, { align: 'center' });
+      y += 6;
+
+      doc.setFontSize(8);
+      doc.setFont(undefined, 'normal');
+      doc.text(`Fecha: ${new Date(orden.fecha).toLocaleString('es-GT')}`, 5, y);
+      y += 4;
+      doc.text(`Mesa: ${orden.no_mesa}`, 5, y);
+      y += 4;
+      
+      // Mesero
+      const mesero = orden.usuario?.empleado ? 
+        `${orden.usuario.empleado.nombre} ${orden.usuario.empleado.apellidos}` : 
+        'N/A';
+      doc.text(`Mesero: ${mesero}`, 5, y);
+      y += 5;
+
+      // Línea separadora
+      doc.line(5, y, 75, y);
+      y += 5;
+
+      // Encabezado de items
+      doc.setFont(undefined, 'bold');
+      doc.text('CANT', 5, y);
+      doc.text('DESCRIPCIÓN', 18, y);
+      doc.text('TOTAL', 60, y, { align: 'right' });
+      y += 4;
+
+      doc.line(5, y, 75, y);
+      y += 4;
+
+      // Items de la orden
+      doc.setFont(undefined, 'normal');
+      comandas.forEach(item => {
+        const cantidad = item.cantidad;
+        const nombre = item.platillo_nombre || 'Item';
+        const precioUnit = parseFloat(item.precio_unitario);
+        const subtotal = precioUnit * cantidad;
+
+        // Cantidad
+        doc.text(cantidad.toString(), 5, y);
+        
+        // Nombre del platillo (multi-línea si es muy largo)
+        const nombreLineas = doc.splitTextToSize(nombre, 35);
+        doc.text(nombreLineas, 18, y);
+        
+        // Precio
+        doc.text(`Q${subtotal.toFixed(2)}`, 75, y, { align: 'right' });
+        
+        y += (nombreLineas.length * 4) + 1;
+
+        // Observaciones si existen
+        if (item.observaciones) {
+          doc.setFontSize(7);
+          doc.setTextColor(100);
+          doc.text(`  * ${item.observaciones}`, 18, y);
+          doc.setFontSize(8);
+          doc.setTextColor(0);
+          y += 3;
+        }
+
+        y += 1;
+      });
+
+      // Línea separadora antes del total
+      y += 2;
+      doc.setLineWidth(0.5);
+      doc.line(5, y, 75, y);
+      y += 5;
+
+      // Total
+      doc.setFontSize(11);
+      doc.setFont(undefined, 'bold');
+      doc.text('TOTAL:', 5, y);
+      doc.text(`Q${parseFloat(orden.total).toFixed(2)}`, 75, y, { align: 'right' });
+      y += 6;
+
+      // Método de pago
+      const metodoPago = orden.caja_comprobantes?.[0]?.metodo_pago || 'N/A';
+      doc.setFontSize(8);
+      doc.setFont(undefined, 'normal');
+      doc.text(`Método de pago: ${metodoPago}`, 5, y);
+      y += 5;
+
+      // Línea separadora
+      doc.setLineWidth(0.3);
+      doc.line(5, y, 75, y);
+      y += 5;
+
+      // Mensaje de agradecimiento
+      doc.setFontSize(9);
+      doc.setFont(undefined, 'bold');
+      doc.text('¡Gracias por su visita!', 40, y, { align: 'center' });
+      y += 5;
+
+      doc.setFontSize(7);
+      doc.setFont(undefined, 'normal');
+      doc.text('Restaurante Chicooj', 40, y, { align: 'center' });
+
+      // Descargar
+      const fecha = new Date().toISOString().split('T')[0];
+      const ordenNum = String(orden.id_orden).padStart(5, '0');
+      doc.save(`Ticket_${ordenNum}_${fecha}.pdf`);
+      
+      console.log('✅ Ticket PDF generado para orden:', orderId);
+
+    } catch (error) {
+      console.error('❌ Error al generar ticket PDF:', error);
+      alert('Error al generar el ticket PDF');
+    }
+  }
+
   // Exponer funciones globales para onclick en HTML
   window.cajaApp = {
     openPaymentModal,
-    verDetallesHistorial
+    verDetallesHistorial,
+    descargarTicketPDF
   };
 
   // Iniciar cuando el DOM esté listo

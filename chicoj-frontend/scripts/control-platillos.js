@@ -3,21 +3,101 @@
 (() => {
   // Elementos del DOM
   const container = document.querySelector('.tabla-platillos');
+  const searchInput = document.getElementById('search-input');
+  const clearSearchBtn = document.getElementById('clear-search');
+  const searchResultsInfo = document.getElementById('search-results-info');
   
   // Estado
   let platillos = [];
   let menuPorArea = [];
+  let searchTerm = '';
 
   // Inicializar
   async function init() {
     // Verificar autenticación
     if (!AuthManager.isAuthenticated()) {
-      window.location.href = '/templates/login.html';
+      window.location.href = '/templates/login';
       return;
     }
 
     // Cargar platillos
     await loadPlatillos();
+    
+    // Configurar búsqueda
+    setupSearch();
+  }
+  
+  // Configurar barra de búsqueda
+  function setupSearch() {
+    if (searchInput) {
+      // Búsqueda en tiempo real
+      searchInput.addEventListener('input', (e) => {
+        searchTerm = e.target.value.trim();
+        
+        // Mostrar/ocultar botón de limpiar
+        if (clearSearchBtn) {
+          clearSearchBtn.style.display = searchTerm ? 'flex' : 'none';
+        }
+        
+        // Filtrar y mostrar
+        filterAndDisplay();
+      });
+    }
+    
+    // Botón limpiar
+    if (clearSearchBtn) {
+      clearSearchBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        searchTerm = '';
+        clearSearchBtn.style.display = 'none';
+        filterAndDisplay();
+        searchInput.focus();
+      });
+    }
+  }
+  
+  // Filtrar y mostrar platillos
+  function filterAndDisplay() {
+    if (!searchTerm) {
+      // Sin búsqueda, mostrar todo
+      displayPlatillosPorArea(menuPorArea);
+      if (searchResultsInfo) {
+        searchResultsInfo.textContent = '';
+        searchResultsInfo.className = 'search-results-info';
+      }
+      return;
+    }
+    
+    // Filtrar áreas y platillos
+    const searchLower = searchTerm.toLowerCase();
+    const filteredMenu = menuPorArea.map(grupo => {
+      const platillosFiltrados = grupo.platillos.filter(p => 
+        p.nombre.toLowerCase().includes(searchLower)
+      );
+      
+      return {
+        area: grupo.area,
+        platillos: platillosFiltrados,
+        totalOriginal: grupo.platillos.length
+      };
+    }).filter(grupo => grupo.platillos.length > 0); // Solo áreas con resultados
+    
+    // Contar resultados
+    const totalEncontrados = filteredMenu.reduce((sum, g) => sum + g.platillos.length, 0);
+    
+    // Mostrar resultados
+    displayPlatillosPorArea(filteredMenu, searchTerm);
+    
+    // Actualizar info de búsqueda
+    if (searchResultsInfo) {
+      if (totalEncontrados === 0) {
+        searchResultsInfo.textContent = `No se encontraron platillos con "${searchTerm}"`;
+        searchResultsInfo.className = 'search-results-info';
+      } else {
+        searchResultsInfo.textContent = `${totalEncontrados} platillo${totalEncontrados === 1 ? '' : 's'} encontrado${totalEncontrados === 1 ? '' : 's'}`;
+        searchResultsInfo.className = 'search-results-info highlight';
+      }
+    }
   }
 
   // Cargar platillos
@@ -36,7 +116,7 @@
         menuPorArea = [];
       }
 
-      displayPlatillosPorArea();
+      displayPlatillosPorArea(menuPorArea);
     } catch (error) {
       console.error('Error al cargar platillos:', error);
       showNotification('Error al cargar platillos: ' + error.message, 'error');
@@ -44,7 +124,7 @@
   }
 
   // Mostrar platillos agrupados por área
-  function displayPlatillosPorArea() {
+  function displayPlatillosPorArea(menu = menuPorArea, highlightTerm = '') {
     if (!container) {
       console.error('Container no encontrado');
       return;
@@ -53,18 +133,18 @@
     // Limpiar todo
     container.innerHTML = '';
 
-    if (menuPorArea.length === 0) {
+    if (menu.length === 0) {
       container.innerHTML = `
         <div style="text-align: center; padding: 40px; color: var(--muted);">
-          <p style="font-size: 1.2rem; margin-bottom: 10px;">No hay platillos registrados</p>
-          <a href="/templates/administracion/platillo.html" class="btn btn-success">+ Agregar primer platillo</a>
+          <p style="font-size: 1.2rem; margin-bottom: 10px;">${highlightTerm ? 'No se encontraron resultados' : 'No hay platillos registrados'}</p>
+          ${!highlightTerm ? '<a href="/templates/administracion/platillo" class="btn btn-success">+ Agregar primer platillo</a>' : ''}
         </div>
       `;
       return;
     }
 
     // Crear una sección por cada área
-    menuPorArea.forEach(grupo => {
+    menu.forEach(grupo => {
       const areaSection = document.createElement('div');
       areaSection.className = 'area-section';
       
@@ -98,7 +178,7 @@
       // Filas de platillos
       if (grupo.platillos && grupo.platillos.length > 0) {
         grupo.platillos.forEach(platillo => {
-          const row = createPlatilloRow(platillo);
+          const row = createPlatilloRow(platillo, highlightTerm);
           tablaArea.appendChild(row);
         });
       } else {
@@ -114,7 +194,7 @@
   }
 
   // Crear fila de platillo
-  function createPlatilloRow(platillo) {
+  function createPlatilloRow(platillo, highlightTerm = '') {
     const row = document.createElement('div');
     row.className = 'fila';
     row.setAttribute('role', 'row');
@@ -135,16 +215,26 @@
       ? `<button class="btn btn-warning btn-toggle" data-id="${platilloId}" data-disponible="true" title="Desactivar platillo">Desactivar</button>`
       : `<button class="btn btn-success btn-toggle" data-id="${platilloId}" data-disponible="false" title="Activar platillo">Activar</button>`;
 
+    // Resaltar texto de búsqueda en el nombre
+    let nombreDisplay = platillo.nombre;
+    if (highlightTerm) {
+      const regex = new RegExp(`(${highlightTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+      nombreDisplay = platillo.nombre.replace(regex, '<span class="highlight-text">$1</span>');
+    }
+
     row.innerHTML = `
       <div class="col col-id">${platilloId}</div>
-      <div class="col col-nombre">${platillo.nombre}</div>
+      <div class="col col-nombre">${nombreDisplay}</div>
       <div class="col col-precio">Q ${parseFloat(platillo.precio).toFixed(2)}</div>
       <div class="col col-desc">${platillo.descripcion || 'Sin descripción'}</div>
       <div class="col col-estado">${estadoBadge}</div>
       <div class="col col-acciones">
-        ${toggleBtn}
-        <a class="btn btn-outline btn-editar" href="/templates/administracion/platillo.html?id=${platilloId}">Editar</a>
-        <button class="btn btn-danger btn-eliminar" data-id="${platilloId}" title="Eliminar platillo">Eliminar</button>
+        ${disponible 
+          ? '<button class="btn btn-desactivar btn-toggle" data-id="' + platilloId + '" data-disponible="true">Desactivar</button>'
+          : '<button class="btn btn-activar btn-toggle" data-id="' + platilloId + '" data-disponible="false">Activar</button>'
+        }
+        <a class="btn btn-editar" href="/templates/administracion/platillo?id=${platilloId}">Editar</a>
+        <button class="btn btn-eliminar" data-id="${platilloId}">Eliminar</button>
       </div>
     `;
 

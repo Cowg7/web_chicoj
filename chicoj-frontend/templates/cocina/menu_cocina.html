@@ -3,7 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Áreas de Cocina</title>
+  <title>Menú Cocina - Chicoj</title>
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+  
+  <!-- IMPORTANTE: Auth simple sin interferir -->
+  <script src="/scripts/simple-auth.js?v=20251101k"></script>
+  
+  <!-- Meta tags para prevenir caché -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  
   <link rel="stylesheet" href="/css/base.css?v=20251025c">
   <link rel="stylesheet" href="/css/components.css?v=20251025c">
   <link rel="stylesheet" href="/css/utilities.css?v=20251025">
@@ -18,13 +32,13 @@
         <div class="logo-placeholder" aria-label="Logo"></div>
         <div class="brand-text">
           <span class="badge">Somos</span>
-          <h1>Restaurante Chicooj</h1>
+          <h1>Restaurante Chicoj</h1>
         </div>
       </div>
 
       <nav class="acciones" aria-label="Acciones principales">
-
-        <a class="btn btn-primary" href="/templates/login.html">Cerrar sesión</a>
+        <a class="btn btn-outline" href="/main">Inicio</a>
+        <a class="btn btn-primary" href="#" onclick="return ultraSimpleLogout(event)">Cerrar sesión</a>
       </nav>
     </header>
 
@@ -62,6 +76,7 @@
   </div>
 
   <!-- Scripts -->
+  <script src="/scripts/ultra-simple-logout.js?v=20251101k"></script>
   <script src="/scripts/config.js?v=20251025"></script>
   <script src="/scripts/api.js?v=20251025"></script>
   <script src="/scripts/access-control.js"></script>

@@ -69,12 +69,14 @@ model platillos {
   descripcion String? @db.VarChar(255)
   precio      Decimal @db.Decimal(10, 2)
   id_area     Int
+  categoria   String? @db.VarChar(100) // Subcategoría: Desayunos, Almuerzo, Licuados, etc.
   disponible  Boolean @default(true)
 
   area     area      @relation(fields: [id_area], references: [id_area])
   comandas comanda[]
 
   @@index([id_area], name: "ix_platillos_area")
+  @@index([categoria], name: "ix_platillos_categoria")
   @@index([disponible], name: "ix_platillos_disponible")
   @@map("platillos")
 }

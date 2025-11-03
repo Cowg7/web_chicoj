@@ -1,0 +1,152 @@
+/**
+ * RESPONSIVE PARA CONTROL DE PLATILLOS
+ * Vista: control-platillos.html
+ */
+
+/* ========================================
+   BARRA DE BÚSQUEDA - RESPONSIVE
+   ======================================== */
+
+.search-container {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin: 1rem 0;
+  flex-wrap: wrap;
+}
+
+.search-input-wrapper {
+  flex: 1 1 300px;
+  min-width: 200px;
+}
+
+@media (max-width: 640px) {
+  .search-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .search-input-wrapper {
+    width: 100%;
+  }
+}
+
+/* ========================================
+   GRID DE PLATILLOS - RESPONSIVE
+   ======================================== */
+
+.platillos-por-area {
+  margin-bottom: 2rem;
+}
+
+.area-title {
+  font-size: clamp(1.25rem, 3vw, 1.5rem);
+  margin-bottom: 1rem;
+}
+
+/* Grid de filas usando CSS Grid */
+.fila {
+  display: grid;
+  grid-template-columns: 80px 1.5fr 120px 2fr 140px 320px;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  align-items: center;
+}
+
+/* Tablet: Reducir columnas */
+@media (max-width: 1024px) {
+  .fila {
+    grid-template-columns: 60px 1fr 100px 1.5fr 120px 280px;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* Mobile: Layout vertical (stack) */
+@media (max-width: 768px) {
+  .fila {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border, #e0e0e0);
+  }
+  
+  .fila.encabezados {
+    display: none; /* Ocultar encabezados en mobile */
+  }
+  
+  /* Cada columna como fila con etiqueta */
+  .col-id::before { content: "ID: "; font-weight: 600; }
+  .col-nombre::before { content: "Nombre: "; font-weight: 600; }
+  .col-precio::before { content: "Precio: "; font-weight: 600; }
+  .col-desc::before { content: "Descripción: "; font-weight: 600; }
+  .col-area::before { content: "Área: "; font-weight: 600; }
+  
+  .col-acciones {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+  
+  .col-acciones .btn {
+    flex: 1 1 calc(33.333% - 0.5rem);
+    min-width: 80px;
+    font-size: 0.8125rem;
+    padding: 0.5rem 0.75rem;
+  }
+}
+
+/* ========================================
+   BOTONES DE ACCIÓN - RESPONSIVE
+   ======================================== */
+
+.col-acciones {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+}
+
+@media (max-width: 480px) {
+  .col-acciones {
+    flex-wrap: wrap;
+  }
+  
+  .col-acciones .btn {
+    flex: 1 1 100%;
+  }
+}
+
+/* ========================================
+   BADGE DE ÁREA - RESPONSIVE
+   ======================================== */
+
+.badge {
+  padding: clamp(0.25rem, 1vw, 0.375rem) clamp(0.5rem, 2vw, 0.75rem);
+  font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+  border-radius: 4px;
+  display: inline-block;
+}
+
+/* ========================================
+   ACCIONES DEL HEADER - RESPONSIVE
+   ======================================== */
+
+.header-acciones {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .header-acciones {
+    flex-direction: column;
+  }
+  
+  .header-acciones .btn {
+    width: 100%;
+  }
+}
+

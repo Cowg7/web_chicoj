@@ -3,7 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agregar Empleados</title>
+  <title>Agregar Empleado - Chicoj</title>
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+  
+  <!-- IMPORTANTE: Auth simple sin interferir -->
+  <script src="/scripts/simple-auth.js?v=20251101k"></script>
+  
+  <!-- Meta tags para prevenir caché -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  
   <link rel="stylesheet" href="/css/base.css">
 <link rel="stylesheet" href="/css/components.css">
 <link rel="stylesheet" href="/css/utilities.css">
@@ -14,20 +28,23 @@
     <header class="encabezado">
       <div class="brand">
         <div class="logo-placeholder" aria-label="Logo"></div>
-        <h1>Restaurante Chicooj</h1>
+        <div>
+          <span class="badge">Somos</span>
+          <h1>Restaurante Chicoj</h1>
+        </div>
       </div>
       <nav class="acciones" aria-label="Acciones">
-        <a class="btn btn-outline" href="/main.html">Inicio</a>
-        <a class="btn btn-primary" href="/templates/login.html">Cerrar sesión</a>
+        <a class="btn btn-outline" href="/main">Inicio</a>
+        <a class="btn btn-primary" href="#" onclick="return ultraSimpleLogout(event)">Cerrar sesión</a>
       </nav>
     </header>
 
     <main class="contenido" role="main">
       <section class="form-card">
-        <h2>Agregar Empleados</h2>
+        <h2>Agregar Colaboradores</h2>
         <form class="formulario" autocomplete="off" id="form-empleado">
           <fieldset class="seccion">
-            <legend>Datos del Empleado</legend>
+            <legend>Datos del Colaborador</legend>
 
             <label for="nombre">Nombre</label>
             <input id="nombre" type="text" placeholder="Ejemplo: Juan">
@@ -39,7 +56,7 @@
             <input id="edad" type="number" placeholder="Ejemplo: 25" min="0" max="99">
 
             <label for="correo">Correo electrónico</label>
-            <input id="correo" type="email" placeholder="Ejemplo: empleado@correo.com">
+            <input id="correo" type="email" placeholder="Ejemplo: colaborador@correo.com">
           </fieldset>
 
           <div class="botones-acciones">
@@ -57,6 +74,7 @@
   </div>
 
   <!-- Scripts -->
+  <script src="/scripts/ultra-simple-logout.js?v=20251101k"></script>
   <script src="/scripts/config.js"></script>
   <script src="/scripts/api.js"></script>
   <script src="/scripts/agregar-empleados.js"></script>

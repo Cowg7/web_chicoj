@@ -13,11 +13,11 @@ const ROLE_CONFIG = {
     canAccessOrders: true,
     canAccessKDS: true,
     canAccessTour: true,
-    landingPage: '/main.html'
+    landingPage: '/main'
   },
   'gerente': {
     allowedViews: [
-      '/templates/reportes/reportes.html'
+      '/templates/reportes/reportes'
     ],
     canAccessAdmin: false,
     canAccessReports: true,
@@ -25,12 +25,12 @@ const ROLE_CONFIG = {
     canAccessOrders: false,
     canAccessKDS: false,
     canAccessTour: false,
-    landingPage: '/templates/reportes/reportes.html'
+    landingPage: '/templates/reportes/reportes'
   },
   'cajero': {
     allowedViews: [
-      '/templates/caja/caja.html',
-      '/templates/reportes/reportes.html'
+      '/templates/caja/caja',
+      '/templates/reportes/reportes'
     ],
     canAccessAdmin: false,
     canAccessReports: true,
@@ -38,12 +38,12 @@ const ROLE_CONFIG = {
     canAccessOrders: false,
     canAccessKDS: false,
     canAccessTour: false,
-    landingPage: '/templates/caja/caja.html'
+    landingPage: '/templates/caja/caja'
   },
   'mesero': {
     allowedViews: [
-      '/templates/mesero/mesero_comanda.html',
-      '/templates/mesero/comanda-control.html'
+      '/templates/mesero/mesero_comanda',
+      '/templates/mesero/comanda-control'
     ],
     canAccessAdmin: false,
     canAccessReports: false,
@@ -51,12 +51,12 @@ const ROLE_CONFIG = {
     canAccessOrders: true,
     canAccessKDS: false,
     canAccessTour: false,
-    landingPage: '/templates/mesero/mesero_comanda.html'
+    landingPage: '/templates/mesero/mesero_comanda'
   },
   'cocina': {
     allowedViews: [
-      '/templates/cocina/cocina.html?area=Cocina',
-      '/templates/cocina/menu_cocina.html'
+      '/templates/cocina/cocina?area=Cocina',
+      '/templates/cocina/menu_cocina'
     ],
     allowedKDSAreas: ['Cocina'],
     canAccessAdmin: false,
@@ -65,12 +65,12 @@ const ROLE_CONFIG = {
     canAccessOrders: false,
     canAccessKDS: true,
     canAccessTour: false,
-    landingPage: '/templates/cocina/cocina.html?area=Cocina'
+    landingPage: '/templates/cocina/cocina?area=Cocina'
   },
   'bebidas': {
     allowedViews: [
-      '/templates/cocina/cocina.html?area=Bebidas',
-      '/templates/cocina/menu_cocina.html'
+      '/templates/cocina/cocina?area=Bebidas',
+      '/templates/cocina/menu_cocina'
     ],
     allowedKDSAreas: ['Bebidas'],
     canAccessAdmin: false,
@@ -79,12 +79,12 @@ const ROLE_CONFIG = {
     canAccessOrders: false,
     canAccessKDS: true,
     canAccessTour: false,
-    landingPage: '/templates/cocina/cocina.html?area=Bebidas'
+    landingPage: '/templates/cocina/cocina?area=Bebidas'
   },
   'coffee': {
     allowedViews: [
-      '/templates/cocina/cocina.html?area=Coffee',
-      '/templates/cocina/menu_cocina.html'
+      '/templates/cocina/cocina?area=Coffee',
+      '/templates/cocina/menu_cocina'
     ],
     allowedKDSAreas: ['Coffee'],
     canAccessAdmin: false,
@@ -93,12 +93,12 @@ const ROLE_CONFIG = {
     canAccessOrders: false,
     canAccessKDS: true,
     canAccessTour: false,
-    landingPage: '/templates/cocina/cocina.html?area=Coffee'
+    landingPage: '/templates/cocina/cocina?area=Coffee'
   },
   'tour': {
     allowedViews: [
-      '/templates/tour/tour.html',
-      '/templates/tour/tour-control.html'
+      '/templates/tour/tour',
+      '/templates/tour/tour-control'
     ],
     canAccessAdmin: false,
     canAccessReports: false,
@@ -106,7 +106,7 @@ const ROLE_CONFIG = {
     canAccessOrders: false,
     canAccessKDS: false,
     canAccessTour: true,
-    landingPage: '/templates/tour/tour.html'
+    landingPage: '/templates/tour/tour'
   }
 };
 
@@ -209,7 +209,7 @@ class AccessControl {
 
     // Ocultar elementos del menú según permisos
     const menuItems = {
-      'admin': '.menu-admin, [href*="main.html"], [href*="control-platillos"], [href*="empleados"], [href*="menu_usuarios"]',
+      'admin': '.menu-admin, [href*="main"], [href*="control-platillos"], [href*="empleados"], [href*="menu_usuarios"]',
       'reports': '[href*="reportes"]',
       'cashier': '[href*="caja"]',
       'orders': '[href*="comanda"], [href*="mesero"]',
@@ -282,7 +282,7 @@ class AccessControl {
   redirectToLogin() {
     console.log('🔒 Redirigiendo al login...');
     setTimeout(() => {
-      window.location.href = '/templates/login.html';
+      window.location.href = '/templates/login';
     }, 500);
   }
 
@@ -337,7 +337,7 @@ class AccessControl {
 const accessControl = new AccessControl();
 
 // Auto-inicializar en todas las páginas (excepto login)
-if (!window.location.pathname.includes('login.html')) {
+if (!window.location.pathname.includes('login')) {
   document.addEventListener('DOMContentLoaded', () => {
     // Verificar acceso a la página actual
     if (!accessControl.checkCurrentPageAccess()) {
@@ -348,12 +348,12 @@ if (!window.location.pathname.includes('login.html')) {
     accessControl.applyMenuRestrictions();
 
     // Si estamos en menu_cocina, aplicar restricciones de KDS
-    if (window.location.pathname.includes('menu_cocina.html')) {
+    if (window.location.pathname.includes('menu_cocina')) {
       accessControl.applyKDSRestrictions();
     }
 
     // Si estamos en cocina.html, verificar área permitida
-    if (window.location.pathname.includes('cocina.html') && window.location.search.includes('area=')) {
+    if (window.location.pathname.includes('cocina') && window.location.search.includes('area=')) {
       const urlParams = new URLSearchParams(window.location.search);
       const area = urlParams.get('area');
       

@@ -8,7 +8,7 @@
   async function init() {
     // Verificar autenticación
     if (!AuthManager.isAuthenticated()) {
-      window.location.href = '/templates/login.html';
+      window.location.href = '/templates/login';
       return;
     }
 
@@ -69,7 +69,7 @@
         <div class="col col-edad" role="cell">${employee.edad || 'N/A'}</div>
         <div class="col col-correo" role="cell">${employee.correo_electronico}</div>
         <div class="col col-acciones" role="cell">
-          <a class="btn btn-outline" href="/templates/administracion/agregar_empleados.html?id=${employee.id_empleado}">Editar</a>
+          <a class="btn btn-outline" href="/templates/administracion/agregar_empleados?id=${employee.id_empleado}">Editar</a>
           ${!hasUser ? `<button class="btn btn-danger btn-sm" onclick="window.deleteEmployee(${employee.id_empleado})">Eliminar</button>` : ''}
         </div>
       `;

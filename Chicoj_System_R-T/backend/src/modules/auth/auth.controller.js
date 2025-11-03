@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import prisma from '../../config/database.js';
 import { config } from '../../config/index.js';
 import { AppError, asyncHandler } from '../../middlewares/errorHandler.js';
+import { emailService } from '../../services/email.service.js';
 
 // POST /auth/login
 export const login = asyncHandler(async (req, res) => {
@@ -187,5 +188,168 @@ export const getMe = asyncHandler(async (req, res) => {
   res.json({
     success: true,
     data: { user: userWithoutPassword }
+  });
+});
+
+// ============ RECUPERACIÓN DE CONTRASEÑA ============
+// Almacenamiento temporal de códigos (en memoria)
+// En producción, considera usar Redis
+const codigosRecuperacion = new Map();
+
+// Limpiar códigos expirados cada 5 minutos
+setInterval(() => {
+  const ahora = Date.now();
+  for (const [key, value] of codigosRecuperacion.entries()) {
+    if (ahora > value.expira) {
+      codigosRecuperacion.delete(key);
+      console.log('🗑️ Código expirado eliminado:', key);
+    }
+  }
+}, 5 * 60 * 1000);
+
+// POST /auth/solicitar-recuperacion
+export const solicitarRecuperacion = asyncHandler(async (req, res) => {
+  const { usuario } = req.body;
+  
+  if (!usuario) {
+    throw new AppError('El usuario es requerido', 400);
+  }
+  
+  // Buscar usuario
+  const usuarioEncontrado = await prisma.usuarios.findUnique({
+    where: { usuario_nombre: usuario },
+    include: {
+      empleado: true
+    }
+  });
+  
+  if (!usuarioEncontrado) {
+    throw new AppError('Usuario no encontrado', 404);
+  }
+  
+  // Generar código de 6 dígitos
+  const codigo = Math.floor(100000 + Math.random() * 900000).toString();
+  
+  // Guardar código con expiración de 15 minutos
+  const expira = Date.now() + (15 * 60 * 1000);
+  codigosRecuperacion.set(usuario.toLowerCase(), {
+    codigo,
+    expira,
+    intentos: 0
+  });
+  
+  console.log(`🔐 Código de recuperación generado para ${usuario}: ${codigo}`);
+  console.log(`⏰ Expira en: ${new Date(expira).toLocaleString()}`);
+  
+  // Intentar enviar email
+  let emailEnviado = false;
+  try {
+    await emailService.enviarCodigoRecuperacion(
+      usuarioEncontrado.empleado.correo_electronico,
+      usuarioEncontrado.empleado.nombre,
+      codigo
+    );
+    emailEnviado = true;
+    console.log('📧 Código enviado por email a:', usuarioEncontrado.empleado.correo_electronico);
+  } catch (error) {
+    console.warn('⚠️ No se pudo enviar el email:', error.message);
+    // En desarrollo, continuamos sin email. En producción, podrías lanzar un error.
+  }
+  
+  // Respuesta según el entorno
+  const response = {
+    success: true,
+    message: emailEnviado 
+      ? 'Código enviado a tu correo electrónico' 
+      : 'Código de recuperación generado',
+    email: usuarioEncontrado.empleado.correo_electronico.replace(/(.{2})(.*)(@.*)/, '$1***$3'), // Ocultar email parcialmente
+    expiresIn: '15 minutos'
+  };
+  
+  // Solo en desarrollo, enviar el código en la respuesta
+  if (config.env === 'development' && !emailEnviado) {
+    response.codigo = codigo;
+    response.dev_note = 'Email no configurado. Código mostrado solo en desarrollo.';
+  }
+  
+  res.json(response);
+});
+
+// POST /auth/restablecer-password
+export const restablecerPassword = asyncHandler(async (req, res) => {
+  const { usuario, codigo, nuevaPassword } = req.body;
+  
+  // Validaciones
+  if (!usuario || !codigo || !nuevaPassword) {
+    throw new AppError('Todos los campos son requeridos', 400);
+  }
+  
+  if (nuevaPassword.length < 6) {
+    throw new AppError('La contraseña debe tener al menos 6 caracteres', 400);
+  }
+  
+  // Verificar código
+  const datosRecuperacion = codigosRecuperacion.get(usuario.toLowerCase());
+  
+  if (!datosRecuperacion) {
+    throw new AppError('Código inválido o expirado', 400);
+  }
+  
+  // Verificar expiración
+  if (Date.now() > datosRecuperacion.expira) {
+    codigosRecuperacion.delete(usuario.toLowerCase());
+    throw new AppError('El código ha expirado', 400);
+  }
+  
+  // Verificar intentos (máximo 3)
+  if (datosRecuperacion.intentos >= 3) {
+    codigosRecuperacion.delete(usuario.toLowerCase());
+    throw new AppError('Demasiados intentos fallidos', 429);
+  }
+  
+  // Verificar código
+  if (datosRecuperacion.codigo !== codigo) {
+    datosRecuperacion.intentos++;
+    throw new AppError(`Código incorrecto (${datosRecuperacion.intentos}/3)`, 400);
+  }
+  
+  // Buscar usuario
+  const usuarioEncontrado = await prisma.usuarios.findUnique({
+    where: { usuario_nombre: usuario }
+  });
+  
+  if (!usuarioEncontrado) {
+    throw new AppError('Usuario no encontrado', 404);
+  }
+  
+  // Hash de nueva contraseña
+  const hashedPassword = await bcrypt.hash(nuevaPassword, config.bcrypt.rounds);
+  
+  // Actualizar contraseña
+  await prisma.usuarios.update({
+    where: { id_usuario: usuarioEncontrado.id_usuario },
+    data: { contrasena_hash: hashedPassword }
+  });
+  
+  // Eliminar código usado
+  codigosRecuperacion.delete(usuario.toLowerCase());
+  
+  console.log(`✅ Contraseña restablecida para: ${usuario}`);
+  
+  // Enviar email de confirmación
+  try {
+    await emailService.enviarConfirmacionCambio(
+      usuarioEncontrado.empleado.correo_electronico,
+      usuarioEncontrado.empleado.nombre
+    );
+    console.log('📧 Confirmación enviada por email');
+  } catch (error) {
+    console.warn('⚠️ No se pudo enviar email de confirmación:', error.message);
+    // No lanzamos error porque el cambio ya se realizó
+  }
+  
+  res.json({
+    success: true,
+    message: 'Contraseña restablecida exitosamente'
   });
 });

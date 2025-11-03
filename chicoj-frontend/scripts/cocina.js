@@ -15,7 +15,7 @@
   async function init() {
     // Verificar autenticación
     if (!AuthManager.isAuthenticated()) {
-      window.location.href = '/templates/login.html';
+      window.location.href = '/templates/login';
       return;
     }
 

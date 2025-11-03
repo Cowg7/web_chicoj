@@ -9,7 +9,7 @@
   function init() {
     // Verificar autenticación
     if (!AuthManager.isAuthenticated()) {
-      window.location.href = '/templates/login.html';
+      window.location.href = '/templates/login';
       return;
     }
 
@@ -30,7 +30,7 @@
         localStorage.setItem('kds_area', area);
         
         // Redirigir a la vista de cocina con el parámetro de área
-        window.location.href = `/templates/cocina/cocina.html?area=${area}`;
+        window.location.href = `/templates/cocina/cocina?area=${area}`;
       });
     });
   }

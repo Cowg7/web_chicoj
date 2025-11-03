@@ -123,10 +123,46 @@ const AuthManager = {
     return !!this.getToken();
   },
   
-  // Cerrar sesión
+  // Cerrar sesión completo y seguro
   logout() {
-    this.removeToken();
-    window.location.href = '/templates/login.html';
+    console.log('🚪 Cerrando sesión...');
+    
+    // Limpiar TODO el almacenamiento
+    try {
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      // Limpiar cookies
+      document.cookie.split(";").forEach(function(c) { 
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+      });
+      
+      console.log('✅ Todo el almacenamiento limpiado');
+    } catch (e) {
+      console.error('Error al limpiar storage:', e);
+    }
+    
+    // Ocultar la página inmediatamente
+    document.documentElement.style.visibility = 'hidden';
+    document.documentElement.style.opacity = '0';
+    document.documentElement.style.display = 'none';
+    
+    if (document.body) {
+      document.body.style.display = 'none';
+    }
+    
+    // Prevenir que el navegador guarde la página en bfcache
+    window.onunload = function() {};
+    
+    // Limpiar el historial
+    if (window.history && window.history.pushState) {
+      // Reemplazar la entrada actual del historial
+      window.history.replaceState(null, '', '/templates/login');
+    }
+    
+    // Forzar recarga COMPLETA desde servidor (bypass cache)
+    const timestamp = Date.now();
+    window.location.replace('/templates/login?logout=' + timestamp);
   }
 };
 

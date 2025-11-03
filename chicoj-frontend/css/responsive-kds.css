@@ -1,0 +1,210 @@
+/**
+ * RESPONSIVE PARA KDS (COCINA, BEBIDAS, COFFEE)
+ * Vista: cocina.html
+ */
+
+/* ========================================
+   TICKETS GRID - RESPONSIVE
+   ======================================== */
+
+.tickets-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+/* Tablet: 2 columnas */
+@media (max-width: 1024px) and (min-width: 641px) {
+  .tickets-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile: 1 columna */
+@media (max-width: 640px) {
+  .tickets-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}
+
+/* ========================================
+   TICKET CARD - RESPONSIVE
+   ======================================== */
+
+.ticket-card {
+  padding: clamp(0.75rem, 2vw, 1rem);
+  min-height: auto;
+}
+
+.ticket-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.ticket-number {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+}
+
+.ticket-time {
+  font-size: clamp(0.875rem, 2vw, 1rem);
+}
+
+/* ========================================
+   ITEMS DEL TICKET - RESPONSIVE
+   ======================================== */
+
+.ticket-items {
+  margin: 0.75rem 0;
+}
+
+.ticket-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.item-nombre {
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  flex: 1 1 60%;
+}
+
+.item-cantidad {
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  flex: 0 0 auto;
+}
+
+@media (max-width: 640px) {
+  .ticket-item {
+    font-size: 0.875rem;
+  }
+  
+  .item-nombre {
+    flex: 1 1 100%;
+  }
+  
+  .item-cantidad {
+    flex: 1 1 100%;
+    text-align: left;
+    padding-left: 1rem;
+  }
+}
+
+/* ========================================
+   BOTONES DEL TICKET - RESPONSIVE
+   ======================================== */
+
+.ticket-footer {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.ticket-footer .btn {
+  flex: 1 1 auto;
+  min-width: 120px;
+}
+
+@media (max-width: 640px) {
+  .ticket-footer {
+    flex-direction: column;
+  }
+  
+  .ticket-footer .btn {
+    width: 100%;
+    min-width: auto;
+  }
+}
+
+/* ========================================
+   ESTADÍSTICAS - RESPONSIVE
+   ======================================== */
+
+.stats-container {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .stats-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+}
+
+.stat-card {
+  padding: clamp(0.75rem, 2vw, 1rem);
+  text-align: center;
+}
+
+.stat-value {
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+}
+
+.stat-label {
+  font-size: clamp(0.75rem, 2vw, 0.875rem);
+}
+
+/* ========================================
+   ÁREA SELECTOR - RESPONSIVE
+   ======================================== */
+
+.area-selector {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 640px) {
+  .area-selector {
+    flex-direction: column;
+  }
+  
+  .area-selector .btn {
+    width: 100%;
+  }
+}
+
+/* ========================================
+   LANDSCAPE MOBILE
+   ======================================== */
+
+@media (max-width: 768px) and (orientation: landscape) {
+  .tickets-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+  
+  .ticket-card {
+    padding: 0.5rem;
+  }
+  
+  .encabezado {
+    padding: 0.5rem;
+  }
+}
+
+/* ========================================
+   TOUCH TARGETS (Accesibilidad móvil)
+   ======================================== */
+
+@media (hover: none) and (pointer: coarse) {
+  /* Dispositivos táctiles */
+  .btn,
+  button,
+  a {
+    min-height: 44px; /* Tamaño mínimo táctil recomendado */
+    min-width: 44px;
+  }
+}
+

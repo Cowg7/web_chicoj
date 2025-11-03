@@ -4,19 +4,50 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Sistema de gestión para Restaurante Chicooj" />
-  <title>Iniciar Sesión - Chicooj</title>
-  <link rel="stylesheet" href="/css/base.css?v=20251025c" />
-  <link rel="stylesheet" href="/css/components.css?v=20251025c" />
-  <link rel="stylesheet" href="/css/utilities.css?v=20251025" />
+  <title>Iniciar Sesión - Chicoj</title>
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+  <link rel="manifest" href="/assets/site.webmanifest">
+  <link rel="stylesheet" href="/css/base.css?v=20251101g" />
+  <link rel="stylesheet" href="/css/components.css?v=20251101g" />
+  <link rel="stylesheet" href="/css/utilities.css?v=20251101g" />
+  <link rel="stylesheet" href="/css/mejoras-ux.css?v=20251101g" />
   <style>
     /* Estilos específicos para Login */
     body {
-      background: linear-gradient(135deg, #4A90E2 0%, #2E5C8A 100%);
+      background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: var(--spacing-md);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    /* Patrón de fondo decorativo */
+    body::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+      background-size: 30px 30px;
+      animation: float 20s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% {
+        transform: translate(0, 0);
+      }
+      50% {
+        transform: translate(30px, 30px);
+      }
     }
 
     .login-container {
@@ -354,7 +385,7 @@
 
         <!-- Link de recuperación -->
         <div class="forgot-password">
-          <a href="/templates/recuperacion.html">¿Olvidaste tu contraseña?</a>
+          <a href="/templates/recuperar_contrasenia">¿Olvidaste tu contraseña?</a>
         </div>
       </form>
 

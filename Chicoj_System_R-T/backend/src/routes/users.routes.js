@@ -6,7 +6,10 @@ import {
   createUser,
   updateUser,
   deleteUser,
-  getRoles
+  getRoles,
+  createRole,
+  updateRole,
+  deleteRole
 } from '../modules/users/users.controller.js';
 import { authenticateToken } from '../middlewares/auth.js';
 
@@ -15,8 +18,13 @@ const router = express.Router();
 // Todas las rutas requieren autenticación
 router.use(authenticateToken);
 
+// Rutas de roles
+router.get('/roles', getRoles);
+router.post('/roles', createRole);
+router.patch('/roles/:id', updateRole);
+router.delete('/roles/:id', deleteRole);
+
 // Rutas de usuarios
-router.get('/roles', getRoles); // Debe estar antes de /:id
 router.get('/', getUsers);
 router.get('/:id', getUserById);
 router.post('/', createUser);

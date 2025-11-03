@@ -43,7 +43,7 @@
   async function init() {
     // Verificar autenticación
     if (!AuthManager.isAuthenticated()) {
-      window.location.href = '/templates/login.html';
+      window.location.href = '/templates/login';
       return;
     }
 
@@ -71,12 +71,17 @@
     const today = new Date();
     const lastMonth = new Date();
     lastMonth.setMonth(lastMonth.getMonth() - 1);
-
+    
+    // Establecer fecha máxima (hoy) para los inputs
+    const todayStr = today.toISOString().split('T')[0];
+    
     if (fechaDesde) {
       fechaDesde.value = lastMonth.toISOString().split('T')[0];
+      fechaDesde.max = todayStr; // No permitir fechas futuras
     }
     if (fechaHasta) {
-      fechaHasta.value = today.toISOString().split('T')[0];
+      fechaHasta.value = todayStr;
+      fechaHasta.max = todayStr; // No permitir fechas futuras
     }
   }
 
@@ -88,7 +93,7 @@
       btnLogout.addEventListener('click', (e) => {
         e.preventDefault();
         AuthManager.logout();
-        window.location.href = '/templates/login.html';
+        window.location.href = '/templates/login';
       });
     }
 
@@ -106,10 +111,46 @@
       });
     }
 
-    // Generar PDF
-    const btnGenerarPDF = $('btn-generar-pdf');
-    if (btnGenerarPDF) {
-      btnGenerarPDF.addEventListener('click', generatePDF);
+    // PDFs específicos (funciones definidas en reportes-pdf.js)
+    const btnPdfPlatillos = $('btn-pdf-platillos');
+    const btnPdfAreas = $('btn-pdf-areas');
+    const btnPdfHoras = $('btn-pdf-horas');
+
+    if (btnPdfPlatillos) {
+      btnPdfPlatillos.addEventListener('click', () => {
+        if (window.generarPDFPlatillos) window.generarPDFPlatillos();
+      });
+    }
+    if (btnPdfAreas) {
+      btnPdfAreas.addEventListener('click', () => {
+        if (window.generarPDFAreas) window.generarPDFAreas();
+      });
+    }
+    if (btnPdfHoras) {
+      btnPdfHoras.addEventListener('click', () => {
+        if (window.generarPDFHoras) window.generarPDFHoras();
+      });
+    }
+
+    // Descargar Excel
+    const btnDescargarExcel = $('btn-descargar-excel');
+    if (btnDescargarExcel) {
+      btnDescargarExcel.addEventListener('click', descargarExcel);
+    }
+
+    // Descargar gráficas individuales
+    const btnDownloadPlatillos = $('btn-download-platillos');
+    const btnDownloadHoras = $('btn-download-horas');
+    const btnDownloadAreas = $('btn-download-areas');
+
+    if (btnDownloadPlatillos) {
+      btnDownloadPlatillos.addEventListener('click', () => descargarGrafica('chart-platillos', 'platillos-mas-vendidos'));
+    }
+    if (btnDownloadHoras) {
+      btnDownloadHoras.addEventListener('click', () => descargarGrafica('chart-horas', 'horas-pico'));
+    }
+    if (btnDownloadAreas) {
+      btnDownloadAreas.addEventListener('click', () => descargarGrafica('chart-areas', 'ingresos-por-area'));
     }
   }
 
@@ -172,6 +213,9 @@
     
     return params;
   }
+
+  // Exportar función para uso desde reportes-pdf.js
+  window.getFilterParams = getFilterParams;
 
   // Cargar todos los reportes
   async function loadAllReports() {
@@ -546,6 +590,430 @@
       if (contentAreas) {
         contentAreas.innerHTML = `<div class="error">Error al cargar datos: ${error.message}</div>`;
       }
+    }
+  }
+
+  // ========== NUEVAS FUNCIONES DE DESCARGA ==========
+
+  // Descargar gráfica individual como imagen PNG
+  function descargarGrafica(canvasId, nombreArchivo) {
+    try {
+      const canvas = $(canvasId);
+      if (!canvas) {
+        console.error('❌ Canvas no encontrado:', canvasId);
+        return;
+      }
+
+      // Convertir canvas a imagen
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${nombreArchivo}_${new Date().toISOString().split('T')[0]}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        console.log('✅ Gráfica descargada:', nombreArchivo);
+      });
+    } catch (error) {
+      console.error('❌ Error al descargar gráfica:', error);
+      alert('Error al descargar la gráfica');
+    }
+  }
+
+  // Descargar informe completo en Excel
+  async function descargarExcel() {
+    try {
+      const params = getFilterParams();
+      console.log('📊 Generando Excel con parámetros:', params);
+
+      // Obtener todos los datos
+      const [salesData, dishesData, hoursData, areasData] = await Promise.all([
+        API.reports.getSales(params),
+        API.reports.getTopDishes({ ...params, limit: 50 }),
+        API.reports.getPeakHours({ ...params, groupBy: 'hour' }),
+        API.reports.getSalesByArea(params)
+      ]);
+
+      // Crear libro de Excel
+      const wb = XLSX.utils.book_new();
+
+      // Hoja 1: Resumen General
+      const resumen = salesData.data || salesData;
+      const totalVentas = parseFloat(resumen.total_ventas || 0);
+      const totalOrdenes = parseInt(resumen.total_ordenes || 0);
+      const ticketPromedio = totalOrdenes > 0 ? totalVentas / totalOrdenes : 0;
+
+      const datosResumen = [
+        { 'Métrica': 'Total de Ventas', 'Valor': `Q${totalVentas.toFixed(2)}` },
+        { 'Métrica': 'Órdenes Completadas', 'Valor': totalOrdenes },
+        { 'Métrica': 'Ticket Promedio', 'Valor': `Q${ticketPromedio.toFixed(2)}` },
+        { 'Métrica': 'Período', 'Valor': `${params.fecha_desde || 'N/A'} a ${params.fecha_hasta || 'N/A'}` },
+        { 'Métrica': 'Generado', 'Valor': new Date().toLocaleString('es-GT') }
+      ];
+      
+      const wsResumen = XLSX.utils.json_to_sheet(datosResumen);
+      wsResumen['!cols'] = [{ wch: 25 }, { wch: 30 }];
+      XLSX.utils.book_append_sheet(wb, wsResumen, 'Resumen');
+
+      // Hoja 2: Platillos Más Vendidos
+      const dishesInfo = dishesData.data || dishesData;
+      const platillos = dishesInfo.top_platillos || dishesInfo.top_dishes || [];
+      
+      const datosPlatillos = platillos.map((dish, index) => ({
+        'Posición': index + 1,
+        'Platillo': dish.nombre,
+        'Cantidad Vendida': dish.cantidad_vendida || 0,
+        'Área': dish.area || 'N/A',
+        'Veces Ordenado': dish.veces_ordenado || 0,
+        'Ingresos': parseFloat(dish.total_ingresos || 0).toFixed(2)
+      }));
+
+      if (datosPlatillos.length > 0) {
+        const wsPlatillos = XLSX.utils.json_to_sheet(datosPlatillos);
+        wsPlatillos['!cols'] = [{ wch: 10 }, { wch: 30 }, { wch: 18 }, { wch: 15 }, { wch: 18 }, { wch: 15 }];
+        XLSX.utils.book_append_sheet(wb, wsPlatillos, 'Platillos Más Vendidos');
+      }
+
+      // Hoja 3: Horas Pico
+      const hoursInfo = hoursData.data || hoursData;
+      const horas = hoursInfo.horarios || hoursInfo.results || [];
+      
+      const datosHoras = horas.map(item => ({
+        'Hora': item.hora || item.periodo,
+        'Total Órdenes': item.total_ordenes || item.cantidad_ordenes || 0,
+        'Total Ventas': `Q${parseFloat(item.total_ventas || 0).toFixed(2)}`
+      }));
+
+      if (datosHoras.length > 0) {
+        const wsHoras = XLSX.utils.json_to_sheet(datosHoras);
+        wsHoras['!cols'] = [{ wch: 15 }, { wch: 18 }, { wch: 18 }];
+        XLSX.utils.book_append_sheet(wb, wsHoras, 'Horas Pico');
+      }
+
+      // Hoja 4: Ingresos por Área
+      const areasInfo = areasData.data || areasData;
+      const areas = areasInfo.ventas_por_area || areasInfo.revenue_by_area || [];
+      
+      const datosAreas = areas.map(area => ({
+        'Área': area.area,
+        'Cantidad Items': area.cantidad_items || 0,
+        'Ingresos': parseFloat(area.total_ingresos || 0).toFixed(2)
+      }));
+
+      // Agregar total
+      const totalAreas = areas.reduce((sum, area) => sum + parseFloat(area.total_ingresos || 0), 0);
+      datosAreas.push({
+        'Área': 'TOTAL',
+        'Cantidad Items': areas.reduce((sum, area) => sum + (area.cantidad_items || 0), 0),
+        'Ingresos': totalAreas.toFixed(2)
+      });
+
+      if (datosAreas.length > 0) {
+        const wsAreas = XLSX.utils.json_to_sheet(datosAreas);
+        wsAreas['!cols'] = [{ wch: 20 }, { wch: 18 }, { wch: 18 }];
+        XLSX.utils.book_append_sheet(wb, wsAreas, 'Ingresos por Área');
+      }
+
+      // Descargar archivo
+      const fecha = new Date().toISOString().split('T')[0];
+      XLSX.writeFile(wb, `Reporte_Completo_Chicoj_${fecha}.xlsx`);
+      
+      console.log('✅ Excel generado exitosamente');
+      alert('✅ Reporte Excel descargado exitosamente');
+
+    } catch (error) {
+      console.error('❌ Error al generar Excel:', error);
+      alert('Error al generar el Excel. Por favor intente nuevamente.');
+    }
+  }
+
+  // ========== FUNCIONES DE PDF ESPECÍFICOS ==========
+
+  // PDF de Platillos Vendidos por Fecha
+  async function generarPDFPlatillos() {
+    try {
+      const params = getFilterParams();
+      console.log('📄 Generando PDF de Platillos Vendidos...');
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF('p', 'mm', 'a4');
+
+      // Encabezado principal
+      doc.setFontSize(18);
+      doc.setFont(undefined, 'bold');
+      doc.setTextColor(74, 144, 226);
+      doc.text('Restaurante Chicooj', 105, 15, { align: 'center' });
+      
+      doc.setFontSize(14);
+      doc.setTextColor(0, 0, 0);
+      doc.text('Reporte de Platillos Vendidos', 105, 23, { align: 'center' });
+
+      // Línea separadora
+      doc.setDrawColor(74, 144, 226);
+      doc.setLineWidth(0.5);
+      doc.line(14, 27, 196, 27);
+
+      // Información del período
+      doc.setFontSize(9);
+      doc.setFont(undefined, 'normal');
+      doc.setTextColor(100, 100, 100);
+      doc.text(`Período: ${params.fecha_desde || 'Inicio'} a ${params.fecha_hasta || 'Hoy'}`, 14, 33);
+      doc.text(`Generado: ${new Date().toLocaleString('es-GT')}`, 14, 38);
+
+      let y = 45;
+
+      // Obtener todos los datos
+      const [salesData, dishesData, hoursData, areasData] = await Promise.all([
+        API.reports.getSales(params),
+        API.reports.getTopDishes({ ...params, limit: 20 }),
+        API.reports.getPeakHours({ ...params, groupBy: 'hour' }),
+        API.reports.getSalesByArea(params)
+      ]);
+
+      const resumen = salesData.data || salesData;
+      const totalVentas = parseFloat(resumen.total_ventas || 0);
+      const totalOrdenes = parseInt(resumen.total_ordenes || 0);
+      const ticketPromedio = totalOrdenes > 0 ? totalVentas / totalOrdenes : 0;
+
+      // Cuadro de resumen
+      doc.setFillColor(240, 248, 255);
+      doc.rect(14, y - 5, 182, 22, 'F');
+      
+      doc.setFontSize(11);
+      doc.setFont(undefined, 'bold');
+      doc.setTextColor(0, 0, 0);
+      doc.text('RESUMEN EJECUTIVO', 105, y, { align: 'center' });
+      y += 7;
+
+      doc.setFontSize(9);
+      doc.setFont(undefined, 'normal');
+      doc.text(`Ventas Totales: Q${totalVentas.toFixed(2)}`, 20, y);
+      doc.text(`Órdenes: ${totalOrdenes}`, 90, y);
+      doc.text(`Ticket Prom.: Q${ticketPromedio.toFixed(2)}`, 140, y);
+      y += 12;
+
+      // TABLA 1: Platillos Más Vendidos
+      const dishesInfo = dishesData.data || dishesData;
+      const platillos = dishesInfo.top_platillos || dishesInfo.top_dishes || [];
+      
+      if (platillos.length > 0) {
+        doc.setFontSize(12);
+        doc.setFont(undefined, 'bold');
+        doc.setTextColor(74, 144, 226);
+        doc.text('Top 20 - Platillos Más Vendidos', 14, y);
+        y += 5;
+
+        const datosPlatillos = platillos.map((dish, index) => [
+          (index + 1).toString(),
+          dish.nombre || 'N/A',
+          (dish.cantidad_vendida || 0).toString(),
+          dish.area || 'N/A',
+          `Q${parseFloat(dish.total_ingresos || 0).toFixed(2)}`
+        ]);
+
+        doc.autoTable({
+          startY: y,
+          head: [['#', 'Platillo', 'Cant.', 'Área', 'Ingresos']],
+          body: datosPlatillos,
+          theme: 'striped',
+          styles: {
+            fontSize: 8,
+            cellPadding: 2
+          },
+          headStyles: {
+            fillColor: [74, 144, 226],
+            textColor: 255,
+            fontStyle: 'bold'
+          },
+          columnStyles: {
+            0: { cellWidth: 10, halign: 'center' },
+            1: { cellWidth: 80 },
+            2: { cellWidth: 25, halign: 'center' },
+            3: { cellWidth: 35 },
+            4: { cellWidth: 30, halign: 'right' }
+          }
+        });
+
+        y = doc.lastAutoTable.finalY + 10;
+      }
+
+      // TABLA 2: Distribución por Horas
+      const hoursInfo = hoursData.data || hoursData;
+      const horas = hoursInfo.horarios || hoursInfo.results || [];
+      
+      if (horas.length > 0 && y + 40 < 280) {
+        doc.setFontSize(12);
+        doc.setFont(undefined, 'bold');
+        doc.setTextColor(74, 144, 226);
+        doc.text('Distribución de Ventas por Hora', 14, y);
+        y += 5;
+
+        const datosHoras = horas.map(item => [
+          item.hora || item.periodo,
+          (item.total_ordenes || item.cantidad_ordenes || 0).toString(),
+          `Q${parseFloat(item.total_ventas || 0).toFixed(2)}`
+        ]);
+
+        doc.autoTable({
+          startY: y,
+          head: [['Hora', 'Órdenes', 'Ventas']],
+          body: datosHoras,
+          theme: 'striped',
+          styles: {
+            fontSize: 8,
+            cellPadding: 2
+          },
+          headStyles: {
+            fillColor: [74, 144, 226],
+            textColor: 255,
+            fontStyle: 'bold'
+          },
+          columnStyles: {
+            0: { cellWidth: 60, halign: 'center' },
+            1: { cellWidth: 60, halign: 'center' },
+            2: { cellWidth: 60, halign: 'right' }
+          }
+        });
+
+        y = doc.lastAutoTable.finalY + 10;
+      }
+
+      // TABLA 3: Ingresos por Área (nueva página si es necesario)
+      const areasInfo = areasData.data || areasData;
+      const areas = areasInfo.ventas_por_area || areasInfo.revenue_by_area || [];
+      
+      if (areas.length > 0) {
+        if (y > 220) {
+          doc.addPage();
+          y = 20;
+        }
+
+        doc.setFontSize(12);
+        doc.setFont(undefined, 'bold');
+        doc.setTextColor(74, 144, 226);
+        doc.text('Ingresos Detallados por Área de Cocina', 14, y);
+        y += 5;
+
+        const totalAreas = areas.reduce((sum, area) => sum + parseFloat(area.total_ingresos || 0), 0);
+        
+        const datosAreas = areas.map(area => {
+          const ingresos = parseFloat(area.total_ingresos || 0);
+          const porcentaje = totalAreas > 0 ? (ingresos / totalAreas * 100) : 0;
+          return [
+            area.area,
+            (area.cantidad_items || 0).toString(),
+            `Q${ingresos.toFixed(2)}`,
+            `${porcentaje.toFixed(1)}%`
+          ];
+        });
+
+        // Agregar fila de totales
+        datosAreas.push([
+          'TOTAL',
+          areas.reduce((sum, area) => sum + (area.cantidad_items || 0), 0).toString(),
+          `Q${totalAreas.toFixed(2)}`,
+          '100.0%'
+        ]);
+
+        doc.autoTable({
+          startY: y,
+          head: [['Área', 'Items', 'Ingresos', '% Total']],
+          body: datosAreas,
+          theme: 'striped',
+          styles: {
+            fontSize: 9,
+            cellPadding: 3
+          },
+          headStyles: {
+            fillColor: [74, 144, 226],
+            textColor: 255,
+            fontStyle: 'bold'
+          },
+          columnStyles: {
+            0: { cellWidth: 80 },
+            1: { cellWidth: 35, halign: 'center' },
+            2: { cellWidth: 40, halign: 'right' },
+            3: { cellWidth: 25, halign: 'right' }
+          },
+          didParseCell: function(data) {
+            // Resaltar fila de totales
+            if (data.row.index === datosAreas.length - 1) {
+              data.cell.styles.fillColor = [220, 220, 220];
+              data.cell.styles.fontStyle = 'bold';
+            }
+          }
+        });
+      }
+
+      // Footer en todas las páginas
+      const pageCount = doc.internal.getNumberOfPages();
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setFont(undefined, 'normal');
+        doc.setTextColor(128, 128, 128);
+        
+        // Línea superior del footer
+        doc.setDrawColor(200, 200, 200);
+        doc.line(14, doc.internal.pageSize.height - 15, 196, doc.internal.pageSize.height - 15);
+        
+        doc.text(
+          `Página ${i} de ${pageCount}`,
+          105,
+          doc.internal.pageSize.height - 10,
+          { align: 'center' }
+        );
+        
+        doc.text(
+          'Restaurante Chicooj - Sistema de Gestión',
+          14,
+          doc.internal.pageSize.height - 10
+        );
+      }
+
+      // Descargar
+      const fecha = new Date().toISOString().split('T')[0];
+      doc.save(`Reporte_Detallado_Chicoj_${fecha}.pdf`);
+      
+      console.log('✅ PDF detallado generado exitosamente');
+      alert('✅ Reporte PDF con registros detallados descargado');
+
+    } catch (error) {
+      console.error('❌ Error al generar PDF:', error);
+      alert('Error al generar el PDF. Por favor intente nuevamente.');
+    }
+  }
+
+  // Descargar gráfica individual
+  function descargarGrafica(canvasId, nombreArchivo) {
+    try {
+      const canvas = $(canvasId);
+      if (!canvas) {
+        console.error('❌ Canvas no encontrado:', canvasId);
+        alert('No se pudo descargar la gráfica');
+        return;
+      }
+
+      // Convertir a blob y descargar
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        const fecha = new Date().toISOString().split('T')[0];
+        a.download = `${nombreArchivo}_${fecha}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        console.log('✅ Gráfica descargada:', nombreArchivo);
+      });
+    } catch (error) {
+      console.error('❌ Error al descargar gráfica:', error);
+      alert('Error al descargar la gráfica');
     }
   }
 

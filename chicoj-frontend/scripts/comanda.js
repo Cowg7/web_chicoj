@@ -8,8 +8,11 @@
   const noOrden = $('no-orden');
   const fecha = $('fecha');
   const mesa = $('mesa');
-  const areaSelect = $('aria-label');
-  const platilloSelect = $('platillo');
+  const areaButtonsContainer = $('area-buttons');
+  const categoriaContainer = $('categoria-container');
+  const categoriaButtonsContainer = $('categoria-buttons');
+  const platilloContainer = $('platillo-container');
+  const platilloButtonsContainer = $('platillo-buttons');
   const cantidad = $('cantidad');
   const precio = $('precio');
   const observaciones = $('observaciones');
@@ -23,6 +26,10 @@
 
   // Estado local
   let menuItems = [];
+  let areas = [];
+  let selectedArea = null;
+  let selectedCategoria = null;
+  let categoriasPorArea = {}; // Mapa de categorías por área
   let currentOrder = {
     items: [],
     extras: [],
@@ -38,7 +45,7 @@
   async function init() {
     // Verificar autenticación
     if (!AuthManager.isAuthenticated()) {
-      window.location.href = '/templates/login.html';
+      window.location.href = '/templates/login';
       return;
     }
 
@@ -179,7 +186,7 @@
       });
       alert(`No se pudo cargar la orden para editar:\n${error.message}`);
       // Comentar redirección temporalmente para debug
-      // window.location.href = '/templates/mesero/comanda-control.html';
+      // window.location.href = '/templates/mesero/comanda-control';
     }
   }
 
@@ -210,31 +217,276 @@
     }
   }
 
-  // Cargar áreas
+  // Cargar áreas y crear botones
   async function loadAreas() {
     try {
       const response = await API.menu.getAreas();
       
       // El backend devuelve: { data: { areas: [...] } }
       const data = response.data || response;
-      const areas = data.areas || data || [];
+      areas = data.areas || data || [];
       
-      console.log('Áreas cargadas:', areas);
+      console.log('✅ Áreas cargadas:', areas);
       
-      if (areaSelect && areas.length > 0) {
-        areaSelect.innerHTML = '<option value="">Seleccionar…</option>';
+      if (areaButtonsContainer && areas.length > 0) {
+        areaButtonsContainer.innerHTML = '';
+        
         areas.forEach(area => {
-          const option = document.createElement('option');
-          // area puede ser un objeto { id_area, nombre } o un string
           const areaNombre = area.nombre || area;
-          option.value = areaNombre;
-          option.textContent = areaNombre.charAt(0).toUpperCase() + areaNombre.slice(1);
-          areaSelect.appendChild(option);
+          const areaId = area.id_area;
+          
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'area-button';
+          button.dataset.area = areaNombre;
+          button.dataset.areaId = areaId;
+          button.textContent = areaNombre.charAt(0).toUpperCase() + areaNombre.slice(1);
+          
+          button.addEventListener('click', () => selectArea(areaNombre, areaId));
+          
+          areaButtonsContainer.appendChild(button);
         });
       }
     } catch (error) {
       handleError(error, 'Error al cargar áreas');
     }
+  }
+
+  // Seleccionar área
+  async function selectArea(areaNombre, areaId) {
+    console.log('📍 Área seleccionada:', areaNombre, areaId);
+    
+    // Actualizar estado
+    selectedArea = { nombre: areaNombre, id: areaId };
+    selectedCategoria = null;
+    
+    // Actualizar UI de botones
+    document.querySelectorAll('.area-button').forEach(btn => {
+      if (btn.dataset.area === areaNombre) {
+        btn.classList.add('active');
+        btn.classList.remove('disabled');
+      } else {
+        btn.classList.remove('active');
+        btn.classList.add('disabled');
+      }
+    });
+    
+    // Resetear selecciones posteriores
+    if (categoriaButtonsContainer) {
+      categoriaButtonsContainer.innerHTML = '<p style="color: var(--muted);">Cargando categorías...</p>';
+    }
+    if (platilloButtonsContainer) {
+      platilloButtonsContainer.innerHTML = '';
+    }
+    if (platilloContainer) {
+      platilloContainer.style.display = 'none';
+    }
+    
+    // Cargar categorías para esta área
+    await loadCategorias(areaNombre, areaId);
+    
+    // Mostrar selector de categorías
+    if (categoriaContainer) {
+      console.log('👁️ Mostrando contenedor de categorías...');
+      categoriaContainer.style.display = 'block';
+      console.log('✅ Contenedor visible. Display:', categoriaContainer.style.display);
+      console.log('📏 Altura del contenedor:', categoriaContainer.offsetHeight, 'px');
+    } else {
+      console.error('❌ categoriaContainer NO existe!');
+    }
+  }
+
+  // Cargar categorías de un área
+  async function loadCategorias(areaNombre, areaId) {
+    try {
+      console.log('📂 Cargando categorías para área:', areaNombre);
+      
+      // Definir categorías predefinidas por área
+      const categoriasDefinidas = {
+        'Cocina': ['Desayunos', 'Almuerzo', 'Refacciones', 'Refacciones Típicas', 'Menú Infantil'],
+        'Bebidas': ['Bebidas Frías', 'Licuados', 'Cervezas', 'Bebidas Desechables'],
+        'Coffee': ['Café', 'Postres']
+      };
+      
+      // Obtener categorías del menú actual
+      const platillosDelArea = menuItems.filter(item => 
+        item.area.toLowerCase() === areaNombre.toLowerCase()
+      );
+      
+      const categoriasEnUso = [...new Set(
+        platillosDelArea
+          .map(p => p.categoria)
+          .filter(c => c && c !== 'null' && c !== '')
+      )];
+      
+      console.log('📋 Categorías en uso:', categoriasEnUso);
+      
+      // Usar categorías predefinidas o las que están en uso
+      const categorias = categoriasDefinidas[areaNombre] || categoriasEnUso;
+      
+      // También agregar "Sin Categoría" si hay platillos sin categoría
+      const sinCategoria = platillosDelArea.some(p => !p.categoria || p.categoria === '');
+      if (sinCategoria) {
+        categorias.push('Sin Categoría');
+      }
+      
+      categoriasPorArea[areaNombre] = categorias;
+      
+      // Crear botones de categorías
+      if (categoriaButtonsContainer && categorias.length > 0) {
+        console.log('🔧 Creando botones de categoría...');
+        categoriaButtonsContainer.innerHTML = '';
+        categorias.forEach(cat => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'categoria-button';
+          button.dataset.categoria = cat;
+          button.textContent = cat;
+          
+          button.addEventListener('click', () => selectCategoria(cat));
+          
+          categoriaButtonsContainer.appendChild(button);
+          console.log('  ➕ Botón creado:', cat);
+        });
+        console.log('✅ Botones agregados al contenedor. Total:', categoriaButtonsContainer.children.length);
+        console.log('📐 Contenedor visible:', categoriaButtonsContainer.offsetHeight, 'px');
+      } else if (categoriaButtonsContainer) {
+        categoriaButtonsContainer.innerHTML = '<p style="color: var(--muted);">No hay categorías disponibles</p>';
+      } else {
+        console.error('❌ categoriaButtonsContainer NO existe!');
+      }
+      
+      console.log('✅ Categorías cargadas como botones:', categorias);
+    } catch (error) {
+      console.error('❌ Error al cargar categorías:', error);
+      if (categoriaSelect) {
+        categoriaSelect.innerHTML = '<option value="">Error al cargar</option>';
+      }
+    }
+  }
+
+  // Seleccionar categoría
+  function selectCategoria(categoria) {
+    console.log('📂 Categoría seleccionada:', categoria);
+    
+    selectedCategoria = categoria;
+    
+    // Actualizar UI de botones de categoría
+    document.querySelectorAll('.categoria-button').forEach(btn => {
+      if (btn.dataset.categoria === categoria) {
+        btn.classList.add('active');
+        btn.classList.remove('disabled');
+      } else {
+        btn.classList.remove('active');
+        btn.classList.add('disabled');
+      }
+    });
+    
+    // Cargar platillos
+    loadPlatillosPorCategoria(categoria);
+  }
+
+  // Cargar platillos por categoría
+  function loadPlatillosPorCategoria(categoria) {
+    console.log('🍽️ Cargando platillos para categoría:', categoria, 'en área:', selectedArea ? selectedArea.nombre : 'ninguna');
+    console.log('📦 Total de platillos en menú:', menuItems.length);
+    
+    if (!selectedArea) {
+      console.error('❌ No hay área seleccionada');
+      return;
+    }
+    
+    let platillosFiltrados;
+    
+    if (categoria === 'Sin Categoría') {
+      // Mostrar platillos sin categoría
+      platillosFiltrados = menuItems.filter(item => {
+        const match = item.area.toLowerCase() === selectedArea.nombre.toLowerCase() &&
+          (!item.categoria || item.categoria === '' || item.categoria === 'null') &&
+          item.disponible;
+        if (match) {
+          console.log('✓ Platillo sin categoría encontrado:', item.nombre);
+        }
+        return match;
+      });
+    } else {
+      // Filtrar por área y categoría
+      platillosFiltrados = menuItems.filter(item => {
+        const areaMatch = item.area.toLowerCase() === selectedArea.nombre.toLowerCase();
+        const categoriaMatch = item.categoria === categoria;
+        const disponibleMatch = item.disponible;
+        
+        if (areaMatch && disponibleMatch) {
+          console.log(`  Platillo "${item.nombre}": área=${areaMatch}, categoría="${item.categoria}" (buscando "${categoria}") = ${categoriaMatch}`);
+        }
+        
+        return areaMatch && categoriaMatch && disponibleMatch;
+      });
+    }
+    
+    console.log('📊 Platillos filtrados:', platillosFiltrados.length);
+    console.log('📋 Platillos encontrados:', platillosFiltrados);
+    
+    // Crear botones de platillos
+    if (platilloButtonsContainer) {
+      platilloButtonsContainer.innerHTML = '';
+      
+      if (platillosFiltrados.length > 0) {
+        platillosFiltrados.forEach(platillo => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'platillo-button';
+          button.dataset.id = platillo.id;
+          button.dataset.nombre = platillo.nombre;
+          button.dataset.precio = platillo.precio;
+          
+          const nombreSpan = document.createElement('span');
+          nombreSpan.className = 'nombre';
+          nombreSpan.textContent = platillo.nombre;
+          
+          const precioSpan = document.createElement('span');
+          precioSpan.className = 'precio';
+          precioSpan.textContent = `Q${parseFloat(platillo.precio).toFixed(2)}`;
+          
+          button.appendChild(nombreSpan);
+          button.appendChild(precioSpan);
+          
+          button.addEventListener('click', () => selectPlatillo(platillo));
+          
+          platilloButtonsContainer.appendChild(button);
+        });
+      } else {
+        platilloButtonsContainer.innerHTML = '<p style="color: var(--warning); padding: 1rem; background: #fff3cd; border-radius: var(--r-sm); border: 1px solid #ffc107;">⚠️ No hay platillos disponibles en esta categoría</p>';
+      }
+    }
+    
+    // Mostrar contenedor de platillos
+    if (platilloContainer) {
+      platilloContainer.style.display = 'block';
+    }
+  }
+  
+  // Seleccionar platillo
+  function selectPlatillo(platillo) {
+    console.log('🍽️ Platillo seleccionado:', platillo.nombre);
+    
+    // Actualizar UI de botones
+    document.querySelectorAll('.platillo-button').forEach(btn => {
+      if (btn.dataset.id == platillo.id) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+    
+    // Actualizar precio y calcular subtotal
+    if (precio) {
+      precio.value = parseFloat(platillo.precio).toFixed(2);
+    }
+    calculateSubtotal();
+    
+    // Guardar selección actual para agregar a la orden
+    window.currentPlatilloSelected = platillo;
   }
 
   // Cargar menú completo
@@ -255,6 +507,7 @@
               precio: p.precio,
               descripcion: p.descripcion,
               area: grupo.area.nombre,
+              categoria: p.categoria || '', // Incluir categoría
               disponible: p.disponible !== undefined ? p.disponible : true
             }));
             return acc.concat(platillosConArea);
@@ -265,7 +518,28 @@
         menuItems = [];
       }
       
-      console.log('Menú cargado:', menuItems);
+      console.log('✅ Menú cargado:', menuItems.length, 'platillos');
+      console.log('📊 Muestra de platillos:', menuItems.slice(0, 5));
+      
+      // Log de estadísticas
+      const stats = {
+        total: menuItems.length,
+        conCategoria: menuItems.filter(p => p.categoria && p.categoria !== '').length,
+        sinCategoria: menuItems.filter(p => !p.categoria || p.categoria === '').length,
+        porArea: {}
+      };
+      
+      menuItems.forEach(p => {
+        if (!stats.porArea[p.area]) {
+          stats.porArea[p.area] = { total: 0, conCategoria: 0 };
+        }
+        stats.porArea[p.area].total++;
+        if (p.categoria && p.categoria !== '') {
+          stats.porArea[p.area].conCategoria++;
+        }
+      });
+      
+      console.log('📈 Estadísticas del menú:', stats);
     } catch (error) {
       handleError(error, 'Error al cargar menú');
     }
@@ -280,17 +554,6 @@
     }
 
     console.log('🔧 Configurando event listeners...');
-
-    // Remover listeners previos por si acaso (aunque no deberían existir)
-    if (areaSelect) {
-      areaSelect.removeEventListener('change', handleAreaChange);
-      areaSelect.addEventListener('change', handleAreaChange);
-    }
-
-    if (platilloSelect) {
-      platilloSelect.removeEventListener('change', handlePlatilloChange);
-      platilloSelect.addEventListener('change', handlePlatilloChange);
-    }
 
     if (cantidad) {
       cantidad.removeEventListener('input', calculateSubtotal);
@@ -343,52 +606,38 @@
   }
 
   // Manejar cambio de área
-  function handleAreaChange(e) {
-    const selectedArea = e.target.value;
+  // Manejar cambio de categoría
+  function handleCategoriaChange(e) {
+    const categoria = e.target.value;
+    console.log('📂 Categoría seleccionada:', categoria);
     
-    if (!platilloSelect) return;
-
-    // Filtrar platillos por área
-    const filteredItems = selectedArea 
-      ? menuItems.filter(item => item.area.toLowerCase() === selectedArea.toLowerCase())
-      : menuItems;
-
-    console.log('Platillos filtrados por área', selectedArea, ':', filteredItems);
-
-    // Actualizar select de platillos
-    platilloSelect.innerHTML = '<option value="">Seleccionar…</option>';
-    
-    if (filteredItems.length === 0) {
-      const option = document.createElement('option');
-      option.value = '';
-      option.textContent = 'No hay platillos en esta área';
-      option.disabled = true;
-      platilloSelect.appendChild(option);
-    } else {
-      filteredItems.forEach(item => {
-        const option = document.createElement('option');
-        option.value = item.id;
-        // Mostrar "(NO DISPONIBLE)" si el platillo está desactivado
-        const disponible = item.disponible !== undefined ? item.disponible : true;
-        option.textContent = disponible ? item.nombre : `${item.nombre} (NO DISPONIBLE)`;
-        option.dataset.precio = item.precio;
-        option.dataset.descripcion = item.descripcion || '';
-        option.dataset.disponible = disponible;
-        
-        // Estilo visual para platillos no disponibles
-        if (!disponible) {
-          option.style.color = '#999';
-          option.style.fontStyle = 'italic';
-        }
-        
-        platilloSelect.appendChild(option);
-      });
+    if (!categoria || categoria === '') {
+      // Ocultar selector de platillos si no hay categoría
+      if (platilloContainer) {
+        platilloContainer.style.display = 'none';
+      }
+      // Limpiar precio y subtotal
+      if (precio) precio.value = '';
+      if (subtotal) subtotal.value = '';
+      return;
     }
-
+    
+    // Cargar platillos de esta categoría
+    loadPlatillosPorCategoria(categoria);
+    
     // Limpiar precio y subtotal
     if (precio) precio.value = '';
     if (subtotal) subtotal.value = '';
   }
+
+  // Esta función ya no se usa (antes usábamos select de áreas)
+  // Ahora usamos botones de área + selectArea()
+  /*
+  function handleAreaChange(e) {
+    const selectedArea = e.target.value;
+    // ... código anterior ...
+  }
+  */
 
   // Manejar cambio de platillo
   function handlePlatilloChange(e) {
@@ -450,20 +699,12 @@
     
     try {
       // Validaciones
-      if (!platilloSelect?.value) {
+      if (!window.currentPlatilloSelected) {
         showNotification('Selecciona un platillo', 'error');
         return;
       }
 
-      // NUEVA VALIDACIÓN: Verificar si el platillo está disponible
-      const platilloOption = platilloSelect.selectedOptions[0];
-      const disponible = platilloOption.dataset.disponible;
-      
-      if (disponible === 'false') {
-        console.warn('⚠️ Intento de agregar platillo NO DISPONIBLE');
-        showNotification('❌ Este platillo NO está disponible. No se puede agregar a la orden.', 'error');
-        return;
-      }
+      const platillo = window.currentPlatilloSelected;
 
       if (!cantidad?.value || parseInt(cantidad.value) <= 0) {
         showNotification('Ingresa una cantidad válida', 'error');
@@ -472,11 +713,11 @@
 
       // Obtener datos del item
       const item = {
-        platilloId: parseInt(platilloSelect.value),
-        nombre: platilloOption.textContent,
-        area: areaSelect?.value || '',
+        platilloId: platillo.id,
+        nombre: platillo.nombre,
+        area: selectedArea?.nombre || '',
         cantidad: parseInt(cantidad.value),
-        precio: parseFloat(precio.value),
+        precio: parseFloat(platillo.precio),
         observaciones: observaciones?.value || '',
         observacionExtra: extraObservacion?.value || '',
         precioExtra: parseFloat(extraPrecio?.value || 0),
@@ -750,7 +991,7 @@
         
         // Redirigir a comanda-control después de 1 segundo con parámetro refresh
         setTimeout(() => {
-          window.location.href = '/templates/mesero/comanda-control.html?refresh=1&t=' + Date.now();
+          window.location.href = '/templates/mesero/comanda-control?refresh=1&t=' + Date.now();
         }, 1000);
       } else {
         // Crear nueva orden
@@ -768,7 +1009,7 @@
             sendOrderToKDS(ordenId);
           } else {
             // Redirigir a comanda-control para ver la orden creada
-            window.location.href = '/templates/mesero/comanda-control.html?refresh=1&t=' + Date.now();
+            window.location.href = '/templates/mesero/comanda-control?refresh=1&t=' + Date.now();
           }
         }, 500);
       }
@@ -785,7 +1026,7 @@
       
       // Redirigir a comanda-control para ver las órdenes
       setTimeout(() => {
-        window.location.href = '/templates/mesero/comanda-control.html?refresh=1&t=' + Date.now();
+        window.location.href = '/templates/mesero/comanda-control?refresh=1&t=' + Date.now();
       }, 1000);
     } catch (error) {
       handleError(error, 'Error al enviar orden a cocina');

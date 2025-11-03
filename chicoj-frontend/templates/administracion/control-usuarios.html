@@ -3,7 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Usuarios</title>
+  <title>Control de Usuarios - Chicoj</title>
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+  
+  <!-- IMPORTANTE: Auth simple sin interferir -->
+  <script src="/scripts/simple-auth.js?v=20251101k"></script>
+  
+  <!-- Meta tags para prevenir caché -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  
   <link rel="stylesheet" href="/css/base.css?v=20251025c">
   <link rel="stylesheet" href="/css/components.css?v=20251025c">
   <link rel="stylesheet" href="/css/utilities.css?v=20251025">
@@ -16,11 +30,14 @@
     <header class="encabezado">
       <div class="brand">
         <div class="logo-placeholder" aria-label="Logo"></div>
-        <h1>Restaurante Chicooj</h1>
+        <div>
+          <span class="badge">Somos</span>
+          <h1>Restaurante Chicoj</h1>
+        </div>
       </div>
       <nav class="acciones" aria-label="Acciones">
-        <a class="btn btn-outline" href="/main.html">Inicio</a>
-        <a class="btn btn-primary" href="/templates/login.html">Cerrar sesión</a>
+        <a class="btn btn-outline" href="/main">Inicio</a>
+        <a class="btn btn-primary" href="#" onclick="return ultraSimpleLogout(event)">Cerrar sesión</a>
       </nav>
     </header>
 
@@ -30,8 +47,8 @@
         <div class="tabla-header">
           <h2>Lista de usuarios</h2>
           <div class="acciones-header">
-            <a class="btn btn-outline" href="/templates/administracion/agregar_roles.html">+ Agregar rol</a>
-            <a class="btn btn-success" href="/templates/administracion/agregar_usuarios.html">+ Agregar usuario</a>
+            <a class="btn btn-outline" href="/templates/administracion/agregar_roles">+ Agregar rol</a>
+            <a class="btn btn-success" href="/templates/administracion/agregar_usuarios">+ Agregar usuario</a>
           </div>
         </div>
 
@@ -40,7 +57,7 @@
           <!-- Encabezados -->
           <div class="fila encabezados" role="row">
             <div class="col col-id" role="columnheader">ID</div>
-            <div class="col col-empleado" role="columnheader">Empleado</div>
+            <div class="col col-empleado" role="columnheader">Colaborador</div>
             <div class="col col-usuario" role="columnheader">Usuario</div>
             <div class="col col-rol" role="columnheader">Rol</div>
             <div class="col col-acciones" role="columnheader">Acciones</div>
@@ -89,6 +106,7 @@
   </div>
 
   <!-- Scripts -->
+  <script src="/scripts/ultra-simple-logout.js?v=20251101k"></script>
   <script src="/scripts/config.js"></script>
   <script src="/scripts/api.js"></script>
   <script src="/scripts/control-usuarios.js"></script>

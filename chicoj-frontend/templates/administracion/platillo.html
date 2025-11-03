@@ -3,11 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Platillos</title>
-  <link rel="stylesheet" href="/css/base.css?v=20251025b">
-  <link rel="stylesheet" href="/css/components.css?v=20251025b">
-  <link rel="stylesheet" href="/css/utilities.css?v=20251025">
-  <link rel="stylesheet" href="/css/estilos-platillos.css?v=20251025">
+  <title>Agregar Platillo - Chicoj</title>
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+  
+  <!-- IMPORTANTE: Auth simple sin interferir -->
+  <script src="/scripts/simple-auth.js?v=20251101k"></script>
+  
+  <!-- Meta tags para prevenir caché -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  
+  <link rel="stylesheet" href="/css/base.css?v=20251101g">
+  <link rel="stylesheet" href="/css/components.css?v=20251101g">
+  <link rel="stylesheet" href="/css/utilities.css?v=20251101g">
+  <link rel="stylesheet" href="/css/mejoras-ux.css?v=20251101g">
+  <link rel="stylesheet" href="/css/estilos-platillos.css?v=20251101g">
 </head>
 <body>
   <div class="contenedor-app">
@@ -15,16 +30,16 @@
     <!-- Header con logo y barra -->
     <header class="encabezado">
       <div class="brand">
-        <!-- Reemplaza por tu logo -->
-        <div class="logo-placeholder"></div>
-        <h1>Restaurante Chicooj</h1>
+        <div class="logo-placeholder" aria-label="Logo"></div>
+        <div>
+          <span class="badge">Somos</span>
+          <h1>Restaurante Chicoj</h1>
+        </div>
       </div>
 
       <nav class="acciones">
-        <a class="btn btn-outline" href="/main.html">Inicio</a>
-        <a class="btn btn-outline" href="/templates/usuarios.html">Usuarios</a>
-        <a class="btn btn-outline" href="#">Ayuda</a>
-        <a class="btn btn-primary" href="/templates/login.html">Cerrar Sesión</a>
+        <a class="btn btn-outline" href="/main">Inicio</a>
+        <a class="btn btn-primary" href="#" onclick="return ultraSimpleLogout(event)">Cerrar sesión</a>
       </nav>
     </header>
 
@@ -33,7 +48,7 @@
       <section class="formulario-card">
         <div class="encabezado-form">
           <h2>Ingrese Datos de Platillo</h2>
-          <a href="/templates/administracion/control-platillos.html" class="btn btn-outline btn-regresar">← Regresar</a>
+          <a href="/templates/administracion/control-platillos" class="btn btn-outline btn-regresar">← Regresar</a>
         </div>
 
         <form class="formulario" id="form-platillo">
@@ -77,6 +92,19 @@
               <select id="platillo-area" required>
                 <option value="">Seleccionar área...</option>
                 <!-- Se llenarán dinámicamente -->
+              </select>
+            </div>
+
+            <!-- Categoría -->
+            <div class="campo-grupo">
+              <label for="platillo-categoria">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                </svg>
+                Categoría
+              </label>
+              <select id="platillo-categoria">
+                <option value="">Primero seleccione un área...</option>
               </select>
             </div>
 
@@ -129,9 +157,10 @@
   </div>
 
   <!-- Scripts -->
-  <script src="/scripts/config.js?v=20251025"></script>
-  <script src="/scripts/api.js?v=20251025"></script>
-  <script src="/scripts/platillos.js?v=20251025b"></script>
+  <script src="/scripts/ultra-simple-logout.js?v=20251101k"></script>
+  <script src="/scripts/config.js?v=20251101f"></script>
+  <script src="/scripts/api.js?v=20251101f"></script>
+  <script src="/scripts/platillos.js?v=20251101f"></script>
 
 </body>
 </html>

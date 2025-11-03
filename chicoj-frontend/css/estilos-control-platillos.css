@@ -65,7 +65,7 @@
 /* Fila */
 .fila {
   display: grid;
-  grid-template-columns: 80px 1.5fr 120px 2fr 180px;
+  grid-template-columns: 80px 1.5fr 120px 2fr 140px 320px;
   gap: 0.75rem;
   align-items: center;
   border-top: 1px solid var(--border);
@@ -80,12 +80,19 @@
 
 /* Encabezados */
 .fila.encabezados {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-700) 100%);
-  font-weight: 600;
+  background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+  font-weight: 700;
   color: white;
   position: sticky;
   top: 0;
   z-index: 10;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.fila.encabezados .col {
+  color: white !important;
 }
 
 /* Filas alternadas */
@@ -114,21 +121,74 @@
   font-weight: 500;
 }
 
-.col-precio {
+/* Colores solo para filas de datos (NO headers) */
+.fila:not(.encabezados) .col-precio {
   font-weight: 700;
   color: var(--success);
 }
 
-.col-desc {
+.fila:not(.encabezados) .col-desc {
   color: var(--text-light);
   font-size: 0.9rem;
 }
 
+/* Headers siempre blancos */
+.fila.encabezados .col-id,
+.fila.encabezados .col-nombre,
+.fila.encabezados .col-precio,
+.fila.encabezados .col-desc,
+.fila.encabezados .col-estado,
+.fila.encabezados .col-acciones {
+  color: white !important;
+  font-weight: 700 !important;
+}
+
 .col-acciones {
   display: flex;
+  flex-direction: row !important;
   gap: 0.5rem;
   justify-content: flex-start;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+/* Botones de acción - Solo 2 colores */
+.col-acciones .btn {
+  border: none;
+  font-weight: 600;
+  padding: 0.5rem 0.875rem;
+  min-width: 95px;
+  font-size: 0.8125rem;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+/* Azul para acciones positivas */
+.col-acciones .btn-editar,
+.col-acciones .btn-activar {
+  background: var(--primary-600);
+  color: white;
+}
+
+.col-acciones .btn-editar:hover,
+.col-acciones .btn-activar:hover {
+  background: var(--primary-700);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+/* Rojo para acciones destructivas/negativas */
+.col-acciones .btn-eliminar,
+.col-acciones .btn-desactivar {
+  background: var(--danger-600);
+  color: white;
+}
+
+.col-acciones .btn-eliminar:hover,
+.col-acciones .btn-desactivar:hover {
+  background: var(--danger-700);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
 /* Badges de disponibilidad */

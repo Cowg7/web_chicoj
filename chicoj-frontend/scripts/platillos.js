@@ -7,6 +7,7 @@
     id: document.getElementById('platillo-id'),
     nombre: document.getElementById('platillo-nombre'),
     area: document.getElementById('platillo-area'),
+    categoria: document.getElementById('platillo-categoria'),
     precio: document.getElementById('platillo-precio'),
     descripcion: document.getElementById('platillo-descripcion')
   };
@@ -16,6 +17,13 @@
   let editMode = false;
   let platilloId = null;
   let areas = [];
+  
+  // Categorías predefinidas por área
+  const categoriasDefinidas = {
+    'Cocina': ['Desayunos', 'Almuerzo', 'Refacciones', 'Refacciones Típicas', 'Menú Infantil'],
+    'Bebidas': ['Bebidas Frías', 'Licuados', 'Cervezas', 'Bebidas Desechables'],
+    'Coffee': ['Café', 'Postres']
+  };
 
   // Inicializar
   async function init() {
@@ -23,7 +31,7 @@
     
     // Verificar autenticación
     if (!AuthManager.isAuthenticated()) {
-      window.location.href = '/templates/login.html';
+      window.location.href = '/templates/login';
       return;
     }
 
@@ -116,6 +124,15 @@
           const areaId = platillo.area.id_area || platillo.id_area;
           console.log('🏷️ Seleccionando área ID:', areaId);
           inputs.area.value = areaId;
+          
+          // Cargar categorías para esta área
+          handleAreaChange({ target: inputs.area });
+        }
+        
+        // Seleccionar categoría
+        if (inputs.categoria && platillo.categoria) {
+          console.log('📂 Seleccionando categoría:', platillo.categoria);
+          inputs.categoria.value = platillo.categoria;
         }
         
         console.log('✅ Datos cargados en el formulario');
@@ -130,6 +147,50 @@
   function setupEventListeners() {
     if (form) {
       form.addEventListener('submit', handleSubmit);
+    }
+    
+    // Listener para cambio de área
+    if (inputs.area) {
+      inputs.area.addEventListener('change', handleAreaChange);
+    }
+  }
+  
+  // Manejar cambio de área
+  function handleAreaChange(e) {
+    const areaId = e.target.value;
+    console.log('📍 Área seleccionada:', areaId);
+    
+    if (!areaId) {
+      if (inputs.categoria) {
+        inputs.categoria.innerHTML = '<option value="">Primero seleccione un área...</option>';
+      }
+      return;
+    }
+    
+    // Buscar el nombre del área
+    const area = areas.find(a => a.id_area == areaId);
+    if (!area) {
+      console.error('❌ Área no encontrada');
+      return;
+    }
+    
+    const areaNombre = area.nombre;
+    console.log('📂 Cargando categorías para:', areaNombre);
+    
+    // Obtener categorías para esta área
+    const categorias = categoriasDefinidas[areaNombre] || [];
+    
+    // Actualizar select de categorías
+    if (inputs.categoria) {
+      inputs.categoria.innerHTML = '<option value="">Sin categoría</option>';
+      categorias.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat;
+        option.textContent = cat;
+        inputs.categoria.appendChild(option);
+      });
+      
+      console.log('✅ Categorías cargadas:', categorias);
     }
   }
 
@@ -156,14 +217,17 @@
     }
 
     // Preparar datos
+    const categoriaValue = inputs.categoria?.value?.trim();
     const platilloData = {
       nombre: inputs.nombre.value.trim(),
       precio: parseFloat(inputs.precio.value),
       descripcion: inputs.descripcion?.value.trim() || '',
-      id_area: parseInt(inputs.area.value)
+      id_area: parseInt(inputs.area.value),
+      categoria: categoriaValue && categoriaValue !== '' ? categoriaValue : null // Incluir categoría (null si vacío)
     };
 
     console.log('📦 Datos a enviar:', platilloData);
+    console.log('📂 Categoría seleccionada:', categoriaValue, '→', platilloData.categoria);
 
     try {
       if (editMode && platilloId) {
@@ -180,7 +244,7 @@
 
       // Redirigir después de 1 segundo
       setTimeout(() => {
-        window.location.href = '/templates/administracion/control-platillos.html';
+        window.location.href = '/templates/administracion/control-platillos';
       }, 1000);
     } catch (error) {
       console.error('❌ Error:', error);

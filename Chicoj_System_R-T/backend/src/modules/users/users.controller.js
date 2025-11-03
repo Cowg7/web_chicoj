@@ -228,3 +228,116 @@ export const getRoles = asyncHandler(async (req, res) => {
   });
 });
 
+// POST /users/roles - Crear un nuevo rol
+export const createRole = asyncHandler(async (req, res) => {
+  const { nombre_rol, descripcion } = req.body;
+
+  // Validar campos requeridos
+  if (!nombre_rol) {
+    throw new AppError('El nombre del rol es requerido', 400);
+  }
+
+  // Verificar que el rol no exista
+  const existingRole = await prisma.roles.findUnique({
+    where: { nombre_rol }
+  });
+
+  if (existingRole) {
+    throw new AppError('Ya existe un rol con ese nombre', 400);
+  }
+
+  // Crear el rol
+  const newRole = await prisma.roles.create({
+    data: {
+      nombre_rol,
+      descripcion: descripcion || null
+    }
+  });
+
+  console.log(`✅ Rol creado: ${newRole.nombre_rol} (ID: ${newRole.id_rol})`);
+
+  res.status(201).json({
+    success: true,
+    message: 'Rol creado exitosamente',
+    data: { role: newRole }
+  });
+});
+
+// PATCH /users/roles/:id - Actualizar un rol
+export const updateRole = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { nombre_rol, descripcion } = req.body;
+
+  // Verificar que el rol existe
+  const existingRole = await prisma.roles.findUnique({
+    where: { id_rol: parseInt(id) }
+  });
+
+  if (!existingRole) {
+    throw new AppError('Rol no encontrado', 404);
+  }
+
+  // Si se está cambiando el nombre, verificar que no exista otro con ese nombre
+  if (nombre_rol && nombre_rol !== existingRole.nombre_rol) {
+    const duplicateRole = await prisma.roles.findUnique({
+      where: { nombre_rol }
+    });
+
+    if (duplicateRole) {
+      throw new AppError('Ya existe un rol con ese nombre', 400);
+    }
+  }
+
+  // Actualizar el rol
+  const updatedRole = await prisma.roles.update({
+    where: { id_rol: parseInt(id) },
+    data: {
+      ...(nombre_rol && { nombre_rol }),
+      ...(descripcion !== undefined && { descripcion })
+    }
+  });
+
+  console.log(`✅ Rol actualizado: ${updatedRole.nombre_rol} (ID: ${updatedRole.id_rol})`);
+
+  res.json({
+    success: true,
+    message: 'Rol actualizado exitosamente',
+    data: { role: updatedRole }
+  });
+});
+
+// DELETE /users/roles/:id - Eliminar un rol
+export const deleteRole = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  // Verificar que el rol existe
+  const existingRole = await prisma.roles.findUnique({
+    where: { id_rol: parseInt(id) }
+  });
+
+  if (!existingRole) {
+    throw new AppError('Rol no encontrado', 404);
+  }
+
+  // Verificar que no haya usuarios con este rol
+  const usersWithRole = await prisma.usuarios.count({
+    where: { id_rol: parseInt(id) }
+  });
+
+  if (usersWithRole > 0) {
+    throw new AppError(`No se puede eliminar. Hay ${usersWithRole} usuario(s) con este rol`, 400);
+  }
+
+  // Eliminar el rol
+  await prisma.roles.delete({
+    where: { id_rol: parseInt(id) }
+  });
+
+  console.log(`🗑️ Rol eliminado: ${existingRole.nombre_rol} (ID: ${existingRole.id_rol})`);
+
+  res.json({
+    success: true,
+    message: 'Rol eliminado exitosamente'
+  });
+});
+

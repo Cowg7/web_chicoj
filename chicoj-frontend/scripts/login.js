@@ -34,15 +34,15 @@
 
   // Mapeo de roles a rutas
   const ROLE_REDIRECTS = {
-    administrador: "/main.html",
-    admin: "/main.html",
-    gerente: "/templates/reportes/reportes.html",
-    cajero: "/templates/caja/caja.html",
-    mesero: "/templates/mesero/mesero_comanda.html",
-    tour: "/templates/tour/tour.html",
-    cocina: "/templates/cocina/cocina.html?area=Cocina",
-    bebidas: "/templates/cocina/cocina.html?area=Bebidas",
-    coffee: "/templates/cocina/cocina.html?area=Coffee"
+    administrador: "/main",
+    admin: "/main",
+    gerente: "/templates/reportes/reportes",
+    cajero: "/templates/caja/caja",
+    mesero: "/templates/mesero/mesero_comanda",
+    tour: "/templates/tour/tour",
+    cocina: "/templates/cocina/cocina?area=Cocina",
+    bebidas: "/templates/cocina/cocina?area=Bebidas",
+    coffee: "/templates/cocina/cocina?area=Coffee"
   };
 
   if (form) {
@@ -78,7 +78,7 @@
 
           // Redirigir según el rol
           const role = userData.rol || userData.role || 'admin';
-          const redirect = ROLE_REDIRECTS[role.toLowerCase()] || "/main.html";
+          const redirect = ROLE_REDIRECTS[role.toLowerCase()] || "/main";
           
           window.location.href = redirect;
         } else {

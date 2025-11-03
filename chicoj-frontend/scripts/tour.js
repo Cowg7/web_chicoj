@@ -33,15 +33,17 @@ console.log('🚀 tour.js CARGADO - Versión 20251025c');
     console.log('🔐 Verificando autenticación...');
     if (!AuthManager.isAuthenticated()) {
       console.log('❌ No autenticado, redirigiendo a login');
-      window.location.href = '/templates/login.html';
+      window.location.href = '/templates/login';
       return;
     }
     console.log('✅ Usuario autenticado');
 
-    // Configurar fecha actual por defecto
+    // Configurar fecha actual por defecto y máxima
     if (inputs.fecha) {
-      inputs.fecha.value = new Date().toISOString().split('T')[0];
-      console.log('📅 Fecha por defecto configurada:', inputs.fecha.value);
+      const todayStr = new Date().toISOString().split('T')[0];
+      inputs.fecha.value = todayStr;
+      inputs.fecha.max = todayStr; // No permitir fechas futuras
+      console.log('📅 Fecha configurada (hoy como máximo):', inputs.fecha.value);
     }
 
     // Verificar si estamos en modo edición
@@ -282,7 +284,7 @@ console.log('🚀 tour.js CARGADO - Versión 20251025c');
 
       // Redirigir después de 1 segundo
       setTimeout(function() {
-        window.location.href = '/templates/tour/tour-control.html';
+        window.location.href = '/templates/tour/tour-control';
       }, 1000);
     } catch (error) {
       console.error('❌ Error completo:', error);

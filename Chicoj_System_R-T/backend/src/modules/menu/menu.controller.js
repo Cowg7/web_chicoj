@@ -48,6 +48,7 @@ export const getMenu = asyncHandler(async (req, res) => {
       nombre: platillo.nombre,
       descripcion: platillo.descripcion,
       precio: parseFloat(platillo.precio),
+      categoria: platillo.categoria, // ⭐ AGREGAR CATEGORÍA
       disponible: platillo.disponible !== undefined ? platillo.disponible : true
     });
     return acc;
@@ -87,7 +88,7 @@ export const getPlatillo = asyncHandler(async (req, res) => {
 export const createPlatillo = asyncHandler(async (req, res) => {
   console.log('📝 Creando platillo:', req.body);
   
-  const { nombre, descripcion, precio, id_area, area } = req.body;
+  const { nombre, descripcion, precio, id_area, area, categoria } = req.body;
   
   // Aceptar tanto id_area como area (nombre)
   const areaIdentifier = id_area || area;
@@ -131,7 +132,8 @@ export const createPlatillo = asyncHandler(async (req, res) => {
         nombre,
         descripcion: descripcion || '',
         precio: parseFloat(precio),
-        id_area: areaEncontrada.id_area
+        id_area: areaEncontrada.id_area,
+        categoria: categoria || null // Agregar categoría
       },
       include: {
         area: true
@@ -154,7 +156,7 @@ export const createPlatillo = asyncHandler(async (req, res) => {
 // PATCH /menu/:id - Actualizar platillo
 export const updatePlatillo = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { nombre, descripcion, precio, id_area } = req.body;
+  const { nombre, descripcion, precio, id_area, categoria } = req.body;
   
   const platillo = await prisma.platillos.update({
     where: { id_platillo: parseInt(id) },
@@ -162,7 +164,8 @@ export const updatePlatillo = asyncHandler(async (req, res) => {
       ...(nombre && { nombre }),
       ...(descripcion !== undefined && { descripcion }),
       ...(precio && { precio }),
-      ...(id_area && { id_area: parseInt(id_area) })
+      ...(id_area && { id_area: parseInt(id_area) }),
+      ...(categoria !== undefined && { categoria }) // Agregar categoría
     },
     include: {
       area: true

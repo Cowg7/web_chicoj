@@ -3,47 +3,71 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reportes - Chicoj</title>
-  <link rel="stylesheet" href="/css/base.css?v=20251025c">
-  <link rel="stylesheet" href="/css/components.css?v=20251025c">
-  <link rel="stylesheet" href="/css/utilities.css?v=20251025">
+  <title>Reportes y Estadísticas - Chicoj</title>
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+  
+  <!-- IMPORTANTE: Auth simple sin interferir -->
+  <script src="/scripts/simple-auth.js?v=20251101k"></script>
+  
+  <!-- Meta tags para prevenir caché -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  
+  <link rel="stylesheet" href="/css/base.css?v=20251101g">
+  <link rel="stylesheet" href="/css/components.css?v=20251101g">
+  <link rel="stylesheet" href="/css/utilities.css?v=20251101g">
+  <link rel="stylesheet" href="/css/mejoras-ux.css?v=20251101g">
+  <link rel="stylesheet" href="/css/tablas-modernas.css?v=20251101g">
+  <link rel="stylesheet" href="/css/responsive.css?v=20251101k">
+  <link rel="stylesheet" href="/css/responsive-reportes.css?v=20251101k">
   <style>
     .reportes-main {
-      padding: 2rem;
-      max-width: 1400px;
+      padding: 1.5rem;
+      max-width: 1600px;
       margin: 0 auto;
     }
+    
+    /* Panel de Filtros Mejorado */
     .filter-panel {
       background: white;
       padding: 1.5rem;
-      border-radius: var(--r-md);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      margin-bottom: 2rem;
+      border-radius: var(--r-lg);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin-bottom: 1.5rem;
     }
     .filter-panel h2 {
-      margin: 0 0 1.5rem 0;
+      margin: 0 0 1rem 0;
       color: var(--primary);
       font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
     .filter-group {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 1rem;
       margin-bottom: 1rem;
     }
     .filter-group label {
       display: block;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.4rem;
       font-weight: 600;
-      color: #333;
+      color: #555;
+      font-size: 0.875rem;
     }
     .filter-group input,
     .filter-group select {
       width: 100%;
-      padding: 0.75rem;
+      padding: 0.65rem;
       border: 1px solid var(--border);
       border-radius: var(--r-sm);
-      font-size: 1rem;
+      font-size: 0.95rem;
     }
     .filter-group input:focus,
     .filter-group select:focus {
@@ -53,16 +77,20 @@
     }
     .filter-actions {
       display: flex;
-      gap: 1rem;
+      gap: 0.75rem;
+      flex-wrap: wrap;
     }
     .filter-actions button {
-      padding: 0.75rem 2rem;
+      padding: 0.65rem 1.5rem;
       border: none;
       border-radius: var(--r-sm);
       cursor: pointer;
       font-weight: 600;
-      font-size: 1rem;
+      font-size: 0.9rem;
       transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
     }
     .btn-generar {
       background: var(--primary);
@@ -71,6 +99,7 @@
     .btn-generar:hover {
       background: #1976D2;
       transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(25, 118, 210, 0.3);
     }
     .btn-limpiar {
       background: #f5f5f5;
@@ -86,44 +115,126 @@
     .btn-pdf:hover {
       background: #b71c1c;
       transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(211, 47, 47, 0.3);
     }
-    .dashboard-grid {
+    .btn-excel {
+      background: #107c41;
+      color: white;
+    }
+    .btn-excel:hover {
+      background: #0e6b38;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(16, 124, 65, 0.3);
+    }
+    
+    /* Métricas KPI - Horizontal y Compactas */
+    .kpi-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
     }
+    .kpi-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 1rem;
+      border-radius: var(--r-md);
+      color: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      transition: all 0.3s;
+    }
+    .kpi-card:nth-child(1) {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    .kpi-card:nth-child(2) {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+    .kpi-card:nth-child(3) {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+    .kpi-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    }
+    .kpi-label {
+      font-size: 0.85rem;
+      opacity: 0.95;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .kpi-value {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 0.25rem;
+    }
+    .kpi-subtitle {
+      font-size: 0.75rem;
+      opacity: 0.85;
+    }
+    
+    /* Grid de Gráficas - Horizontal */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    /* Tarjetas de Reportes Mejoradas */
     .report-card {
       background: white;
       padding: 1.5rem;
-      border-radius: var(--r-md);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      transition: transform 0.2s;
+      border-radius: var(--r-lg);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: transform 0.2s, box-shadow 0.2s;
     }
     .report-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
     }
     .report-card h3 {
       margin: 0 0 1rem 0;
       color: #333;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       border-bottom: 2px solid var(--primary);
-      padding-bottom: 0.5rem;
+      padding-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .report-card .card-title {
       display: flex;
       align-items: center;
       gap: 0.5rem;
     }
+    .chart-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .btn-download-chart {
+      padding: 0.4rem 0.8rem;
+      background: #f5f5f5;
+      border: none;
+      border-radius: var(--r-sm);
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+    .btn-download-chart:hover {
+      background: #e0e0e0;
+      transform: scale(1.05);
+    }
     .stat-value {
-      font-size: 2.5rem;
+      font-size: 2rem;
       font-weight: bold;
       color: var(--primary);
       text-align: center;
-      margin: 1rem 0;
+      margin: 0.5rem 0;
     }
     .report-table {
       width: 100%;
       border-collapse: collapse;
+      font-size: 0.9rem;
     }
     .report-table th {
       background: #f5f5f5;
@@ -131,6 +242,7 @@
       text-align: left;
       font-weight: 600;
       border-bottom: 2px solid var(--border);
+      font-size: 0.85rem;
     }
     .report-table td {
       padding: 0.75rem;
@@ -138,17 +250,6 @@
     }
     .report-table tr:hover {
       background: #f9f9f9;
-    }
-    .chart-placeholder {
-      height: 200px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      border-radius: var(--r-sm);
-      color: #666;
-      font-style: italic;
-      font-size: 0.9rem;
     }
     .loading {
       text-align: center;
@@ -167,7 +268,28 @@
       font-style: italic;
     }
     .icon-stat {
-      font-size: 1.5rem;
+      font-size: 1.3rem;
+    }
+    
+    /* Responsivo */
+    @media (max-width: 1200px) {
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 768px) {
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+      .kpi-value {
+        font-size: 1.5rem;
+      }
+      .filter-actions {
+        flex-direction: column;
+      }
+      .filter-actions button {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -177,11 +299,14 @@
     <header class="encabezado">
       <div class="brand">
         <div class="logo-placeholder" aria-label="Logo"></div>
-        <h1>Restaurante Chicooj</h1>
+        <div>
+          <span class="badge">Somos</span>
+          <h1>Restaurante Chicoj</h1>
+        </div>
       </div>
       <nav class="acciones" aria-label="Acciones">
-        <a class="btn btn-outline" href="/main.html">Inicio</a>
-        <a class="btn btn-primary" href="/templates/login.html">Cerrar sesión</a>
+        <a class="btn btn-outline" href="/main">Inicio</a>
+        <a class="btn btn-primary" href="#" onclick="return ultraSimpleLogout(event)">Cerrar sesión</a>
       </nav>
     </header>
 
@@ -192,11 +317,11 @@
         <div class="filter-group">
           <div>
             <label for="fecha_desde">Fecha Desde:</label>
-            <input type="date" id="fecha_desde">
+            <input type="date" id="fecha_desde" max="">
           </div>
           <div>
             <label for="fecha_hasta">Fecha Hasta:</label>
-            <input type="date" id="fecha_hasta">
+            <input type="date" id="fecha_hasta" max="">
           </div>
           <div>
             <label for="tipo_reporte">Tipo de Reporte:</label>
@@ -210,69 +335,98 @@
           </div>
         </div>
         <div class="filter-actions">
-          <button class="btn-generar" id="btn-generar"> Generar Reporte</button>
-          <button class="btn-limpiar" id="btn-limpiar"> Limpiar Filtros</button>
-          <button class="btn-pdf" id="btn-generar-pdf"> Descargar PDF</button>
+          <button class="btn-generar" id="btn-generar">📊 Generar</button>
+          <button class="btn-limpiar" id="btn-limpiar">🔄 Limpiar</button>
+          <button class="btn-excel" id="btn-descargar-excel">📊 Excel Completo</button>
+          <button class="btn-pdf" id="btn-pdf-platillos">📄 PDF Platillos</button>
+          <button class="btn-pdf" id="btn-pdf-areas">📄 PDF Áreas</button>
+          <button class="btn-pdf" id="btn-pdf-horas">📄 PDF Horas</button>
         </div>
       </div>
 
-      <!-- Dashboard -->
-      <div class="dashboard-grid">
+      <!-- Métricas KPI - Tarjetas Pequeñas Horizontales -->
+      <div class="kpi-grid">
         <!-- Ventas Totales -->
-        <div class="report-card">
-          <h3><span class="icon-stat"></span> Ventas Totales</h3>
-          <div class="stat-value" id="stat-ventas-totales">Q 0.00</div>
-          <div class="chart-placeholder" id="chart-ventas">
-            Cargando datos...
-          </div>
+        <div class="kpi-card">
+          <div class="kpi-label">💰 Ventas Totales</div>
+          <div class="kpi-value" id="stat-ventas-totales">Q 0.00</div>
+          <div class="kpi-subtitle">En el período seleccionado</div>
         </div>
 
         <!-- Órdenes Completadas -->
-        <div class="report-card">
-          <h3><span class="icon-stat"></span> Órdenes Completadas</h3>
-          <div class="stat-value" id="stat-ordenes-totales">0</div>
-          <div class="chart-placeholder" id="chart-ordenes">
-            Cargando datos...
-          </div>
+        <div class="kpi-card">
+          <div class="kpi-label">✅ Órdenes Completadas</div>
+          <div class="kpi-value" id="stat-ordenes-totales">0</div>
+          <div class="kpi-subtitle">Finalizadas</div>
         </div>
 
         <!-- Ticket Promedio -->
+        <div class="kpi-card">
+          <div class="kpi-label">🎫 Ticket Promedio</div>
+          <div class="kpi-value" id="stat-ticket-promedio">Q 0.00</div>
+          <div class="kpi-subtitle">Por orden</div>
+        </div>
+      </div>
+
+      <!-- Gráficas - Layout Horizontal -->
+      <div class="charts-grid">
+        <!-- Platillos Más Vendidos -->
         <div class="report-card">
-          <h3><span class="icon-stat"></span> Ticket Promedio</h3>
-          <div class="stat-value" id="stat-ticket-promedio">Q 0.00</div>
-          <div class="chart-placeholder" id="chart-ticket">
-            Cargando datos...
+          <h3>
+            <span class="card-title">
+              <span class="icon-stat">🍽️</span> Top 10 - Platillos Más Vendidos
+            </span>
+            <div class="chart-actions">
+              <button class="btn-download-chart" id="btn-download-platillos" title="Descargar gráfica">
+                📥 PNG
+              </button>
+            </div>
+          </h3>
+          <div style="margin-bottom: 1.5rem;">
+            <canvas id="chart-platillos" style="max-height: 300px;"></canvas>
+          </div>
+          <div id="content-platillos">
+            <div class="loading">Cargando datos...</div>
+          </div>
+        </div>
+
+        <!-- Horas Pico -->
+        <div class="report-card">
+          <h3>
+            <span class="card-title">
+              <span class="icon-stat">⏰</span> Horas Pico
+            </span>
+            <div class="chart-actions">
+              <button class="btn-download-chart" id="btn-download-horas" title="Descargar gráfica">
+                📥 PNG
+              </button>
+            </div>
+          </h3>
+          <div style="margin-bottom: 1.5rem;">
+            <canvas id="chart-horas" style="max-height: 300px;"></canvas>
+          </div>
+          <div id="content-horas">
+            <div class="loading">Cargando datos...</div>
           </div>
         </div>
       </div>
 
-      <!-- Platillos Más Vendidos -->
-      <div class="report-card">
-        <h3><span class="icon-stat"></span> Top 10 - Platillos Más Vendidos</h3>
-        <div style="margin-bottom: 2rem;">
-          <canvas id="chart-platillos" style="max-height: 400px;"></canvas>
-        </div>
-        <div id="content-platillos">
-          <div class="loading">Cargando datos...</div>
-        </div>
       </div>
 
-      <!-- Horas Pico -->
+      <!-- Ingresos por Área - Ancho Completo -->
       <div class="report-card">
-        <h3><span class="icon-stat"></span> Horas Pico</h3>
-        <div style="margin-bottom: 2rem;">
-          <canvas id="chart-horas" style="max-height: 400px;"></canvas>
-        </div>
-        <div id="content-horas">
-          <div class="loading">Cargando datos...</div>
-        </div>
-      </div>
-
-      <!-- Ingresos por Área -->
-      <div class="report-card">
-        <h3><span class="icon-stat"></span> Ingresos por Área</h3>
-        <div style="margin-bottom: 2rem;">
-          <canvas id="chart-areas" style="max-height: 400px;"></canvas>
+        <h3>
+          <span class="card-title">
+            <span class="icon-stat">📍</span> Ingresos por Área
+          </span>
+          <div class="chart-actions">
+            <button class="btn-download-chart" id="btn-download-areas" title="Descargar gráfica">
+              📥 PNG
+            </button>
+          </div>
+        </h3>
+        <div style="margin-bottom: 1.5rem;">
+          <canvas id="chart-areas" style="max-height: 350px;"></canvas>
         </div>
         <div id="content-areas">
           <div class="loading">Cargando datos...</div>
@@ -286,10 +440,18 @@
   </div>
 
   <!-- Scripts -->
+  <!-- Librerías -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <script src="/scripts/config.js?v=20251025"></script>
-  <script src="/scripts/api.js?v=20251025"></script>
-  <script src="/scripts/access-control.js"></script>
-  <script src="/scripts/reportes.js?v=20251025f"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  
+  <!-- App Scripts -->
+  <script src="/scripts/ultra-simple-logout.js?v=20251101k"></script>
+  <script src="/scripts/config.js?v=20251101h"></script>
+  <script src="/scripts/api.js?v=20251101d"></script>
+  <script src="/scripts/access-control.js?v=20251101d"></script>
+  <script src="/scripts/reportes.js?v=20251101d"></script>
+  <script src="/scripts/reportes-pdf.js?v=20251101d"></script>
 </body>
 </html>

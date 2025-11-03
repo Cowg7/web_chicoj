@@ -1,0 +1,90 @@
+/**
+ * SISTEMA DE AUTENTICACIÓN ULTRA SIMPLE
+ * Sin interferir con la página
+ */
+
+(function() {
+  'use strict';
+  
+  const isLoginPage = window.location.pathname.includes('login');
+  
+  console.log('🔒 Simple Auth: Verificando...', {
+    ruta: window.location.pathname,
+    esLogin: isLoginPage
+  });
+  
+  if (isLoginPage) {
+    console.log('ℹ️ Simple Auth: Página de login, permitiendo acceso');
+    return;
+  }
+  
+  // Verificar token
+  const token = localStorage.getItem('auth_token');
+  
+  if (!token) {
+    console.log('⛔ Simple Auth: SIN TOKEN - Redirigiendo a login');
+    window.location.replace('/templates/login?auth=required&t=' + Date.now());
+    throw new Error('Sin token');
+  }
+  
+  console.log('✅ Simple Auth: Token válido, acceso permitido');
+})();
+
+// Verificar cada 1 segundo (más suave que 500ms)
+setInterval(function() {
+  const isLoginPage = window.location.pathname.includes('login');
+  if (isLoginPage) return;
+  
+  const token = localStorage.getItem('auth_token');
+  if (!token) {
+    console.log('⛔ Token perdido durante navegación - Redirigiendo');
+    window.location.replace('/templates/login?auth=expired&t=' + Date.now());
+  }
+}, 1000);
+
+// Verificar en pageshow (bfcache - botón atrás)
+window.addEventListener('pageshow', function(e) {
+  const isLoginPage = window.location.pathname.includes('login');
+  if (isLoginPage) return;
+  
+  // Si viene del cache (botón atrás)
+  if (e.persisted) {
+    console.log('📜 Página restaurada desde bfcache (botón atrás detectado)');
+    
+    const token = localStorage.getItem('auth_token');
+    if (!token) {
+      console.log('⛔ Sin token en bfcache - Redirigiendo a login');
+      window.location.replace('/templates/login?auth=cached&t=' + Date.now());
+    } else {
+      console.log('⚠️ Token encontrado en bfcache - Verificando validez...');
+      // El problema: si acabamos de hacer logout, el token puede seguir aquí por un momento
+      // Esperar un poco y verificar de nuevo
+      setTimeout(function() {
+        const tokenCheck = localStorage.getItem('auth_token');
+        if (!tokenCheck) {
+          console.log('⛔ Token ya no existe - Redirigiendo');
+          window.location.replace('/templates/login?auth=expired&t=' + Date.now());
+        } else {
+          console.log('✅ Token válido confirmado - Permitiendo acceso sin recargar');
+          // NO hacemos nada - dejamos que la página funcione normalmente
+        }
+      }, 100);
+    }
+  }
+});
+
+// Verificar cuando la página se hace visible (cambio de pestaña)
+document.addEventListener('visibilitychange', function() {
+  const isLoginPage = window.location.pathname.includes('login');
+  if (isLoginPage || document.hidden) return;
+  
+  console.log('👁️ Página ahora visible - Re-verificando token');
+  const token = localStorage.getItem('auth_token');
+  if (!token) {
+    console.log('⛔ Sin token al volver a la pestaña - Redirigiendo');
+    window.location.replace('/templates/login?auth=visibility&t=' + Date.now());
+  }
+});
+
+console.log('✅ Simple Auth cargado y activo');
+

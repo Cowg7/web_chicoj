@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test - Fecha Máxima</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+    }
+    .test-group {
+      margin: 20px 0;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 5px;
+    }
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    input[type="date"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 2px solid #ddd;
+      border-radius: 5px;
+    }
+    .info {
+      margin-top: 10px;
+      padding: 10px;
+      background: #e3f2fd;
+      border-left: 4px solid #2196f3;
+      font-size: 14px;
+    }
+    .success {
+      background: #e8f5e9;
+      border-left-color: #4caf50;
+    }
+    .error {
+      background: #ffebee;
+      border-left-color: #f44336;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📅 Test de Fecha Máxima</h1>
+    
+    <div class="test-group">
+      <h3>Test 1: Con atributo max en HTML</h3>
+      <label for="fecha1">Fecha (max="2025-11-01"):</label>
+      <input type="date" id="fecha1" max="2025-11-01">
+      <div class="info success">
+        ✅ Este campo tiene max="2025-11-01" directamente en HTML.
+        <br>NO deberías poder seleccionar fechas después del 1 de noviembre 2025.
+      </div>
+    </div>
+
+    <div class="test-group">
+      <h3>Test 2: Con JavaScript (como tour.js)</h3>
+      <label for="fecha2">Fecha (se establece max con JS):</label>
+      <input type="date" id="fecha2">
+      <div class="info" id="info2">
+        ⏳ Configurando fecha máxima con JavaScript...
+      </div>
+    </div>
+
+    <div class="test-group">
+      <h3>Test 3: Sin restricción (para comparar)</h3>
+      <label for="fecha3">Fecha (SIN max):</label>
+      <input type="date" id="fecha3">
+      <div class="info error">
+        ❌ Este campo NO tiene restricción.
+        <br>PUEDES seleccionar cualquier fecha futura.
+      </div>
+    </div>
+
+    <div class="test-group">
+      <h3>📊 Información del Navegador</h3>
+      <div id="browser-info" class="info"></div>
+    </div>
+  </div>
+
+  <script>
+    // Test 2: Establecer fecha máxima con JavaScript
+    const fecha2 = document.getElementById('fecha2');
+    const info2 = document.getElementById('info2');
+    
+    if (fecha2) {
+      const today = new Date();
+      const todayStr = today.toISOString().split('T')[0];
+      
+      console.log('📅 Estableciendo fecha máxima:', todayStr);
+      fecha2.max = todayStr;
+      fecha2.value = todayStr;
+      
+      info2.className = 'info success';
+      info2.innerHTML = `
+        ✅ Fecha máxima establecida con JavaScript: <strong>${todayStr}</strong>
+        <br>NO deberías poder seleccionar fechas futuras.
+        <br><br>
+        <code>fecha2.max = "${todayStr}"</code>
+      `;
+      
+      console.log('✅ Atributo max establecido:', fecha2.max);
+      console.log('✅ Valor actual:', fecha2.value);
+    }
+
+    // Mostrar info del navegador
+    const browserInfo = document.getElementById('browser-info');
+    browserInfo.innerHTML = `
+      <strong>Navegador:</strong> ${navigator.userAgent}
+      <br><br>
+      <strong>Fecha de hoy:</strong> ${new Date().toISOString().split('T')[0]}
+      <br><br>
+      <strong>Zona horaria:</strong> ${Intl.DateTimeFormat().resolvedOptions().timeZone}
+    `;
+
+    // Event listeners para mostrar qué fecha se seleccionó
+    document.querySelectorAll('input[type="date"]').forEach(input => {
+      input.addEventListener('change', function() {
+        console.log(`📅 Fecha seleccionada en ${this.id}:`, this.value);
+        console.log(`   Fecha máxima permitida:`, this.max || 'SIN LÍMITE');
+        
+        if (this.max && this.value > this.max) {
+          alert('⚠️ ERROR: Seleccionaste una fecha mayor a la permitida!\n\nMax: ' + this.max + '\nSeleccionada: ' + this.value);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+

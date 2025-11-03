@@ -4,10 +4,62 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Restaurante Chicoj - Sistema de Gestión</title>
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+  <link rel="manifest" href="/assets/site.webmanifest">
+  
   <link rel="stylesheet" href="/css/base.css">
   <link rel="stylesheet" href="/css/components.css">
   <link rel="stylesheet" href="/css/utilities.css">
   <style>
+    /* Header con logo UMG */
+    .encabezado {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+    }
+    
+    .logo-chicoj {
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+    }
+
+    .header-derecha {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .btn-sobre-nosotros {
+      padding: 8px 20px;
+      background: #4CAF50;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .btn-sobre-nosotros:hover {
+      background: #45a049;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    
+    .logo-umg-estatico {
+      width: 50px;
+      height: auto;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+    }
+
     .welcome-container {
       display: flex;
       flex-direction: column;
@@ -74,24 +126,24 @@
   <div class="contenedor-app">
     <header class="encabezado">
       <div class="brand">
-        <div class="logo-placeholder" aria-label="Logo"></div>
+        <img src="/assets/favicon-96x96.png" alt="Logo Chicoj" class="logo-chicoj">
         <h1>Restaurante Chicoj</h1>
       </div>
-      <nav class="acciones" aria-label="Acciones">
-        <span id="backend-health" style="margin-right: 16px; font-size: 0.9rem;">
-          <span style="color: #999;">● Verificando...</span>
-        </span>
-        <a class="btn btn-primary" href="/templates/login.html">Iniciar Sesión</a>
-      </nav>
+      
+      <!-- Botón Sobre Nosotros + Logo UMG -->
+      <div class="header-derecha">
+        <a href="/sobre-nosotros" class="btn-sobre-nosotros">Sobre Nosotros</a>
+        <img src="/imgs/umg_logo.png" alt="Logo UMG" class="logo-umg-estatico">
+      </div>
     </header>
 
     <main class="contenido" role="main">
       <div class="welcome-container">
         <h2 class="welcome-title">Bienvenido a Chicoj</h2>
-        <p class="welcome-subtitle">Sistema integral de gestión para restaurante y tours</p>
+        <p class="welcome-subtitle">Sistema integral de gestión para restaurante y tour</p>
         
         <div class="welcome-buttons">
-          <a href="/templates/login.html" class="btn btn-success" style="font-size: 1.2rem; padding: 12px 32px;">
+          <a href="/templates/login" class="btn btn-success" style="font-size: 1.2rem; padding: 12px 32px;">
             Ingresar al Sistema
           </a>
         </div>

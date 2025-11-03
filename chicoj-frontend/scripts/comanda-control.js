@@ -32,7 +32,7 @@
   async function init() {
     // Verificar autenticación
     if (!AuthManager.isAuthenticated()) {
-      window.location.href = '/templates/login.html';
+      window.location.href = '/templates/login';
       return;
     }
 
@@ -67,7 +67,7 @@
     if (shouldRefresh) {
       console.log('🔄 Recarga forzada detectada desde creación/edición de orden');
       // Limpiar el parámetro de la URL sin recargar la página
-      window.history.replaceState({}, '', '/templates/mesero/comanda-control.html');
+      window.history.replaceState({}, '', '/templates/mesero/comanda-control');
     }
 
     // Cargar órdenes
@@ -426,7 +426,7 @@
       } else if (estado === 'Pendiente') {
         // Orden pendiente: mostrar editar, enviar a cocina y eliminar
         btnEditarOrden.style.display = 'inline-block';
-        btnEditarOrden.href = `/templates/mesero/mesero_comanda.html?edit=${orderId}`;
+        btnEditarOrden.href = `/templates/mesero/mesero_comanda?edit=${orderId}`;
         btnEnviarCocina.style.display = 'inline-block';
         btnEnviarCocina.onclick = () => handleEnviarCocina(orderId);
         btnEliminarOrden.style.display = 'inline-block';
@@ -435,7 +435,7 @@
       } else if (estado === 'En Preparación') {
         // Orden en preparación: mostrar editar y eliminar (ya está en cocina)
         btnEditarOrden.style.display = 'inline-block';
-        btnEditarOrden.href = `/templates/mesero/mesero_comanda.html?edit=${orderId}`;
+        btnEditarOrden.href = `/templates/mesero/mesero_comanda?edit=${orderId}`;
         btnEnviarCocina.style.display = 'none';
         btnEliminarOrden.style.display = 'inline-block';
         btnEliminarOrden.onclick = () => handleEliminarOrden(orderId);

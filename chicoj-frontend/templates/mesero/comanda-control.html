@@ -3,11 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Comandas (visor)</title>
+  <title>Control de Comandas - Chicoj</title>
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+  
+  <!-- IMPORTANTE: Auth simple sin interferir -->
+  <script src="/scripts/simple-auth.js?v=20251101k"></script>
+  
+  <!-- Meta tags para prevenir caché -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  
   <link rel="stylesheet" href="/css/base.css?v=20251025c">
   <link rel="stylesheet" href="/css/components.css?v=20251025c">
   <link rel="stylesheet" href="/css/utilities.css?v=20251025">
   <link rel="stylesheet" href="/css/estilos-comanda-control.css?v=20251025">
+  <link rel="stylesheet" href="/css/responsive.css?v=20251101k">
+  <link rel="stylesheet" href="/css/responsive-comanda.css?v=20251101k">
   <style>
     /* Estilos para el botón de notificaciones */
     .btn-notification {
@@ -194,7 +210,10 @@
     <header class="encabezado">
       <div class="brand">
         <div class="logo-placeholder" aria-label="Logo"></div>
-        <h1>Restaurante Chicooj</h1>
+        <div>
+          <span class="badge">Somos</span>
+          <h1>Restaurante Chicoj</h1>
+        </div>
       </div>
       <nav class="acciones" aria-label="Acciones">
         <!-- Botón de Notificaciones -->
@@ -202,8 +221,8 @@
           🔔
           <span class="notification-badge" id="notification-count" style="display: none;">0</span>
         </button>
-        <a class="btn btn-outline" href="/main.html">Inicio</a>
-        <a class="btn btn-primary" href="/templates/login.html">Cerrar sesión</a>
+        <a class="btn btn-outline" href="/main">Inicio</a>
+        <a class="btn btn-primary" href="#" onclick="return ultraSimpleLogout(event)">Cerrar sesión</a>
       </nav>
     </header>
 
@@ -256,8 +275,8 @@
 
        
         <div class="visor-acciones">
-          <a href="/templates/mesero/mesero_comanda.html" class="btn btn-success" id="btn-nueva-orden">+ Nueva Orden</a>
-          <a href="/templates/mesero/mesero_comanda.html" class="btn btn-outline" id="btn-editar-orden">Agregar platillos a esta orden</a>
+          <a href="/templates/mesero/mesero_comanda" class="btn btn-success" id="btn-nueva-orden">+ Nueva Orden</a>
+          <a href="/templates/mesero/mesero_comanda" class="btn btn-outline" id="btn-editar-orden">Agregar platillos a esta orden</a>
           <button type="button" class="btn btn-warning" id="btn-enviar-cocina" style="display: none;">🍳 Enviar a Cocina</button>
           <button type="button" class="btn btn-danger" id="btn-eliminar-orden" style="display: none;">🗑️ Eliminar Orden</button>
           <button type="button" class="btn btn-primary" id="btn-cerrar-cuenta" style="display: none;">💰 Cerrar Cuenta</button>
@@ -298,6 +317,7 @@
   </audio>
 
   <!-- Scripts -->
+  <script src="/scripts/ultra-simple-logout.js?v=20251101k"></script>
   <script src="/scripts/config.js"></script>
   <script src="/scripts/api.js?v=20251024c"></script>
   <script src="/scripts/access-control.js"></script>

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manual de Usuario - Chicoj</title>
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+  
+  <link rel="stylesheet" href="/css/base.css?v=20251025c">
+  <link rel="stylesheet" href="/css/components.css?v=20251025c">
+  <link rel="stylesheet" href="/css/utilities.css?v=20251025">
+  <style>
+    .manual-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: var(--spacing-xl);
+    }
+
+    .manual-header {
+      text-align: center;
+      margin-bottom: var(--spacing-2xl);
+      padding-bottom: var(--spacing-xl);
+      border-bottom: 2px solid var(--border);
+    }
+
+    .manual-header h1 {
+      color: var(--primary);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .manual-section {
+      background: var(--panel);
+      border-radius: var(--r-lg);
+      padding: var(--spacing-xl);
+      margin-bottom: var(--spacing-xl);
+      box-shadow: var(--shadow);
+    }
+
+    .manual-section h2 {
+      color: var(--success);
+      margin-bottom: var(--spacing-lg);
+      padding-bottom: var(--spacing-md);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    .manual-section h3 {
+      color: var(--text);
+      margin-top: var(--spacing-lg);
+      margin-bottom: var(--spacing-md);
+      font-size: 1.25rem;
+    }
+
+    .step-list {
+      list-style: none;
+      counter-reset: step-counter;
+      padding: 0;
+    }
+
+    .step-list li {
+      counter-increment: step-counter;
+      margin-bottom: var(--spacing-lg);
+      padding-left: var(--spacing-2xl);
+      position: relative;
+    }
+
+    .step-list li::before {
+      content: counter(step-counter);
+      position: absolute;
+      left: 0;
+      top: 0;
+      background: linear-gradient(135deg, var(--success) 0%, var(--success-700) 100%);
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.875rem;
+    }
+
+    .step-list li strong {
+      display: block;
+      color: var(--text);
+      margin-bottom: var(--spacing-xs);
+      font-size: 1.0625rem;
+    }
+
+    .tip-box {
+      background: #e3f2fd;
+      border-left: 4px solid var(--primary);
+      padding: var(--spacing-md);
+      margin: var(--spacing-lg) 0;
+      border-radius: var(--r-md);
+    }
+
+    .tip-box h4 {
+      color: var(--primary);
+      margin: 0 0 var(--spacing-sm) 0;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .warning-box {
+      background: #fff3cd;
+      border-left: 4px solid #ff9800;
+      padding: var(--spacing-md);
+      margin: var(--spacing-lg) 0;
+      border-radius: var(--r-md);
+    }
+
+    .warning-box h4 {
+      color: #f57c00;
+      margin: 0 0 var(--spacing-sm) 0;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .button-group {
+      display: flex;
+      gap: var(--spacing-md);
+      margin-top: var(--spacing-2xl);
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .icon {
+      font-size: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .manual-container {
+        padding: var(--spacing-lg);
+      }
+
+      .manual-section {
+        padding: var(--spacing-lg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="contenedor-app">
+    <!-- Header -->
+    <header class="encabezado">
+      <div class="brand">
+        <div class="logo-placeholder" aria-label="Logo"></div>
+        <div>
+          <span class="badge">Somos</span>
+          <h1>Restaurante Chicoj</h1>
+        </div>
+      </div>
+      <nav class="acciones" aria-label="Acciones">
+        <a class="btn btn-outline" href="/templates/administracion/menu_usuarios">Volver</a>
+        <a class="btn btn-primary" href="#" onclick="return ultraSimpleLogout(event)">Cerrar sesión</a>
+      </nav>
+    </header>
+
+    <!-- Contenido -->
+    <main class="contenido" role="main">
+      <div class="manual-container">
+        
+        <div class="manual-header">
+          <h1>📖 Manual de Usuario</h1>
+          <p>Guía completa para el registro de colaboradores y asignación de usuarios</p>
+        </div>
+
+        <!-- Sección 1: Registro de Empleados -->
+        <div class="manual-section">
+          <h2>
+            <span class="icon">👥</span>
+            1. Registro de Colaboradores
+          </h2>
+          
+          <p>El registro de colaboradores es el primer paso antes de poder asignar usuarios. Cada colaborador debe estar registrado en el sistema para poder crear su cuenta de acceso.</p>
+
+          <h3>Pasos para registrar un colaborador:</h3>
+          
+          <ol class="step-list">
+            <li>
+              <strong>Acceder al módulo de colaboradores</strong>
+              Desde el panel de administración, haz clic en "Administrar Colaboradores".
+            </li>
+            
+            <li>
+              <strong>Hacer clic en "+ Agregar colaborador"</strong>
+              Encontrarás este botón en la esquina superior derecha de la lista de colaboradores.
+            </li>
+            
+            <li>
+              <strong>Completar el formulario</strong>
+              Ingresa la siguiente información del colaborador:
+              <ul style="margin-top: var(--spacing-sm); margin-left: var(--spacing-lg);">
+                <li><strong>Nombre:</strong> Primer nombre del colaborador</li>
+                <li><strong>Apellidos:</strong> Apellidos completos</li>
+                <li><strong>Fecha de nacimiento:</strong> Para calcular la edad</li>
+                <li><strong>Correo electrónico:</strong> Email válido para notificaciones</li>
+                <li><strong>Teléfono:</strong> Número de contacto</li>
+                <li><strong>Dirección:</strong> Dirección completa de residencia</li>
+              </ul>
+            </li>
+            
+            <li>
+              <strong>Guardar el colaborador</strong>
+              Haz clic en el botón "Guardar Colaborador" para registrar la información.
+            </li>
+          </ol>
+
+          <div class="tip-box">
+            <h4>💡 Consejo</h4>
+            <p>Verifica que toda la información esté correcta antes de guardar. Los datos del colaborador son importantes para la gestión del personal.</p>
+          </div>
+        </div>
+
+        <!-- Sección 2: Asignación de Usuarios -->
+        <div class="manual-section">
+          <h2>
+            <span class="icon">🔐</span>
+            2. Asignación de Usuarios
+          </h2>
+          
+          <p>Una vez que un colaborador está registrado, puedes crear su cuenta de usuario para que pueda acceder al sistema según su rol.</p>
+
+          <h3>Pasos para asignar un usuario:</h3>
+          
+          <ol class="step-list">
+            <li>
+              <strong>Acceder al módulo de usuarios</strong>
+              Desde el panel de administración, haz clic en "Administrar Usuarios".
+            </li>
+            
+            <li>
+              <strong>Hacer clic en "+ Agregar usuario"</strong>
+              Este botón se encuentra en la parte superior de la lista de usuarios.
+            </li>
+            
+            <li>
+              <strong>Seleccionar el colaborador</strong>
+              En el formulario, selecciona de la lista desplegable el colaborador al que le asignarás el usuario. Solo aparecerán los colaboradores previamente registrados.
+            </li>
+            
+            <li>
+              <strong>Configurar las credenciales</strong>
+              Ingresa la información de acceso:
+              <ul style="margin-top: var(--spacing-sm); margin-left: var(--spacing-lg);">
+                <li><strong>Nombre de usuario:</strong> Debe ser único en el sistema (ej: jperez, mgarcia)</li>
+                <li><strong>Contraseña:</strong> Una contraseña segura (mínimo 6 caracteres)</li>
+                <li><strong>Confirmar contraseña:</strong> Repite la contraseña para verificar</li>
+              </ul>
+            </li>
+            
+            <li>
+              <strong>Asignar un rol</strong>
+              Selecciona el rol apropiado según las responsabilidades del colaborador:
+              <ul style="margin-top: var(--spacing-sm); margin-left: var(--spacing-lg);">
+                <li><strong>Administrador:</strong> Acceso completo al sistema</li>
+                <li><strong>Gerente:</strong> Gestión de operaciones y reportes</li>
+                <li><strong>Mesero:</strong> Toma de órdenes y comandas</li>
+                <li><strong>Cocina:</strong> Acceso al sistema de cocina (KDS)</li>
+                <li><strong>Cajero:</strong> Módulo de caja y cobros</li>
+                <li><strong>Bebidas/Coffee:</strong> Estaciones específicas de preparación</li>
+              </ul>
+            </li>
+            
+            <li>
+              <strong>Guardar el usuario</strong>
+              Haz clic en "Guardar Usuario" para crear la cuenta de acceso.
+            </li>
+          </ol>
+
+          <div class="warning-box">
+            <h4>⚠️ Importante</h4>
+            <p><strong>Un colaborador solo puede tener un usuario asignado.</strong> Si intentas asignar un nuevo usuario a un colaborador que ya tiene cuenta, se actualizará su información de acceso.</p>
+          </div>
+        </div>
+
+        <!-- Sección 3: Gestión de Roles -->
+        <div class="manual-section">
+          <h2>
+            <span class="icon">🎯</span>
+            3. Gestión de Roles
+          </h2>
+          
+          <p>Los roles definen qué módulos y funcionalidades puede acceder cada usuario.</p>
+
+          <h3>Crear un nuevo rol:</h3>
+          
+          <ol class="step-list">
+            <li>
+              <strong>Acceder a la gestión de roles</strong>
+              En el módulo de usuarios, haz clic en "+ Agregar rol".
+            </li>
+            
+            <li>
+              <strong>Definir el rol</strong>
+              Ingresa:
+              <ul style="margin-top: var(--spacing-sm); margin-left: var(--spacing-lg);">
+                <li><strong>Nombre del rol:</strong> Nombre descriptivo (ej: Supervisor, Bartender)</li>
+                <li><strong>Descripción:</strong> Breve explicación de las responsabilidades</li>
+              </ul>
+            </li>
+            
+            <li>
+              <strong>Guardar el rol</strong>
+              El nuevo rol estará disponible para asignar a usuarios.
+            </li>
+          </ol>
+
+          <div class="tip-box">
+            <h4>💡 Buenas prácticas</h4>
+            <ul style="margin: var(--spacing-sm) 0 0 var(--spacing-lg);">
+              <li>Asigna roles según las responsabilidades reales del colaborador</li>
+              <li>Revisa periódicamente los permisos de acceso</li>
+              <li>Cambia las contraseñas predeterminadas después del primer inicio de sesión</li>
+              <li>Mantén actualizados los datos de contacto de los colaboradores</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Sección 4: Edición y Actualización -->
+        <div class="manual-section">
+          <h2>
+            <span class="icon">✏️</span>
+            4. Editar Colaboradores y Usuarios
+          </h2>
+          
+          <h3>Editar información de un colaborador:</h3>
+          <ol class="step-list">
+            <li>
+              <strong>Localiza el colaborador</strong>
+              En la lista de colaboradores, encuentra el colaborador que deseas editar.
+            </li>
+            
+            <li>
+              <strong>Haz clic en "Editar"</strong>
+              Se abrirá el formulario con la información actual del colaborador.
+            </li>
+            
+            <li>
+              <strong>Modifica los datos necesarios</strong>
+              Actualiza la información que requiere cambios.
+            </li>
+            
+            <li>
+              <strong>Guarda los cambios</strong>
+              Haz clic en "Actualizar Colaborador" para guardar.
+            </li>
+          </ol>
+
+          <h3 style="margin-top: var(--spacing-xl);">Editar información de un usuario:</h3>
+          <ol class="step-list">
+            <li>
+              <strong>Localiza el usuario</strong>
+              En la lista de usuarios, encuentra el usuario que deseas modificar.
+            </li>
+            
+            <li>
+              <strong>Haz clic en "Editar"</strong>
+              Se mostrará el formulario con los datos actuales.
+            </li>
+            
+            <li>
+              <strong>Actualiza la información</strong>
+              Puedes cambiar:
+              <ul style="margin-top: var(--spacing-sm); margin-left: var(--spacing-lg);">
+                <li>Nombre de usuario</li>
+                <li>Contraseña (si es necesario)</li>
+                <li>Rol asignado</li>
+              </ul>
+            </li>
+            
+            <li>
+              <strong>Guarda los cambios</strong>
+              Confirma la actualización haciendo clic en "Actualizar Usuario".
+            </li>
+          </ol>
+        </div>
+
+        <!-- Sección 5: Preguntas Frecuentes -->
+        <div class="manual-section">
+          <h2>
+            <span class="icon">❓</span>
+            5. Preguntas Frecuentes
+          </h2>
+          
+          <h3>¿Puedo asignar múltiples usuarios a un mismo colaborador?</h3>
+          <p>No, cada colaborador solo puede tener un usuario asignado. Esto mantiene la integridad y trazabilidad del sistema.</p>
+
+          <h3>¿Qué hago si olvidé la contraseña de un usuario?</h3>
+          <p>Como administrador, puedes editar el usuario y establecer una nueva contraseña. También puedes usar la opción "¿Olvidaste tu contraseña?" en la pantalla de inicio de sesión.</p>
+
+          <h3>¿Puedo cambiar el rol de un usuario?</h3>
+          <p>Sí, puedes editar el usuario y cambiar su rol en cualquier momento. El cambio se aplicará en su próximo inicio de sesión.</p>
+
+          <h3>¿Qué pasa si elimino un colaborador que tiene usuario asignado?</h3>
+          <p>El sistema te advertirá antes de eliminar. Se recomienda primero desactivar o eliminar el usuario asociado.</p>
+        </div>
+
+        <!-- Botones de acción -->
+        <div class="button-group">
+          <a href="/templates/administracion/empleados_control" class="btn btn-success">
+            Ir a Colaboradores
+          </a>
+          <a href="/templates/administracion/control-usuarios" class="btn btn-primary">
+            Ir a Usuarios
+          </a>
+          <a href="/templates/administracion/menu_usuarios" class="btn btn-outline">
+            Volver al Panel
+          </a>
+        </div>
+
+      </div>
+    </main>
+
+    <footer class="pie-pagina">
+      <p>© 2025 Restaurante Chicooj - Manual de Usuario</p>
+    </footer>
+  </div>
+  
+  <!-- Scripts -->
+  <script src="/scripts/ultra-simple-logout.js?v=20251101k"></script>
+  <script src="/scripts/config.js"></script>
+  <script src="/scripts/access-control.js"></script>
+</body>
+</html>
+

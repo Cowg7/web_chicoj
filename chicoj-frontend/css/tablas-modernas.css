@@ -1,0 +1,300 @@
+/* ====================================
+   TABLAS MODERNAS
+   ==================================== */
+
+/* Tabla moderna */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: white;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Encabezado de tabla */
+thead {
+  background: linear-gradient(to bottom, #f8f9fa 0%, #e9ecef 100%);
+}
+
+thead th {
+  padding: 1rem 1.25rem;
+  text-align: left;
+  font-weight: 700;
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid var(--border);
+  white-space: nowrap;
+}
+
+/* Cuerpo de tabla */
+tbody tr {
+  border-bottom: 1px solid var(--border-light);
+  transition: all var(--transition-fast);
+}
+
+tbody tr:last-child {
+  border-bottom: none;
+}
+
+tbody tr:hover {
+  background: var(--primary-50);
+  cursor: pointer;
+}
+
+tbody tr.selected {
+  background: var(--primary-100);
+  box-shadow: inset 3px 0 0 var(--primary-600);
+}
+
+tbody td {
+  padding: 1rem 1.25rem;
+  color: var(--text);
+  font-size: 0.9375rem;
+}
+
+/* Celdas especiales */
+td.text-center,
+th.text-center {
+  text-align: center;
+}
+
+td.text-right,
+th.text-right {
+  text-align: right;
+}
+
+/* Badges en tablas */
+tbody td .badge {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.625rem;
+}
+
+/* Acciones en tablas */
+.table-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.btn-icon-edit,
+.btn-icon-delete,
+.btn-icon-view {
+  padding: 0.5rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: var(--r-sm);
+  transition: all var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon-edit {
+  color: var(--info-600);
+}
+
+.btn-icon-edit:hover {
+  background: var(--info-50);
+  transform: scale(1.1);
+}
+
+.btn-icon-delete {
+  color: var(--danger-600);
+}
+
+.btn-icon-delete:hover {
+  background: var(--danger-50);
+  transform: scale(1.1);
+}
+
+.btn-icon-view {
+  color: var(--text-light);
+}
+
+.btn-icon-view:hover {
+  background: var(--bg-secondary);
+  transform: scale(1.1);
+}
+
+/* Tabla responsive */
+@media (max-width: 768px) {
+  .tabla-orden {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  table {
+    min-width: 800px;
+  }
+  
+  thead th,
+  tbody td {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* Tabla con rayas zebra */
+.table-striped tbody tr:nth-child(even) {
+  background: var(--bg);
+}
+
+.table-striped tbody tr:nth-child(even):hover {
+  background: var(--primary-50);
+}
+
+/* Tabla compacta */
+.table-compact thead th,
+.table-compact tbody td {
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+}
+
+/* Estado de carga en tabla */
+.table-loading {
+  position: relative;
+  min-height: 200px;
+}
+
+.table-loading::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Header de tabla con acciones */
+.tabla-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.tabla-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+}
+
+.tabla-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* Columnas específicas */
+.col-id {
+  width: 80px;
+  font-family: 'Courier New', monospace;
+  color: var(--text-light);
+  font-weight: 600;
+}
+
+.col-precio,
+.col-total {
+  font-weight: 700;
+  color: var(--success-700);
+  font-variant-numeric: tabular-nums;
+}
+
+.col-fecha {
+  color: var(--text-light);
+  font-size: 0.875rem;
+}
+
+.col-estado {
+  width: 140px;
+}
+
+.col-acciones {
+  width: 200px;
+  text-align: right;
+}
+
+/* Filas con estados */
+tr.completado {
+  opacity: 0.7;
+}
+
+tr.completado:hover {
+  opacity: 1;
+}
+
+tr.pendiente {
+  background: var(--warning-50);
+}
+
+tr.cancelado {
+  background: var(--danger-50);
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+/* Empty state en tablas */
+.table-empty {
+  padding: 3rem;
+  text-align: center;
+}
+
+.table-empty-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1rem;
+  opacity: 0.3;
+}
+
+.table-empty-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.table-empty-message {
+  font-size: 0.9375rem;
+  color: var(--text-light);
+  margin-bottom: 1.5rem;
+}
+
+/* Mejoras de accesibilidad */
+tbody tr:focus-within {
+  outline: 2px solid var(--primary-600);
+  outline-offset: -2px;
+}
+
+/* Animación al cargar filas */
+@keyframes slideInRow {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+tbody tr {
+  animation: slideInRow 0.3s ease-out backwards;
+}
+
+tbody tr:nth-child(1) { animation-delay: 0.05s; }
+tbody tr:nth-child(2) { animation-delay: 0.1s; }
+tbody tr:nth-child(3) { animation-delay: 0.15s; }
+tbody tr:nth-child(4) { animation-delay: 0.2s; }
+tbody tr:nth-child(5) { animation-delay: 0.25s; }
+
+

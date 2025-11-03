@@ -5,7 +5,7 @@
   async function init() {
     // Verificar autenticación
     if (!AuthManager.isAuthenticated()) {
-      window.location.href = '/templates/login.html';
+      window.location.href = '/templates/login';
       return;
     }
 
@@ -73,16 +73,8 @@
     }
   }
 
-  // Configurar cerrar sesión en todos los botones
-  const logoutButtons = document.querySelectorAll('a[href*="login.html"]');
-  logoutButtons.forEach(btn => {
-    if (btn.textContent.toLowerCase().includes('cerrar')) {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        AuthManager.logout();
-      });
-    }
-  });
+  // NOTA: El logout ahora se maneja con ultraSimpleLogout() directamente en el onclick
+  // Ya no es necesario agregar event listeners aquí
 
   // Inicializar cuando el DOM esté listo
   if (document.readyState === 'loading') {

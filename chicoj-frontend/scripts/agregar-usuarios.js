@@ -1,13 +1,13 @@
 // Script para agregar/editar usuarios (agregar_usuarios.html)
 
 (() => {
-  // Elementos del DOM
-  const form = document.getElementById('form-usuarios');
-  const empleadoSelect = document.getElementById('empleado');
-  const rolSelect = document.getElementById('rol');
-  const usuarioInput = document.getElementById('usuario');
-  const pwdInput = document.getElementById('pwd');
-  const pwd2Input = document.getElementById('pwd2');
+  // Elementos del DOM (se obtienen en init para asegurar que el DOM esté listo)
+  let form;
+  let empleadoSelect;
+  let rolSelect;
+  let usuarioInput;
+  let pwdInput;
+  let pwd2Input;
 
   // Estado
   let editMode = false;
@@ -17,11 +17,27 @@
 
   // Inicializar
   async function init() {
+    console.log('🚀 Iniciando agregar-usuarios.js');
+    
     // Verificar autenticación
     if (!AuthManager.isAuthenticated()) {
-      window.location.href = '/templates/login.html';
+      window.location.href = '/templates/login';
       return;
     }
+
+    // Obtener elementos del DOM
+    form = document.getElementById('form-usuarios');
+    empleadoSelect = document.getElementById('empleado');
+    rolSelect = document.getElementById('rol');
+    usuarioInput = document.getElementById('usuario');
+    pwdInput = document.getElementById('pwd');
+    pwd2Input = document.getElementById('pwd2');
+
+    console.log('📋 Elementos del DOM encontrados:');
+    console.log('  - form:', !!form);
+    console.log('  - empleadoSelect:', !!empleadoSelect);
+    console.log('  - rolSelect:', !!rolSelect);
+    console.log('  - usuarioInput:', !!usuarioInput);
 
     // Cargar datos necesarios
     await Promise.all([
@@ -41,6 +57,8 @@
 
     // Configurar event listeners
     setupEventListeners();
+    
+    console.log('✅ Inicialización completada');
   }
 
   // Configurar event listeners
@@ -69,11 +87,17 @@
   // Cargar roles
   async function loadRoles() {
     try {
+      console.log('🔄 Cargando roles desde API...');
       const response = await API.users.getRoles();
+      console.log('📦 Respuesta completa de roles:', response);
+      
       const data = response.data || response;
       roles = data.roles || data || [];
 
       console.log('🎭 Roles cargados:', roles.length);
+      console.log('📋 Roles:', roles);
+      console.log('🔍 rolSelect existe?', !!rolSelect);
+      console.log('🔍 rolSelect elemento:', rolSelect);
 
       populateRoleSelect();
     } catch (error) {
@@ -108,17 +132,35 @@
 
   // Poblar select de roles
   function populateRoleSelect() {
-    if (!rolSelect) return;
+    if (!rolSelect) {
+      console.error('❌ rolSelect no encontrado');
+      return;
+    }
+
+    console.log('📋 Poblando select de roles con', roles.length, 'roles');
 
     // Limpiar opciones existentes (excepto la primera)
     rolSelect.innerHTML = '<option value="">Seleccionar…</option>';
 
+    if (roles.length === 0) {
+      console.warn('⚠️ No hay roles para mostrar');
+      const option = document.createElement('option');
+      option.value = '';
+      option.textContent = 'No hay roles disponibles';
+      option.disabled = true;
+      rolSelect.appendChild(option);
+      return;
+    }
+
     roles.forEach(role => {
+      console.log('  ➕ Agregando rol:', role.nombre_rol, '(ID:', role.id_rol + ')');
       const option = document.createElement('option');
       option.value = role.id_rol;
       option.textContent = role.nombre_rol;
       rolSelect.appendChild(option);
     });
+
+    console.log('✅ Select de roles poblado con', rolSelect.options.length - 1, 'opciones');
   }
 
   // Cargar usuario para editar
@@ -230,7 +272,7 @@
 
       // Redirigir a la lista de usuarios
       setTimeout(() => {
-        window.location.href = '/templates/administracion/control-usuarios.html';
+        window.location.href = '/templates/administracion/control-usuarios';
       }, 1000);
 
     } catch (error) {

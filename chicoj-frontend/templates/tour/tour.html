@@ -3,21 +3,42 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Nuevo Ticket</title>
-  <link rel="stylesheet" href="/css/base.css?v=20251025c">
-  <link rel="stylesheet" href="/css/components.css?v=20251025c">
-  <link rel="stylesheet" href="/css/utilities.css?v=20251025">
-  <link rel="stylesheet" href="/css/estilos-tour.css?v=20251025">
+  <title>Nuevo Ticket - Chicoj</title>
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+  
+  <!-- IMPORTANTE: Auth simple sin interferir -->
+  <script src="/scripts/simple-auth.js?v=20251101k"></script>
+  
+  <!-- Meta tags para prevenir caché -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  
+  <link rel="stylesheet" href="/css/base.css?v=20251101g">
+  <link rel="stylesheet" href="/css/components.css?v=20251101g">
+  <link rel="stylesheet" href="/css/utilities.css?v=20251101g">
+  <link rel="stylesheet" href="/css/mejoras-ux.css?v=20251101g">
+  <link rel="stylesheet" href="/css/estilos-tour.css?v=20251101g">
+  <link rel="stylesheet" href="/css/responsive.css?v=20251101k">
+  <link rel="stylesheet" href="/css/responsive-tour.css?v=20251101k">
 </head>
 <body>
   <div class="contenedor-app">
     <header class="encabezado">
       <div class="brand">
         <div class="logo-placeholder" aria-label="Logo"></div>
-        <h1>Restaurante Chicooj</h1>
+        <div>
+          <span class="badge">Somos</span>
+          <h1>Restaurante Chicoj</h1>
+        </div>
       </div>
       <nav class="acciones" aria-label="Acciones">
-        <a class="btn btn-primary" href="/templates/login.html">Cerrar sesión</a>
+        <a class="btn btn-outline" href="/main">Inicio</a>
+        <a class="btn btn-primary" href="#" onclick="return ultraSimpleLogout(event)">Cerrar sesión</a>
       </nav>
     </header>
 
@@ -32,7 +53,7 @@
             <input id="id-tour" type="text" value="AUTO" readonly style="background-color: #f0f0f0;">
 
             <label for="fecha">Fecha</label>
-            <input id="fecha" type="date" required>
+            <input id="fecha" type="date" required max="">
 
             <label for="servicio">Tipo de Servicio</label>
             <select id="servicio" required>
@@ -69,7 +90,7 @@
           <div class="botones-acciones">
             <button type="submit" class="btn btn-success">Guardar Ticket</button>
             <!-- 🔹 Botón agregado para visualizar registros -->
-            <a href="/templates/tour/tour-control.html" class="btn btn-outline">Visualizar Tickets</a>
+            <a href="/templates/tour/tour-control" class="btn btn-outline">Visualizar Tickets</a>
           </div>
         </form>
       </section>
@@ -81,9 +102,10 @@
   </div>
 
   <!-- Scripts -->
+  <script src="/scripts/ultra-simple-logout.js?v=20251101k"></script>
   <script src="/scripts/config.js"></script>
   <script src="/scripts/api.js"></script>
   <script src="/scripts/access-control.js"></script>
-  <script src="/scripts/tour.js?v=20251025c"></script>
+  <script src="/scripts/tour.js?v=20251101k"></script>
 </body>
 </html>

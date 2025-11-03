@@ -8,7 +8,7 @@
   async function init() {
     // Verificar autenticación
     if (!AuthManager.isAuthenticated()) {
-      window.location.href = '/templates/login.html';
+      window.location.href = '/templates/login';
       return;
     }
 
@@ -73,7 +73,7 @@
           <span class="badge ${rolClass}">${roleName}</span>
         </div>
         <div class="col col-acciones" role="cell">
-          <a class="btn btn-outline" href="/templates/administracion/agregar_usuarios.html?id=${user.id_usuario}">Editar</a>
+          <a class="btn btn-outline" href="/templates/administracion/agregar_usuarios?id=${user.id_usuario}">Editar</a>
           <button class="btn btn-danger btn-sm" onclick="window.deleteUser(${user.id_usuario})">Eliminar</button>
         </div>
       `;

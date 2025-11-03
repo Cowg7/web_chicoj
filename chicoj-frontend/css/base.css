@@ -4,22 +4,50 @@
 
 /* Variables CSS */
 :root {
-  /* Colores */
-  --bg: #f5f7fa;
-  --panel: #fff;
-  --brand: #4A90E2;
-  --primary: #4A90E2;
-  --primary-700: #3A7BC8;
-  --primary-900: #2E5C8A;
-  --success: #5CB85C;
-  --success-700: #4A9D4A;
-  --warning: #F0AD4E;
-  --danger: #D9534F;
-  --info: #5BC0DE;
-  --text: #2c3e50;
-  --text-light: #6c757d;
-  --muted: #95a5a6;
-  --border: #dee2e6;
+  /* Colores Principales - Paleta Moderna */
+  --bg: #f8f9fa;
+  --bg-secondary: #e9ecef;
+  --panel: #ffffff;
+  --brand: #2563eb;
+  --primary: #2563eb;
+  --primary-50: #eff6ff;
+  --primary-100: #dbeafe;
+  --primary-200: #bfdbfe;
+  --primary-600: #2563eb;
+  --primary-700: #1d4ed8;
+  --primary-800: #1e40af;
+  --primary-900: #1e3a8a;
+  
+  /* Colores de Estado */
+  --success: #10b981;
+  --success-50: #f0fdf4;
+  --success-600: #10b981;
+  --success-700: #059669;
+  
+  --warning: #f59e0b;
+  --warning-50: #fffbeb;
+  --warning-600: #f59e0b;
+  --warning-700: #d97706;
+  
+  --danger: #ef4444;
+  --danger-50: #fef2f2;
+  --danger-600: #ef4444;
+  --danger-700: #dc2626;
+  
+  --info: #3b82f6;
+  --info-50: #eff6ff;
+  --info-600: #3b82f6;
+  --info-700: #2563eb;
+  
+  /* Textos */
+  --text: #111827;
+  --text-secondary: #4b5563;
+  --text-light: #6b7280;
+  --muted: #9ca3af;
+  
+  /* Bordes y Fondos */
+  --border: #e5e7eb;
+  --border-light: #f3f4f6;
   
   /* Espaciado */
   --spacing-xs: 4px;

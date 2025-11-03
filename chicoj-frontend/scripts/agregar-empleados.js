@@ -16,7 +16,7 @@
   async function init() {
     // Verificar autenticación
     if (!AuthManager.isAuthenticated()) {
-      window.location.href = '/templates/login.html';
+      window.location.href = '/templates/login';
       return;
     }
 
@@ -121,7 +121,7 @@
 
       // Redirigir a la lista de empleados
       setTimeout(() => {
-        window.location.href = '/templates/administracion/empleados_control.html';
+        window.location.href = '/templates/administracion/empleados_control';
       }, 1000);
 
     } catch (error) {

@@ -73,6 +73,22 @@ export const config = {
     maxSize: parseInt(process.env.MAX_FILE_SIZE || '5242880'), // 5MB
     dir: process.env.UPLOAD_DIR || './uploads',
   },
+  
+  // Email
+  email: {
+    service: process.env.EMAIL_SERVICE || 'gmail', // 'gmail', 'smtp', 'sendgrid'
+    host: process.env.EMAIL_HOST, // Para SMTP personalizado
+    port: parseInt(process.env.EMAIL_PORT || '587'),
+    secure: process.env.EMAIL_SECURE === 'true',
+    user: process.env.EMAIL_USER,
+    password: process.env.EMAIL_PASSWORD,
+    apiKey: process.env.EMAIL_API_KEY, // Para servicios como SendGrid
+    from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+    fromName: process.env.EMAIL_FROM_NAME || 'Restaurante Chicooj',
+  },
+  
+  // Frontend URL (para links en emails)
+  frontendUrl: process.env.FRONTEND_URL || 'http://localhost',
 };
 
 // Validar configuración crítica
