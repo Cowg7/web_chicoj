@@ -10,10 +10,10 @@
   gap: var(--spacing-md);
   margin-bottom: var(--spacing-lg);
   padding: var(--spacing-md);
-  background: linear-gradient(135deg, #4A90E2 0%, #2E5C8A 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
   border-radius: var(--r-lg);
   color: white;
-  box-shadow: var(--shadow);
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
   flex-wrap: wrap;
 }
 
@@ -51,7 +51,7 @@
 }
 
 .tabla-orden thead {
-  background: linear-gradient(135deg, #4A90E2 0%, #2E5C8A 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
   color: white;
   position: sticky;
   top: 0;
@@ -79,7 +79,7 @@
 }
 
 .tabla-orden tbody tr:hover {
-  background: #f0f6ff;
+  background: #eff6ff;
 }
 
 /* Badges de Estado */
@@ -377,7 +377,7 @@
   }
   
   .tabla-header {
-    background: #333 !important;
+    background: var(--primary) !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
@@ -392,7 +392,7 @@
   }
   
   .tabla-orden thead {
-    background: #333 !important;
+    background: var(--primary) !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }

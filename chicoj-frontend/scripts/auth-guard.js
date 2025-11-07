@@ -19,7 +19,7 @@
     });
     
     if (!isLoginPage && !hasToken) {
-      console.log('⛔ Auth Guard: SIN TOKEN - BLOQUEANDO ACCESO');
+      console.log('[DENIED] Auth Guard: SIN TOKEN - BLOQUEANDO ACCESO');
       
       // Ocultar TODO inmediatamente
       document.documentElement.style.visibility = 'hidden';
@@ -38,18 +38,18 @@
       sessionStorage.clear();
       
       // Forzar recarga COMPLETA desde el servidor (no desde caché)
-      console.log('🔄 Forzando recarga desde servidor...');
+      console.log('[LOAD] Forzando recarga desde servidor...');
       
       // Usar location.replace para no agregar al historial
       window.location.replace('/templates/login?reason=unauthorized&t=' + Date.now());
       
       // Detener ejecución
-      throw new Error('⛔ ACCESO BLOQUEADO - Sin token');
+      throw new Error('[DENIED] ACCESO BLOQUEADO - Sin token');
     }
     
     // Si hay token O es página de login, mostrar
     if ((isLoginPage || hasToken)) {
-      console.log('✅ Auth Guard: Acceso permitido');
+      console.log('[OK] Auth Guard: Acceso permitido');
       document.documentElement.style.visibility = 'visible';
       document.documentElement.style.opacity = '1';
       document.documentElement.style.display = '';
@@ -75,14 +75,14 @@
   // Verificar cuando cambia la visibilidad de la página
   document.addEventListener('visibilitychange', function() {
     if (!document.hidden) {
-      console.log('👁️ Página visible - Re-verificando...');
+      console.log('[VIEW] Página visible - Re-verificando...');
       verificarAcceso();
     }
   });
   
   // Verificar cuando se hace focus en la ventana
   window.addEventListener('focus', function() {
-    console.log('🔍 Ventana con focus - Re-verificando...');
+    console.log('[CHECK] Ventana con focus - Re-verificando...');
     verificarAcceso();
   });
   

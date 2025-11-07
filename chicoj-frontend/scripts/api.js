@@ -46,7 +46,9 @@ class ApiClient {
       const data = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        throw new Error(data.message || `Error ${response.status}: ${response.statusText}`);
+        // El backend puede enviar 'error' o 'message'
+        const errorMessage = data.error || data.message || `Error ${response.status}: ${response.statusText}`;
+        throw new Error(errorMessage);
       }
 
       return data;
@@ -108,6 +110,16 @@ const API = {
     update: (id, platillo) => api.patch(`${API_CONFIG.endpoints.menu}/${id}`, platillo),
     delete: (id) => api.delete(`${API_CONFIG.endpoints.menu}/${id}`),
     toggleDisponibilidad: (id, disponible) => api.patch(`${API_CONFIG.endpoints.menu}/${id}/disponibilidad`, { disponible })
+  },
+
+  // Categorias
+  categorias: {
+    getAll: (params) => api.get('/categorias', params),
+    getById: (id) => api.get(`/categorias/${id}`),
+    create: (categoria) => api.post('/categorias', categoria),
+    update: (id, categoria) => api.patch(`/categorias/${id}`, categoria),
+    delete: (id) => api.delete(`/categorias/${id}`),
+    toggle: (id, activa) => api.patch(`/categorias/${id}/toggle`, { activa })
   },
 
   // Orders

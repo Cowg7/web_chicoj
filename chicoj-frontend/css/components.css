@@ -38,8 +38,8 @@
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, var(--primary-700) 0%, var(--primary-800) 100%);
-  border-color: var(--primary-700);
+  background: linear-gradient(135deg, var(--secondary) 0%, var(--primary-600) 100%);
+  border-color: var(--secondary);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
@@ -98,8 +98,8 @@
 .btn-outline:hover:not(:disabled) {
   background: var(--primary-50);
   border-color: var(--primary-600);
-  color: var(--primary-700);
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.15);
+  color: var(--primary-600);
+  box-shadow: 0 2px 8px rgba(30, 64, 175, 0.15);
 }
 
 .btn-ghost {

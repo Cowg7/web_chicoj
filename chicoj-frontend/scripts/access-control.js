@@ -124,7 +124,7 @@ class AccessControl {
     this.currentUser = AuthManager.getUser();
     
     if (!this.currentUser) {
-      console.warn('⚠️ Usuario no autenticado');
+      console.warn('[WARN] Usuario no autenticado');
       return false;
     }
 
@@ -132,11 +132,11 @@ class AccessControl {
     this.config = ROLE_CONFIG[this.currentRole];
 
     if (!this.config) {
-      console.error(`❌ Rol desconocido: ${this.currentRole}`);
+      console.error(`[ERROR] Rol desconocido: ${this.currentRole}`);
       return false;
     }
 
-    console.log(`✅ Control de acceso activado para: ${this.currentRole}`);
+    console.log(`[OK] Control de acceso activado para: ${this.currentRole}`);
     return true;
   }
 
@@ -151,29 +151,39 @@ class AccessControl {
 
     // Admin tiene acceso a todo
     if (this.config.allowedViews.includes('*')) {
+      console.log('[OK] Usuario Admin - Acceso total permitido');
       return true;
     }
 
     const currentPath = window.location.pathname;
     const currentFullPath = window.location.pathname + window.location.search;
 
+    console.log('[CHECK] Verificando acceso...');
+    console.log('   [POINT] Ruta actual:', currentFullPath);
+    console.log('   [INFO] Rutas permitidas:', this.config.allowedViews);
+
     // Verificar si la vista está permitida
     const hasAccess = this.config.allowedViews.some(allowedView => {
       // Comparación exacta con query params
       if (allowedView.includes('?')) {
-        return currentFullPath.includes(allowedView);
+        const match = currentFullPath.includes(allowedView);
+        console.log(`   🔎 Comparando "${currentFullPath}" con "${allowedView}": ${match ? '[OK]' : '[ERROR]'}`);
+        return match;
       }
       // Comparación solo de path
-      return currentPath.includes(allowedView);
+      const match = currentPath.includes(allowedView);
+      console.log(`   🔎 Comparando "${currentPath}" con "${allowedView}": ${match ? '[OK]' : '[ERROR]'}`);
+      return match;
     });
 
     if (!hasAccess) {
-      console.warn(`⛔ Acceso denegado a: ${currentFullPath}`);
+      console.warn(`[DENIED] Acceso denegado a: ${currentFullPath}`);
+      console.warn(`   [HOME] Redirigiendo a página de inicio: ${this.config.landingPage}`);
       this.redirectToLandingPage();
       return false;
     }
 
-    console.log(`✅ Acceso permitido a: ${currentFullPath}`);
+    console.log(`[OK] Acceso permitido a: ${currentFullPath}`);
     return true;
   }
 
@@ -280,7 +290,7 @@ class AccessControl {
    * Redirigir al login
    */
   redirectToLogin() {
-    console.log('🔒 Redirigiendo al login...');
+    console.log('[LOCK] Redirigiendo al login...');
     setTimeout(() => {
       window.location.href = '/templates/login';
     }, 500);
@@ -295,7 +305,7 @@ class AccessControl {
       return;
     }
 
-    console.log(`🏠 Redirigiendo a: ${this.config.landingPage}`);
+    console.log(`[HOME] Redirigiendo a: ${this.config.landingPage}`);
     setTimeout(() => {
       window.location.href = this.config.landingPage;
     }, 1000);
@@ -321,7 +331,7 @@ class AccessControl {
     `;
     overlay.innerHTML = `
       <div style="background: white; padding: 2rem; border-radius: 8px; text-align: center; max-width: 400px;">
-        <h2 style="color: #f44336; margin-bottom: 1rem;">⛔ Acceso Denegado</h2>
+        <h2 style="color: #f44336; margin-bottom: 1rem;">[DENIED] Acceso Denegado</h2>
         <p style="margin-bottom: 1.5rem;">${message}</p>
         <button onclick="window.location.href='${this.config.landingPage}'" 
                 style="padding: 0.75rem 2rem; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem;">

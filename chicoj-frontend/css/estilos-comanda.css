@@ -114,17 +114,24 @@
 .tabla-orden {
   margin: var(--spacing-lg) 0;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   border-radius: var(--r-md);
   box-shadow: var(--shadow);
+  width: 100%;
+  max-width: 100%;
 }
 
 .tabla-orden table {
-  min-width: 800px;
+  min-width: 900px;
+  width: 100%;
 }
 
 #tabla-comanda thead {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-900) 100%);
-  color: white;
+  background: linear-gradient(135deg, #1E40AF 0%, #2563EB 100%);
+  color: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 #tabla-comanda th {
@@ -133,16 +140,23 @@
   text-align: left;
   white-space: nowrap;
   font-size: 0.9375rem;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+#tabla-comanda tbody tr:nth-child(even) {
+  background: #F5F7FA;
+}
+
+#tabla-comanda tbody tr:hover {
+  background: #eff6ff;
 }
 
 #tabla-comanda td {
   padding: 12px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid #E5E7EB;
   vertical-align: middle;
-}
-
-#tabla-comanda tbody tr:hover {
-  background: #f0f6ff;
+  color: #111827;
 }
 
 /* Empty state */
@@ -404,8 +418,12 @@ select option.platillo-no-disponible {
   }
   
   #tabla-comanda thead {
-    background: #333 !important;
+    background: #1E40AF !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+  }
+  
+  #tabla-comanda th {
+    color: #ffffff !important;
   }
 }

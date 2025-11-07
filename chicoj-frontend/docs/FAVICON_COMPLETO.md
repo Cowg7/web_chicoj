@@ -137,3 +137,5 @@ Ahora cuando navegues por el sistema:
 
 Prueba en **modo incógnito** (Ctrl + Shift + N) para ver los iconos inmediatamente. 🎨
 
+
+

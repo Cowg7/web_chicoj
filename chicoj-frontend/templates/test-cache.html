@@ -1,0 +1,237 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test de Cache - Chicoj</title>
+  <link rel="stylesheet" href="/css/base.css?v=20251108final">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    h1 {
+      color: #2563eb;
+      margin-bottom: 10px;
+    }
+    .version-info {
+      background: #f0f9ff;
+      border-left: 4px solid #2563eb;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 4px;
+    }
+    .success {
+      background: #d4edda;
+      border-left-color: #28a745;
+      color: #155724;
+    }
+    .warning {
+      background: #fff3cd;
+      border-left-color: #ffc107;
+      color: #856404;
+    }
+    .error {
+      background: #f8d7da;
+      border-left-color: #dc3545;
+      color: #721c24;
+    }
+    .test-item {
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .test-ok {
+      background: #d4edda;
+    }
+    .test-fail {
+      background: #f8d7da;
+    }
+    .icon {
+      font-size: 24px;
+    }
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 5px;
+      transition: all 0.3s;
+    }
+    button:hover {
+      background: #1e40af;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    }
+    .btn-danger {
+      background: #dc3545;
+    }
+    .btn-danger:hover {
+      background: #c82333;
+    }
+    code {
+      background: #f4f4f4;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      color: #d63384;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🔍 Diagnóstico de Cache del Sistema</h1>
+    <p>Esta página te ayuda a identificar si el navegador está usando archivos en caché.</p>
+  </div>
+
+  <div class="card">
+    <h2>📋 Información del Sistema</h2>
+    <div id="info-sistema">
+      <div class="version-info">
+        <strong>Versión esperada:</strong> <code>20251108cache</code><br>
+        <strong>Fecha:</strong> <span id="fecha-actual"></span><br>
+        <strong>Navegador:</strong> <span id="navegador"></span><br>
+        <strong>Sistema:</strong> <span id="sistema"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🧪 Pruebas de Cache</h2>
+    <div id="resultados-test"></div>
+  </div>
+
+  <div class="card">
+    <h2>🛠️ Acciones Rápidas</h2>
+    <button onclick="recargarFuerte()">🔄 Recarga Forzada (Ctrl+Shift+R)</button>
+    <button onclick="limpiarTodo()" class="btn-danger">🗑️ Limpiar TODO el Cache</button>
+    <button onclick="volverLogin()">← Volver al Login</button>
+  </div>
+
+  <div class="card">
+    <h2>📝 Instrucciones</h2>
+    <ol>
+      <li>Si ves la versión <code>20251108cache</code> arriba, el sistema está actualizado ✅</li>
+      <li>Si ves una versión diferente, tu navegador tiene caché antiguo ⚠️</li>
+      <li>Usa <strong>Ctrl+Shift+R</strong> para recargar forzadamente</li>
+      <li>Si el problema persiste, usa el botón "Limpiar TODO el Cache"</li>
+    </ol>
+  </div>
+
+  <script>
+    // Información del sistema
+    document.getElementById('fecha-actual').textContent = new Date().toLocaleString('es-MX');
+    document.getElementById('navegador').textContent = navigator.userAgent.split(' ').slice(-2).join(' ');
+    document.getElementById('sistema').textContent = navigator.platform;
+
+    // Función para verificar versiones
+    function verificarCache() {
+      const resultadosDiv = document.getElementById('resultados-test');
+      let html = '';
+
+      // Verificar CSS
+      const cssLinks = document.querySelectorAll('link[rel="stylesheet"]');
+      cssLinks.forEach(link => {
+        const url = new URL(link.href);
+        const version = url.searchParams.get('v');
+        const isOk = version === '20251108cache';
+        html += `
+          <div class="test-item ${isOk ? 'test-ok' : 'test-fail'}">
+            <span class="icon">${isOk ? '✅' : '❌'}</span>
+            <div>
+              <strong>${link.href.split('/').pop().split('?')[0]}</strong><br>
+              Versión: <code>${version || 'SIN VERSIÓN'}</code>
+            </div>
+          </div>
+        `;
+      });
+
+      // Verificar localStorage
+      const localStorageSize = JSON.stringify(localStorage).length;
+      html += `
+        <div class="test-item test-ok">
+          <span class="icon">💾</span>
+          <div>
+            <strong>localStorage</strong><br>
+            Tamaño: ${localStorageSize} bytes
+          </div>
+        </div>
+      `;
+
+      // Verificar sessionStorage
+      const sessionStorageSize = JSON.stringify(sessionStorage).length;
+      html += `
+        <div class="test-item test-ok">
+          <span class="icon">📦</span>
+          <div>
+            <strong>sessionStorage</strong><br>
+            Tamaño: ${sessionStorageSize} bytes
+          </div>
+        </div>
+      `;
+
+      resultadosDiv.innerHTML = html;
+    }
+
+    // Función para recarga forzada
+    function recargarFuerte() {
+      location.reload(true);
+    }
+
+    // Función para limpiar todo
+    function limpiarTodo() {
+      if (confirm('¿Estás seguro? Esto borrará TODA la información guardada en tu navegador para este sitio.')) {
+        // Limpiar localStorage
+        localStorage.clear();
+        
+        // Limpiar sessionStorage
+        sessionStorage.clear();
+        
+        // Limpiar cookies
+        document.cookie.split(";").forEach(function(c) { 
+          document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+        });
+        
+        // Limpiar caché (si es posible)
+        if ('caches' in window) {
+          caches.keys().then(names => {
+            names.forEach(name => caches.delete(name));
+          });
+        }
+        
+        alert('✅ Cache limpiado. La página se recargará en 2 segundos...');
+        
+        setTimeout(() => {
+          window.location.reload(true);
+        }, 2000);
+      }
+    }
+
+    // Función para volver al login
+    function volverLogin() {
+      window.location.href = '/templates/login';
+    }
+
+    // Ejecutar verificación al cargar
+    window.addEventListener('load', verificarCache);
+  </script>
+</body>
+</html>
+

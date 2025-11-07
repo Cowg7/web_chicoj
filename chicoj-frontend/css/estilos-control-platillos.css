@@ -7,7 +7,7 @@
   background: var(--panel);
   border: 2px solid var(--border);
   border-radius: var(--radius-lg);
-  box-shadow: 0 4px 12px rgba(127, 161, 179, 0.08);
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.08);
   padding: 1.5rem;
   margin-bottom: 2rem;
 }
@@ -44,14 +44,14 @@
 
 .area-titulo {
   display: inline-block;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-700) 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
   color: white;
   padding: 0.5rem 1.25rem;
   border-radius: var(--radius);
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  box-shadow: 0 2px 8px rgba(127, 161, 179, 0.2);
+  box-shadow: 0 2px 8px rgba(30, 64, 175, 0.2);
 }
 
 /* Lista tipo tabla */
@@ -80,7 +80,7 @@
 
 /* Encabezados */
 .fila.encabezados {
-  background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
   font-weight: 700;
   color: white;
   position: sticky;
@@ -97,11 +97,11 @@
 
 /* Filas alternadas */
 .fila:not(.encabezados):nth-child(even) {
-  background: #f8f9fa;
+  background: #F5F7FA;
 }
 
 .fila:not(.encabezados):hover {
-  background: rgba(127, 161, 179, 0.08);
+  background: #eff6ff;
   cursor: pointer;
 }
 

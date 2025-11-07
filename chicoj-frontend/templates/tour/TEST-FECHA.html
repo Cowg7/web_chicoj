@@ -65,7 +65,7 @@
       <label for="fecha1">Fecha (max="2025-11-01"):</label>
       <input type="date" id="fecha1" max="2025-11-01">
       <div class="info success">
-        ✅ Este campo tiene max="2025-11-01" directamente en HTML.
+        [OK] Este campo tiene max="2025-11-01" directamente en HTML.
         <br>NO deberías poder seleccionar fechas después del 1 de noviembre 2025.
       </div>
     </div>
@@ -84,13 +84,13 @@
       <label for="fecha3">Fecha (SIN max):</label>
       <input type="date" id="fecha3">
       <div class="info error">
-        ❌ Este campo NO tiene restricción.
+        [X] Este campo NO tiene restricción.
         <br>PUEDES seleccionar cualquier fecha futura.
       </div>
     </div>
 
     <div class="test-group">
-      <h3>📊 Información del Navegador</h3>
+      <h3>[STATS] Información del Navegador</h3>
       <div id="browser-info" class="info"></div>
     </div>
   </div>
@@ -110,14 +110,14 @@
       
       info2.className = 'info success';
       info2.innerHTML = `
-        ✅ Fecha máxima establecida con JavaScript: <strong>${todayStr}</strong>
+        [OK] Fecha máxima establecida con JavaScript: <strong>${todayStr}</strong>
         <br>NO deberías poder seleccionar fechas futuras.
         <br><br>
         <code>fecha2.max = "${todayStr}"</code>
       `;
       
-      console.log('✅ Atributo max establecido:', fecha2.max);
-      console.log('✅ Valor actual:', fecha2.value);
+      console.log('[OK] Atributo max establecido:', fecha2.max);
+      console.log('[OK] Valor actual:', fecha2.value);
     }
 
     // Mostrar info del navegador
@@ -137,11 +137,13 @@
         console.log(`   Fecha máxima permitida:`, this.max || 'SIN LÍMITE');
         
         if (this.max && this.value > this.max) {
-          alert('⚠️ ERROR: Seleccionaste una fecha mayor a la permitida!\n\nMax: ' + this.max + '\nSeleccionada: ' + this.value);
+          alert('[!] ERROR: Seleccionaste una fecha mayor a la permitida!\n\nMax: ' + this.max + '\nSeleccionada: ' + this.value);
         }
       });
     });
   </script>
 </body>
 </html>
+
+
 

@@ -15,7 +15,7 @@ table {
 
 /* Encabezado de tabla */
 thead {
-  background: linear-gradient(to bottom, #f8f9fa 0%, #e9ecef 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
 }
 
 thead th {
@@ -23,10 +23,10 @@ thead th {
   text-align: left;
   font-weight: 700;
   font-size: 0.8125rem;
-  color: var(--text-secondary);
+  color: #ffffff !important;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  border-bottom: 2px solid var(--border);
+  border-bottom: 2px solid var(--primary);
   white-space: nowrap;
 }
 
@@ -41,13 +41,13 @@ tbody tr:last-child {
 }
 
 tbody tr:hover {
-  background: var(--primary-50);
+  background: #eff6ff;
   cursor: pointer;
 }
 
 tbody tr.selected {
-  background: var(--primary-100);
-  box-shadow: inset 3px 0 0 var(--primary-600);
+  background: #dbeafe;
+  box-shadow: inset 3px 0 0 var(--primary);
 }
 
 tbody td {
@@ -142,11 +142,11 @@ tbody td .badge {
 
 /* Tabla con rayas zebra */
 .table-striped tbody tr:nth-child(even) {
-  background: var(--bg);
+  background: #F5F7FA;
 }
 
 .table-striped tbody tr:nth-child(even):hover {
-  background: var(--primary-50);
+  background: #eff6ff;
 }
 
 /* Tabla compacta */
@@ -271,7 +271,7 @@ tr.cancelado {
 
 /* Mejoras de accesibilidad */
 tbody tr:focus-within {
-  outline: 2px solid var(--primary-600);
+  outline: 2px solid var(--primary);
   outline-offset: -2px;
 }
 
@@ -296,5 +296,6 @@ tbody tr:nth-child(2) { animation-delay: 0.1s; }
 tbody tr:nth-child(3) { animation-delay: 0.15s; }
 tbody tr:nth-child(4) { animation-delay: 0.2s; }
 tbody tr:nth-child(5) { animation-delay: 0.25s; }
+
 
 

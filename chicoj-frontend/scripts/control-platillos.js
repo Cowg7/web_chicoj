@@ -258,11 +258,15 @@
     const accion = disponibleActual ? 'desactivar' : 'activar';
     const nuevoEstado = !disponibleActual;
     
-    const confirmed = confirm(
+    const confirmed = await showConfirm(
       `¿Estás seguro de ${accion} este platillo?\n\n` +
       (nuevoEstado ? 
         'El platillo estará DISPONIBLE para los meseros.' : 
-        'El platillo se mostrará como NO DISPONIBLE a los meseros.')
+        'El platillo se mostrará como NO DISPONIBLE a los meseros.'),
+      {
+        confirmText: nuevoEstado ? 'Activar' : 'Desactivar',
+        cancelText: 'Cancelar'
+      }
     );
     
     if (!confirmed) return;
@@ -287,10 +291,14 @@
 
   // Manejar eliminación de platillo
   async function handleEliminarPlatillo(id, nombre) {
-    const confirmed = confirm(
+    const confirmed = await showConfirm(
       `¿Estás seguro de eliminar el platillo "${nombre}"?\n\n` +
       'Esta acción NO se puede deshacer.\n' +
-      'El platillo será eliminado permanentemente del sistema.'
+      'El platillo será eliminado permanentemente del sistema.',
+      {
+        confirmText: 'Eliminar',
+        cancelText: 'Cancelar'
+      }
     );
     
     if (!confirmed) return;
@@ -309,7 +317,10 @@
       await loadPlatillos();
     } catch (error) {
       console.error('Error al eliminar platillo:', error);
-      showNotification('Error al eliminar platillo: ' + error.message, 'error');
+      
+      // Mostrar el mensaje completo del servidor
+      const errorMessage = error.message;
+      showNotification(errorMessage, 'error');
     }
   }
 
@@ -333,14 +344,22 @@
       box-shadow: 0 4px 6px rgba(0,0,0,0.2);
       z-index: 10000;
       animation: slideIn 0.3s ease;
+      max-width: 500px;
+      min-width: 300px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      line-height: 1.5;
     `;
     
     document.body.appendChild(notification);
     
+    // Los errores largos se muestran por más tiempo
+    const duration = type === 'error' && message.length > 100 ? 6000 : 3000;
+    
     setTimeout(() => {
       notification.style.animation = 'slideOut 0.3s ease';
       setTimeout(() => notification.remove(), 300);
-    }, 3000);
+    }, duration);
   }
 
   // Estilos adicionales

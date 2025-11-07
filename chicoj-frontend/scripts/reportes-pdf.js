@@ -123,11 +123,11 @@ window.generarPDFPlatillos = async function() {
     agregarFooterPDF(doc);
     const fecha = new Date().toISOString().split('T')[0];
     doc.save(`Platillos_Vendidos_${fecha}.pdf`);
-    console.log('✅ PDF de platillos generado');
-    alert('✅ PDF de Platillos Vendidos descargado');
+    console.log('[OK] PDF de platillos generado');
+    alert('[OK] PDF de Platillos Vendidos descargado');
 
   } catch (error) {
-    console.error('❌ Error:', error);
+    console.error('[ERROR] Error:', error);
     alert('Error al generar PDF');
   }
 };
@@ -220,11 +220,11 @@ window.generarPDFAreas = async function() {
     agregarFooterPDF(doc);
     const fecha = new Date().toISOString().split('T')[0];
     doc.save(`Ventas_Por_Areas_${fecha}.pdf`);
-    console.log('✅ PDF de áreas generado');
-    alert('✅ PDF de Ventas por Áreas descargado');
+    console.log('[OK] PDF de áreas generado');
+    alert('[OK] PDF de Ventas por Áreas descargado');
 
   } catch (error) {
-    console.error('❌ Error:', error);
+    console.error('[ERROR] Error:', error);
     alert('Error al generar PDF');
   }
 };
@@ -311,15 +311,15 @@ window.generarPDFHoras = async function() {
     agregarFooterPDF(doc);
     const fecha = new Date().toISOString().split('T')[0];
     doc.save(`Distribucion_Por_Horas_${fecha}.pdf`);
-    console.log('✅ PDF de horas generado');
-    alert('✅ PDF de Distribución por Horas descargado');
+    console.log('[OK] PDF de horas generado');
+    alert('[OK] PDF de Distribución por Horas descargado');
 
   } catch (error) {
-    console.error('❌ Error:', error);
+    console.error('[ERROR] Error:', error);
     alert('Error al generar PDF');
   }
 };
 
-console.log('✅ Módulo de PDFs específicos cargado');
+console.log('[OK] Módulo de PDFs específicos cargado');
 
 

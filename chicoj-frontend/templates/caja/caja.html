@@ -10,385 +10,646 @@
   <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
   
+  <!-- Desactivar logs en producción (debe ser el primero) -->
+    <script src="/scripts/toast-notifications.js?v=20251108final"></script>
+  <script src="/scripts/disable-logs-production.js?v=20251108final"></script>
+  
   <!-- IMPORTANTE: Auth simple sin interferir -->
-  <script src="/scripts/simple-auth.js?v=20251108cache"></script>
+  <script src="/scripts/simple-auth.js?v=20251108final"></script>
   
   <!-- Meta tags para prevenir caché -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   
-  <link rel="stylesheet" href="/css/base.css?v=20251108cache">
-  <link rel="stylesheet" href="/css/components.css?v=20251108cache">
-  <link rel="stylesheet" href="/css/utilities.css?v=20251108cache">
-  <link rel="stylesheet" href="/css/mejoras-ux.css?v=20251108cache">
-  <link rel="stylesheet" href="/css/tablas-modernas.css?v=20251108cache">
-  <link rel="stylesheet" href="/css/responsive.css?v=20251108cache">
-  <link rel="stylesheet" href="/css/responsive-caja.css?v=20251108cache">
+  <link rel="stylesheet" href="/css/base.css?v=20251108final">
+  <link rel="stylesheet" href="/css/components.css?v=20251108final">
+  <link rel="stylesheet" href="/css/utilities.css?v=20251108final">
+  
   <style>
-    .stats-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-      margin: 2rem 0;
-      padding: 0 2rem;
+    /* Reset y base */
+    * {
+      box-sizing: border-box;
     }
-    .stat-card {
-      background: linear-gradient(135deg, #5d71cc 0%, #4673b6 100%);
-      padding: 1.5rem;
-      border-radius: var(--r-md);
-      text-align: center;
+    
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      min-height: 100vh;
+    }
+    
+    /* Contenedor principal */
+    .contenedor-app {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Header */
+    .encabezado {
+      background: white;
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .brand h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #2c3e50;
+    }
+    
+    .badge {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
       color: white;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    
+    /* Contenido principal */
+    .contenido {
+      flex: 1;
+      padding: 2rem;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    
+    /* Título */
+    .titulo-seccion {
+      color: #2563eb;
+      margin-bottom: 2rem;
+      font-size: 2rem;
+      text-align: center;
+      font-weight: 700;
+    }
+    
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      padding: 1.5rem;
+      border-radius: 12px;
+      color: white;
+      box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
       transition: transform 0.2s;
     }
+    
     .stat-card:hover {
       transform: translateY(-4px);
       box-shadow: 0 6px 12px rgba(0,0,0,0.15);
     }
+    
     .stat-card h3 {
       margin: 0 0 0.5rem 0;
-      font-size: 0.9rem;
-      text-transform: uppercase;
+      font-size: 0.875rem;
       opacity: 0.9;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
+    
     .stat-card .value {
       font-size: 2rem;
       font-weight: bold;
+      margin: 0;
     }
-    .tabs-container {
-      padding: 0 2rem;
+    
+    /* Tabs */
+    .tabs-wrapper {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
     }
-    .tabs {
+    
+    .tabs-header {
       display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1.5rem;
-      border-bottom: 2px solid var(--border);
+      border-bottom: 2px solid #e0e0e0;
+      background: #f8f9fa;
     }
-    .tab {
+    
+    .tab-btn {
+      flex: 1;
       padding: 1rem 2rem;
-      background: transparent;
+      background: none;
       border: none;
       border-bottom: 3px solid transparent;
       cursor: pointer;
+      font-size: 1rem;
       font-weight: 600;
       color: #666;
       transition: all 0.3s;
     }
-    .tab.active {
-      color: var(--primary);
-      border-bottom-color: var(--primary);
+    
+    .tab-btn.active {
+      color: #2563eb;
+      border-bottom-color: #2563eb;
+      background: white;
     }
-    .tab:hover {
-      color: var(--primary);
+    
+    .tab-btn:hover {
+      color: #2563eb;
+      background: rgba(37, 99, 235, 0.05);
     }
+    
     .tab-content {
       display: none;
-      padding: 0 2rem 2rem;
+      padding: 1.5rem;
     }
+    
     .tab-content.active {
       display: block;
     }
-    .orders-table {
-      background: white;
-      border-radius: var(--r-md);
-      overflow: hidden;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    
+    /* Tabla */
+    .table-wrapper {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
-    .orders-table table {
+    
+    table {
       width: 100%;
       border-collapse: collapse;
+      min-width: 600px;
     }
-    .orders-table th {
-      background: var(--primary);
-      color: white;
+    
+    thead {
+      background: linear-gradient(135deg, #1E40AF 0%, #2563EB 100%);
+      color: #ffffff;
+    }
+    
+    tbody tr:nth-child(even) {
+      background: #F5F7FA;
+    }
+    
+    tbody tr:hover {
+      background: #eff6ff;
+    }
+    
+    th {
       padding: 1rem;
       text-align: left;
       font-weight: 600;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      color: #ffffff !important;
     }
-    .orders-table td {
+    
+    td {
       padding: 1rem;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid #E5E7EB;
+      color: #111827;
     }
-    .orders-table tr:hover {
-      background: #f9f9f9;
-    }
-    .btn-finalizar {
-      background: var(--success);
-      color: white;
-      border: none;
+    
+    
+    /* Botones */
+    .btn {
       padding: 0.5rem 1rem;
-      border-radius: var(--r-sm);
+      border: none;
+      border-radius: 6px;
       cursor: pointer;
       font-weight: 600;
-      transition: background 0.2s;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-block;
     }
-    .btn-finalizar:hover {
-      background: #45a049;
-    }
-    .btn-ver-detalles {
-      background: var(--primary);
+    
+    .btn-primary {
+      background: #2563eb;
       color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #1d4ed8;
+      transform: translateY(-2px);
+    }
+    
+    .btn-success {
+      background: #48bb78;
+      color: white;
+    }
+    
+    .btn-success:hover {
+      background: #38a169;
+    }
+    
+    .btn-outline {
+      background: white;
+      color: #2563eb;
+      border: 2px solid #2563eb;
+    }
+    
+    .btn-outline:hover {
+      background: #2563eb;
+      color: white;
+    }
+    
+    .btn-cobrar {
+      background: #48bb78;
+      color: white;
+      padding: 0.5rem 1.5rem;
       border: none;
-      padding: 0.5rem 1rem;
-      border-radius: var(--r-sm);
+      border-radius: 6px;
       cursor: pointer;
       font-weight: 600;
-      transition: background 0.2s;
+      font-size: 0.9rem;
     }
-    .btn-ver-detalles:hover {
-      background: #1976D2;
+    
+    .btn-cobrar:hover {
+      background: #38a169;
     }
-    .modal {
+    
+    /* MODAL - CENTRADO PERFECTO */
+    .modal-overlay {
       display: none;
       position: fixed;
-      z-index: 1000;
-      left: 0;
       top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.5);
-      overflow-y: auto;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 10000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
     }
-    .modal-content {
+    
+    .modal-overlay.active {
+      display: flex;
+    }
+    
+    .modal-box {
       background: white;
-      margin: 2rem auto;
-      padding: 2rem;
-      border-radius: var(--r-md);
-      max-width: 600px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 800px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
     }
+    
     .modal-header {
+      padding: 1.5rem;
+      border-bottom: 2px solid #e0e0e0;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.5rem;
-      padding-bottom: 1rem;
-      border-bottom: 2px solid var(--border);
     }
+    
     .modal-header h2 {
       margin: 0;
-      color: var(--primary);
+      color: #2c3e50;
+      font-size: 1.5rem;
     }
-    .close {
+    
+    .modal-close {
+      background: none;
+      border: none;
       font-size: 2rem;
-      cursor: pointer;
       color: #999;
-      font-weight: 300;
+      cursor: pointer;
       line-height: 1;
+      padding: 0;
+      width: 32px;
+      height: 32px;
     }
-    .close:hover {
+    
+    .modal-close:hover {
       color: #333;
     }
-    .form-group {
-      margin-bottom: 1rem;
+    
+    .modal-body {
+      padding: 1.5rem;
     }
+    
+    /* Formulario */
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    
     .form-group label {
       display: block;
       margin-bottom: 0.5rem;
       font-weight: 600;
       color: #333;
+      font-size: 0.95rem;
     }
+    
     .form-group input,
     .form-group select {
       width: 100%;
       padding: 0.75rem;
-      border: 1px solid var(--border);
-      border-radius: var(--r-sm);
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
       font-size: 1rem;
+      transition: border-color 0.2s;
     }
+    
     .form-group input:focus,
     .form-group select:focus {
       outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
     }
+    
+    .form-group input[readonly] {
+      background: #f8f9fa;
+      color: #666;
+    }
+    
+    .form-group input.error {
+      border-color: #ef4444 !important;
+      background-color: #fef2f2 !important;
+    }
+    
+    .form-group input.success {
+      border-color: #10B981 !important;
+      background-color: #f0fdf4 !important;
+    }
+    
+    /* Tabla de detalles en modal */
+    .detalle-table {
+      width: 100%;
+      margin: 1rem 0;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    
+    .detalle-table thead {
+      background: linear-gradient(135deg, #1E40AF 0%, #2563EB 100%);
+    }
+    
+    .detalle-table th {
+      background: transparent;
+      color: #ffffff;
+      padding: 0.75rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    
+    .detalle-table tbody tr:nth-child(even) {
+      background: #F5F7FA;
+    }
+    
+    .detalle-table tbody tr:hover {
+      background: #eff6ff;
+    }
+    
+    .detalle-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #E5E7EB;
+      color: #111827;
+    }
+    
+    .detalle-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    
+    /* Acciones del formulario */
     .form-actions {
       display: flex;
       gap: 1rem;
       margin-top: 1.5rem;
     }
-    .form-actions button {
+    
+    .btn-cancel {
       flex: 1;
       padding: 0.75rem;
+      background: #e0e0e0;
+      color: #333;
       border: none;
-      border-radius: var(--r-sm);
-      cursor: pointer;
+      border-radius: 6px;
       font-weight: 600;
-      font-size: 1rem;
-      transition: all 0.2s;
+      cursor: pointer;
     }
-    .btn-submit {
-      background: var(--success);
-      color: white;
-    }
-    .btn-submit:hover {
-      background: #45a049;
-      transform: translateY(-2px);
-    }
-    .btn-cancel {
-      background: var(--danger);
-      color: white;
-    }
+    
     .btn-cancel:hover {
-      background: #da190b;
-      transform: translateY(-2px);
+      background: #d0d0d0;
     }
-    .detalle-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 1rem 0;
+    
+    .btn-submit {
+      flex: 1;
+      padding: 0.75rem;
+      background: #48bb78;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 1rem;
     }
-    .detalle-table th {
-      background: #f5f5f5;
-      padding: 0.5rem;
-      text-align: left;
-      border-bottom: 2px solid var(--border);
-      font-size: 0.9rem;
+    
+    .btn-submit:hover {
+      background: #38a169;
     }
-    .detalle-table td {
-      padding: 0.5rem;
-      border-bottom: 1px solid #eee;
+    
+    /* Footer */
+    .pie-pagina {
+      text-align: center;
+      padding: 1.5rem;
+      background: white;
+      color: #666;
+      box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+      border-top: 1px solid #e0e0e0;
     }
-    .detalle-container {
-      max-height: 300px;
-      overflow-y: auto;
-      border: 1px solid var(--border);
-      border-radius: var(--r-sm);
-      margin: 1rem 0;
+    
+    /* Mensaje vacío */
+    .empty-message {
+      text-align: center;
+      padding: 3rem;
+      color: #999;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .contenido {
+        padding: 1rem;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .tab-btn {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+      }
+      
+      .modal-box {
+        width: 95%;
+      }
+      
+      table {
+        font-size: 0.875rem;
+      }
+      
+      th, td {
+        padding: 0.75rem 0.5rem;
+      }
     }
   </style>
+  <link rel="stylesheet" href="/css/toast-notifications.css?v=20251108final">
 </head>
 <body>
   <div class="contenedor-app">
     <!-- Header -->
     <header class="encabezado">
       <div class="brand">
-        <div class="logo-placeholder" aria-label="Logo"></div>
         <div>
           <span class="badge">Somos</span>
           <h1>Restaurante Chicoj</h1>
         </div>
       </div>
-      <nav class="acciones" aria-label="Acciones">
+      <nav class="acciones">
         <a class="btn btn-outline" href="/main">Inicio</a>
         <a class="btn btn-primary" href="#" onclick="return ultraSimpleLogout(event)">Cerrar sesión</a>
       </nav>
     </header>
 
-    <main class="contenido" role="main">
-      <section class="seccion">
-        <h2 style="margin-bottom: 1.5rem; color: var(--primary);"> Caja - Sistema de Cobros</h2>
+    <!-- Contenido Principal -->
+    <main class="contenido">
+      <h2 class="titulo-seccion"> Caja - Sistema de Cobros</h2>
 
-        <!-- Estadísticas del día -->
-        <div class="stats-container">
-          <div class="stat-card">
-            <h3>Ventas del Día</h3>
-            <div class="value" id="stat-ventas-dia">Q 0.00</div>
-          </div>
-          <div class="stat-card">
-            <h3>Órdenes Completadas</h3>
-            <div class="value" id="stat-ordenes-dia">0</div>
-          </div>
-          <div class="stat-card">
-            <h3>Órdenes Pendientes</h3>
-            <div class="value" id="stat-pendientes">0</div>
+      <!-- Estadísticas -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>Ventas del Día</h3>
+          <p class="value" id="stat-ventas-dia">Q 0.00</p>
+        </div>
+        <div class="stat-card">
+          <h3>Órdenes Completadas</h3>
+          <p class="value" id="stat-ordenes-dia">0</p>
+        </div>
+        <div class="stat-card">
+          <h3>Órdenes Pendientes</h3>
+          <p class="value" id="stat-pendientes">0</p>
+        </div>
+      </div>
+
+      <!-- Tabs de Órdenes -->
+      <div class="tabs-wrapper">
+        <!-- Header de Tabs -->
+        <div class="tabs-header">
+          <button class="tab-btn active" data-tab="pendientes">
+             Órdenes Pendientes
+          </button>
+          <button class="tab-btn" data-tab="historial">
+             Historial del Día
+          </button>
+        </div>
+
+        <!-- Tab: Órdenes Pendientes -->
+        <div class="tab-content active" id="tab-pendientes">
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>No. Orden</th>
+                  <th>Mesa</th>
+                  <th>Fecha</th>
+                  <th>Total</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-pendientes">
+                <tr>
+                  <td colspan="5" class="empty-message">
+                    Cargando órdenes pendientes...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
-        <!-- Tabs -->
-        <div class="tabs-container">
-          <div class="tabs">
-            <button class="tab active" data-tab="pendientes">Órdenes Pendientes</button>
-            <button class="tab" data-tab="historial">Historial del Día</button>
-          </div>
-
-          <!-- Tab: Órdenes Pendientes -->
-          <div class="tab-content active" id="tab-pendientes" style="overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%;">
-            <div class="orders-table" style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
-              <table style="min-width: 600px; width: 100%;">
-                <thead>
-                  <tr>
-                    <th>No. Orden</th>
-                    <th>Mesa</th>
-                    <th>Fecha</th>
-                    <th>Total</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody id="tabla-pendientes">
-                  <tr>
-                    <td colspan="5" style="text-align: center; padding: 2rem; color: #999;">
-                      Cargando órdenes pendientes...
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Tab: Historial -->
-          <div class="tab-content" id="tab-historial" style="overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%;">
-            <div class="orders-table" style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
-              <table style="min-width: 700px; width: 100%;">
-                <thead>
-                  <tr>
-                    <th>No. Orden</th>
-                    <th>Mesa</th>
-                    <th>Fecha</th>
-                    <th>Total</th>
-                    <th>Método de Pago</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody id="tabla-historial">
-                  <tr>
-                    <td colspan="6" style="text-align: center; padding: 2rem; color: #999;">
-                      Cargando historial...
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+        <!-- Tab: Historial -->
+        <div class="tab-content" id="tab-historial">
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>No. Orden</th>
+                  <th>Mesa</th>
+                  <th>Fecha</th>
+                  <th>Total</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-historial">
+                <tr>
+                  <td colspan="5" class="empty-message">
+                    Cargando historial...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
-      </section>
+      </div>
     </main>
 
+    <!-- Footer -->
     <footer class="pie-pagina">
-      <p>© Derechos Reservados</p>
+      <p>© 2025 Restaurante Chicoj - Todos los derechos reservados</p>
     </footer>
   </div>
 
-  <!-- Modal para finalizar pago -->
-  <div id="modal-pago" class="modal">
-    <div class="modal-content">
+  <!-- MODAL DE PAGO - CENTRADO PERFECTO -->
+  <div class="modal-overlay" id="modal-pago">
+    <div class="modal-box">
+      <!-- Header del Modal -->
       <div class="modal-header">
-        <h2>Finalizar Pago</h2>
-        <span class="close">&times;</span>
+        <h2>💳 Finalizar Pago</h2>
+        <button type="button" class="modal-close" id="btn-close-modal">&times;</button>
       </div>
-      <form id="form-pago">
-        <input type="hidden" id="orden-id" name="orden_id">
-        
-        <div class="form-group">
-          <label>No. Orden:</label>
-          <input type="text" id="modal-orden-numero" readonly>
-        </div>
 
-        <div class="form-group">
-          <label>Mesa:</label>
-          <input type="text" id="modal-orden-mesa" readonly>
-        </div>
+      <!-- Body del Modal -->
+      <div class="modal-body">
+        <form id="form-pago">
+          <input type="hidden" id="orden-id" name="orden_id">
+          
+          <!-- Información de la Orden -->
+          <div class="form-group">
+            <label>No. Orden:</label>
+            <input type="text" id="modal-orden-numero" readonly>
+          </div>
 
-        <div class="form-group">
-          <label>Total a Pagar:</label>
-          <input type="text" id="modal-orden-total" readonly>
-        </div>
+          <div class="form-group">
+            <label>Mesa:</label>
+            <input type="text" id="modal-orden-mesa" readonly>
+          </div>
 
-        <!-- Detalles de platillos -->
-        <div class="form-group">
-          <label style="font-size: 1.1rem; color: #333;"> Detalle de Platillos:</label>
-          <div class="detalle-container">
+          <div class="form-group">
+            <label>Total a Pagar:</label>
+            <input type="text" id="modal-orden-total" readonly>
+          </div>
+
+          <!-- Detalle de Platillos -->
+          <div class="form-group">
+            <label>📋 Detalle de Platillos:</label>
             <table class="detalle-table">
               <thead>
                 <tr>
@@ -407,44 +668,742 @@
               </tbody>
             </table>
           </div>
-        </div>
 
-        <div class="form-group">
-          <label for="metodo_pago">Método de Pago: *</label>
-          <select id="metodo_pago" name="metodo_pago" required>
-            <option value="">Seleccionar...</option>
-            <option value="Efectivo">Efectivo</option>
-            <option value="Tarjeta">Tarjeta</option>
-            <option value="Transferencia">Transferencia</option>
-          </select>
-        </div>
+          <!-- Método de Pago -->
+          <div class="form-group">
+            <label for="metodo_pago">Método de Pago: *</label>
+            <select id="metodo_pago" name="metodo_pago" required>
+              <option value="">Seleccionar...</option>
+              <option value="Efectivo">💵 Efectivo</option>
+              <option value="Tarjeta">💳 Tarjeta</option>
+              <option value="Transferencia">🏦 Transferencia</option>
+            </select>
+          </div>
 
-        <div class="form-group">
-          <label for="monto_recibido">Monto Recibido: *</label>
-          <input type="number" id="monto_recibido" name="monto_recibido" step="0.01" required>
-        </div>
+          <!-- Monto Recibido -->
+          <div class="form-group">
+            <label for="monto_recibido">Monto Recibido: *</label>
+            <input 
+              type="number" 
+              id="monto_recibido" 
+              name="monto_recibido" 
+              step="0.01" 
+              min="0"
+              placeholder="0.00"
+              required
+              oninput="this.value = Math.abs(this.value)"
+            >
+            <small class="help-text-payment" style="display: none; color: #ef4444; font-size: 0.875rem; margin-top: 4px;"></small>
+          </div>
 
-        <div class="form-group">
-          <label for="cambio_devuelto">Cambio:</label>
-          <input type="text" id="cambio_devuelto" name="cambio_devuelto" readonly value="Q 0.00">
-        </div>
+          <!-- Cambio -->
+          <div class="form-group">
+            <label for="cambio_devuelto">Cambio:</label>
+            <input 
+              type="text" 
+              id="cambio_devuelto" 
+              name="cambio_devuelto" 
+              readonly 
+              value="Q 0.00"
+              style="background: #F5F7FA; font-weight: 600; color: #10B981; font-size: 1.1rem;"
+            >
+          </div>
 
-        <div class="form-actions">
-          <button type="button" class="btn-cancel" id="btn-cancelar-pago">Cancelar</button>
-          <button type="submit" class="btn-submit">✓ Finalizar Pago</button>
-        </div>
-      </form>
+          <!-- Acciones -->
+          <div class="form-actions">
+            <button type="button" class="btn-cancel" id="btn-cancelar-pago">
+              Cancelar
+            </button>
+            <button type="submit" class="btn-submit">
+              ✓ Finalizar Pago
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 
-  <!-- Scripts -->
+  <!-- Scripts Externos -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-  <script src="/scripts/ultra-simple-logout.js?v=20251108cache"></script>
-  <script src="/scripts/config.js?v=20251108cache"></script>
-  <script src="/scripts/api.js?v=20251108cache"></script>
-  <script src="/scripts/access-control.js?v=20251108cache"></script>
-  <script src="/scripts/caja.js?v=20251108cache"></script>
+  
+  <!-- Scripts del Sistema -->
+  <script src="/scripts/ultra-simple-logout.js?v=20251108final"></script>
+  <script src="/scripts/config.js?v=20251108final"></script>
+  <script src="/scripts/api.js?v=20251108final"></script>
+  <script src="/scripts/access-control.js?v=20251108final"></script>
+  
+  <!-- Script de la Vista de Caja - REESCRITO -->
+  <script>
+    (function() {
+      console.log('🚀 Iniciando Caja (Versión Nueva)...');
+      
+      // === VARIABLES GLOBALES ===
+      const $ = (id) => document.getElementById(id);
+      
+      // Stats
+      const statVentasDia = $('stat-ventas-dia');
+      const statOrdenesDia = $('stat-ordenes-dia');
+      const statPendientes = $('stat-pendientes');
+      
+      // Tablas
+      const tablaPendientes = $('tabla-pendientes');
+      const tablaHistorial = $('tabla-historial');
+      
+      // Modal
+      const modalOverlay = $('modal-pago');
+      const btnCloseModal = $('btn-close-modal');
+      const btnCancelar = $('btn-cancelar-pago');
+      const formPago = $('form-pago');
+      
+      // Form fields
+      const ordenIdInput = $('orden-id');
+      const modalOrdenNumero = $('modal-orden-numero');
+      const modalOrdenMesa = $('modal-orden-mesa');
+      const modalOrdenTotal = $('modal-orden-total');
+      const metodoPagoSelect = $('metodo_pago');
+      const montoRecibidoInput = $('monto_recibido');
+      const cambioDevueltoInput = $('cambio_devuelto');
+      const modalDetallePlatillos = $('modal-detalle-platillos');
+      
+      // Estado
+      let currentOrder = null;
+      let refreshInterval = null;
+      
+      // === TABS ===
+      function initTabs() {
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabButtons.forEach(btn => {
+          btn.addEventListener('click', () => {
+            const targetTab = btn.dataset.tab;
+            
+            // Remover active de todos
+            tabButtons.forEach(b => b.classList.remove('active'));
+            tabContents.forEach(c => c.classList.remove('active'));
+            
+            // Agregar active al clickeado
+            btn.classList.add('active');
+            $('tab-' + targetTab).classList.add('active');
+            
+            // Recargar datos si es historial
+            if (targetTab === 'historial') {
+              loadHistorial();
+            }
+          });
+        });
+        
+        console.log('✅ Tabs inicializadas');
+      }
+      
+      // === MODAL ===
+      function openModal(orderId, orderNum, mesa, total) {
+        console.log('🔓 Abriendo modal con:', { orderId, orderNum, mesa, total });
+        
+        currentOrder = { id: orderId, numero: orderNum, mesa, total };
+        
+        // Reset PRIMERO (antes de llenar)
+        if (metodoPagoSelect) metodoPagoSelect.value = '';
+        if (montoRecibidoInput) montoRecibidoInput.value = '';
+        if (cambioDevueltoInput) cambioDevueltoInput.value = 'Q 0.00';
+        
+        // LUEGO llenar datos (no usar reset() que borra todo)
+        if (ordenIdInput) {
+          ordenIdInput.value = orderId;
+          console.log('✅ Orden ID:', ordenIdInput.value);
+        } else {
+          console.error('❌ ordenIdInput NO encontrado');
+        }
+        
+        if (modalOrdenNumero) {
+          modalOrdenNumero.value = orderNum;
+          console.log('✅ Orden Número:', modalOrdenNumero.value);
+        } else {
+          console.error('❌ modalOrdenNumero NO encontrado');
+        }
+        
+        if (modalOrdenMesa) {
+          modalOrdenMesa.value = `Mesa ${mesa}`;
+          console.log('✅ Mesa:', modalOrdenMesa.value);
+        } else {
+          console.error('❌ modalOrdenMesa NO encontrado');
+        }
+        
+        if (modalOrdenTotal) {
+          modalOrdenTotal.value = `Q ${parseFloat(total).toFixed(2)}`;
+          console.log('✅ Total:', modalOrdenTotal.value);
+        } else {
+          console.error('❌ modalOrdenTotal NO encontrado');
+        }
+        
+        // Cargar detalles
+        loadOrderDetails(orderId);
+        
+        // Mostrar modal
+        if (modalOverlay) {
+          modalOverlay.classList.add('active');
+          document.body.style.overflow = 'hidden';
+          console.log('✅ Modal mostrado y visible');
+        }
+      }
+      
+      function closeModal() {
+        modalOverlay.classList.remove('active');
+        document.body.style.overflow = 'auto';
+        currentOrder = null;
+        console.log('✅ Modal cerrado');
+      }
+      
+      // === CARGAR DATOS ===
+      async function loadStats() {
+        try {
+          const response = await API.cashier.getStats();
+          const data = response.data || response;
+          
+          statVentasDia.textContent = `Q ${parseFloat(data.total_ventas_hoy || 0).toFixed(2)}`;
+          statOrdenesDia.textContent = data.ordenes_finalizadas_hoy || 0;
+          statPendientes.textContent = data.ordenes_en_caja || 0;
+        } catch (error) {
+          console.error('❌ Error al cargar stats:', error);
+        }
+      }
+      
+      async function loadPendingOrders() {
+        try {
+          const response = await API.cashier.getPending();
+          console.log('📦 Respuesta completa getPending:', response);
+          
+          const data = response.data || response;
+          console.log('📦 Data:', data);
+          
+          // Intentar diferentes formatos de respuesta
+          let orders = [];
+          if (Array.isArray(data)) {
+            orders = data;
+          } else if (data.orders && Array.isArray(data.orders)) {
+            orders = data.orders; // ← API devuelve "orders" (inglés)
+          } else if (data.ordenes && Array.isArray(data.ordenes)) {
+            orders = data.ordenes;
+          } else if (data.data && Array.isArray(data.data)) {
+            orders = data.data;
+          }
+          
+          console.log('📋 Orders array:', orders, 'Length:', orders.length);
+          
+          if (!Array.isArray(orders) || orders.length === 0) {
+            tablaPendientes.innerHTML = `
+              <tr>
+                <td colspan="5" class="empty-message">
+                  No hay órdenes pendientes de pago
+                </td>
+              </tr>
+            `;
+            return;
+          }
+          
+          tablaPendientes.innerHTML = orders.map(order => {
+            const orderNum = `#${String(order.id_orden).padStart(5, '0')}`;
+            const fecha = new Date(order.fecha).toLocaleString('es-GT');
+            const total = parseFloat(order.total).toFixed(2);
+            
+            return `
+              <tr>
+                <td><strong>${orderNum}</strong></td>
+                <td>Mesa ${order.no_mesa}</td>
+                <td>${fecha}</td>
+                <td><strong>Q ${total}</strong></td>
+                <td>
+                  <button 
+                    class="btn-cobrar" 
+                    onclick="window.cajaApp.openModal(${order.id_orden}, '${orderNum}', '${order.no_mesa}', ${order.total})"
+                  >
+                    💳 Cobrar
+                  </button>
+                </td>
+              </tr>
+            `;
+          }).join('');
+          
+          console.log('✅ Órdenes pendientes cargadas:', orders.length);
+        } catch (error) {
+          console.error('❌ Error al cargar pendientes:', error);
+          tablaPendientes.innerHTML = `
+            <tr>
+              <td colspan="5" class="empty-message" style="color: #f44336;">
+                Error al cargar órdenes
+              </td>
+            </tr>
+          `;
+        }
+      }
+      
+      async function loadHistorial() {
+        try {
+          const today = new Date().toISOString().split('T')[0];
+          const response = await API.cashier.getHistory({ fecha: today });
+          console.log('📦 Respuesta completa getHistory:', response);
+          
+          const data = response.data || response;
+          console.log('📦 Data historial:', data);
+          
+          // Intentar diferentes formatos de respuesta
+          let orders = [];
+          if (Array.isArray(data)) {
+            orders = data;
+          } else if (data.orders && Array.isArray(data.orders)) {
+            orders = data.orders; // ← API devuelve "orders" (inglés)
+          } else if (data.ordenes && Array.isArray(data.ordenes)) {
+            orders = data.ordenes;
+          } else if (data.data && Array.isArray(data.data)) {
+            orders = data.data;
+          } else if (data.comprobantes && Array.isArray(data.comprobantes)) {
+            orders = data.comprobantes;
+          }
+          
+          console.log('📋 Orders historial:', orders, 'Length:', orders.length);
+          
+          if (!Array.isArray(orders) || orders.length === 0) {
+            tablaHistorial.innerHTML = `
+              <tr>
+                <td colspan="5" class="empty-message">
+                  No hay órdenes en el historial de hoy
+                </td>
+              </tr>
+            `;
+            return;
+          }
+          
+          tablaHistorial.innerHTML = orders.map(order => {
+            const orderNum = `#${String(order.id_orden).padStart(5, '0')}`;
+            const fecha = new Date(order.fecha).toLocaleString('es-GT');
+            const total = parseFloat(order.total_capturado || order.total).toFixed(2);
+            const metodo = order.metodo_pago || 'Efectivo';
+            
+            return `
+              <tr>
+                <td><strong>${orderNum}</strong></td>
+                <td>Mesa ${order.no_mesa}</td>
+                <td>${fecha}</td>
+                <td><strong>Q ${total}</strong></td>
+                <td>
+                  <button 
+                    class="btn btn-success" 
+                    style="font-size: 0.875rem; padding: 0.4rem 1rem;"
+                    onclick="window.cajaApp.descargarTicket(${order.id_orden}, '${orderNum}', '${order.no_mesa}', ${total}, '${metodo}')"
+                  >
+                    📄 Descargar Ticket
+                  </button>
+                </td>
+              </tr>
+            `;
+          }).join('');
+          
+          console.log('✅ Historial cargado:', orders.length);
+        } catch (error) {
+          console.error('❌ Error al cargar historial:', error);
+        }
+      }
+      
+      async function loadOrderDetails(orderId) {
+        try {
+          const response = await API.orders.getById(orderId);
+          const data = response.data || response;
+          const order = data.orden || data;
+          const comandas = order.comandas || [];
+          
+          if (comandas.length === 0) {
+            modalDetallePlatillos.innerHTML = `
+              <tr>
+                <td colspan="4" style="text-align: center; padding: 1rem; color: #999;">
+                  No hay platillos
+                </td>
+              </tr>
+            `;
+            return;
+          }
+          
+          modalDetallePlatillos.innerHTML = comandas.map(item => {
+            const cantidad = item.cantidad || 1;
+            const precioUnit = parseFloat(item.precio_unitario || 0);
+            const extraPrecio = parseFloat(item.extra_precio || 0);
+            const subtotal = (precioUnit + extraPrecio) * cantidad;
+            
+            let observaciones = '';
+            if (item.observaciones) {
+              observaciones += `<br><small style="color: #666;">📝 ${item.observaciones}</small>`;
+            }
+            if (item.extra_observacion) {
+              observaciones += `<br><small style="color: #4CAF50;">⭐ ${item.extra_observacion} (+Q${extraPrecio.toFixed(2)})</small>`;
+            }
+            
+            return `
+              <tr>
+                <td style="text-align: center;">${cantidad}</td>
+                <td>${item.platillo_nombre}${observaciones}</td>
+                <td style="text-align: right;">Q ${precioUnit.toFixed(2)}</td>
+                <td style="text-align: right; font-weight: 600;">Q ${subtotal.toFixed(2)}</td>
+              </tr>
+            `;
+          }).join('');
+          
+          console.log('✅ Detalles cargados:', comandas.length, 'items');
+        } catch (error) {
+          console.error('❌ Error al cargar detalles:', error);
+        }
+      }
+      
+      // === CALCULAR CAMBIO ===
+      function calculateChange() {
+        if (!currentOrder) return;
+        
+        const metodo = metodoPagoSelect.value;
+        const montoRecibido = parseFloat(montoRecibidoInput.value) || 0;
+        const total = parseFloat(currentOrder.total) || 0;
+        const helpText = document.querySelector('.help-text-payment');
+        
+        // Limpiar clases de error/success
+        montoRecibidoInput.classList.remove('error', 'success');
+        if (helpText) {
+          helpText.style.display = 'none';
+          helpText.textContent = '';
+        }
+        
+        if (metodo === 'Efectivo') {
+          const cambio = montoRecibido - total;
+          
+          // Validación visual en tiempo real
+          if (montoRecibido > 0 && montoRecibido < total) {
+            // Monto insuficiente
+            montoRecibidoInput.classList.add('error');
+            cambioDevueltoInput.value = `Q 0.00`;
+            cambioDevueltoInput.style.color = '#ef4444';
+            
+            if (helpText) {
+              helpText.style.display = 'block';
+              helpText.textContent = `⚠️ Falta: Q ${(total - montoRecibido).toFixed(2)} para completar el pago`;
+            }
+          } else if (montoRecibido >= total) {
+            // Monto suficiente
+            montoRecibidoInput.classList.add('success');
+            cambioDevueltoInput.value = `Q ${cambio.toFixed(2)}`;
+            cambioDevueltoInput.style.color = '#10B981';
+            
+            if (helpText && cambio > 0) {
+              helpText.style.display = 'block';
+              helpText.style.color = '#10B981';
+              helpText.textContent = `✓ Devolver Q ${cambio.toFixed(2)} de cambio`;
+            }
+          } else {
+            cambioDevueltoInput.value = `Q 0.00`;
+            cambioDevueltoInput.style.color = '#6B7280';
+          }
+        } else {
+          // Tarjeta o Transferencia
+          cambioDevueltoInput.value = 'Q 0.00';
+          cambioDevueltoInput.style.color = '#6B7280';
+          
+          if (montoRecibido > 0) {
+            montoRecibidoInput.classList.add('success');
+          }
+        }
+      }
+      
+      // === PROCESAR PAGO ===
+      async function procesarPago(e) {
+        e.preventDefault();
+        
+        if (!currentOrder) {
+          alert('Error: No hay orden seleccionada');
+          return;
+        }
+        
+          const metodo = metodoPagoSelect.value;
+          const montoRecibido = parseFloat(montoRecibidoInput.value) || 0;
+          const total = parseFloat(currentOrder.total) || 0;
+        
+        // Validaciones
+        if (!metodo) {
+          alert('Por favor seleccione un método de pago');
+          return;
+        }
+        
+        if (montoRecibido <= 0) {
+          Toast.error('Por favor ingrese un monto válido', 5000);
+          montoRecibidoInput.classList.add('error');
+          return;
+        }
+        
+        if (metodo === 'Efectivo' && montoRecibido < total) {
+          Toast.error(`El monto recibido (Q ${montoRecibido.toFixed(2)}) debe ser mayor o igual al total a pagar (Q ${total.toFixed(2)})`, 6000);
+          montoRecibidoInput.classList.add('error');
+          return;
+        }
+        
+        try {
+          const cambio = metodo === 'Efectivo' ? Math.max(0, montoRecibido - total) : 0;
+          
+          const paymentData = {
+            metodo_pago: metodo,
+            monto_recibido: montoRecibido,
+            cambio_devuelto: cambio
+          };
+          
+          console.log('💳 Procesando pago:', paymentData);
+          
+          const response = await API.cashier.finalize(currentOrder.id, paymentData);
+          
+          console.log('✅ Pago procesado exitosamente');
+          
+          // Mostrar alerta de éxito
+          if (window.Swal) {
+            Swal.fire({
+              icon: 'success',
+              title: '¡Pago Procesado!',
+              text: `Orden ${currentOrder.numero} finalizada exitosamente`,
+              timer: 2000,
+              showConfirmButton: false
+            });
+          } else {
+            alert('¡Pago procesado exitosamente!');
+          }
+          
+          // Cerrar modal
+          closeModal();
+          
+          // Recargar datos
+          await loadStats();
+          await loadPendingOrders();
+          await loadHistorial();
+          
+          // Cambiar a tab de historial
+          document.querySelector('.tab-btn[data-tab="historial"]').click();
+          
+        } catch (error) {
+          console.error('❌ Error al procesar pago:', error);
+          alert('Error al procesar el pago: ' + (error.message || 'Error desconocido'));
+        }
+      }
+      
+      // === INICIALIZACIÓN ===
+      async function init() {
+        console.log('🔧 Inicializando Caja...');
+        
+        // Verificar autenticación
+        if (!AuthManager.isAuthenticated()) {
+          window.location.href = '/templates/login';
+          return;
+        }
+        
+        // Inicializar tabs
+        initTabs();
+        
+        // Event listeners
+        if (btnCloseModal) {
+          btnCloseModal.addEventListener('click', closeModal);
+        }
+        if (btnCancelar) {
+          btnCancelar.addEventListener('click', closeModal);
+        }
+        if (modalOverlay) {
+          modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) closeModal();
+          });
+        }
+        if (formPago) {
+          formPago.addEventListener('submit', procesarPago);
+        }
+        if (montoRecibidoInput) {
+          montoRecibidoInput.addEventListener('input', calculateChange);
+        }
+        if (metodoPagoSelect) {
+          metodoPagoSelect.addEventListener('change', calculateChange);
+        }
+        
+        // Cargar datos iniciales
+        await loadStats();
+        await loadPendingOrders();
+        
+        // Auto-refresh cada 20 segundos
+        if (refreshInterval) clearInterval(refreshInterval);
+        refreshInterval = setInterval(async () => {
+          console.log('🔄 Auto-refresh...');
+          await loadStats();
+          await loadPendingOrders();
+        }, 20000);
+        
+        console.log('✅ Caja inicializada correctamente');
+      }
+      
+      // Limpiar intervalo al salir
+      window.addEventListener('beforeunload', () => {
+        if (refreshInterval) clearInterval(refreshInterval);
+      });
+      
+      // === DESCARGAR TICKET PDF ===
+      async function descargarTicket(orderId, orderNum, mesa, total, metodoPago) {
+        try {
+          console.log('📄 Generando ticket PDF para orden:', orderNum);
+          
+          // Obtener detalles de la orden
+          const response = await API.orders.getById(orderId);
+          const data = response.data || response;
+          const order = data.orden || data;
+          const comandas = order.comandas || [];
+          
+          // Crear documento PDF
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: [80, 200] // Tamaño de ticket (80mm ancho)
+          });
+          
+          // Configuración
+          let y = 10;
+          const lineHeight = 5;
+          const pageWidth = 80;
+          
+          // Header
+          doc.setFontSize(16);
+          doc.setFont(undefined, 'bold');
+          doc.text('RESTAURANTE CHICOJ', pageWidth/2, y, { align: 'center' });
+          
+          y += lineHeight + 2;
+          doc.setFontSize(8);
+          doc.setFont(undefined, 'normal');
+          doc.text('Cobán, Alta Verapaz', pageWidth/2, y, { align: 'center' });
+          
+          y += lineHeight;
+          doc.text('Tel: 5524 1831', pageWidth/2, y, { align: 'center' });
+          
+          y += lineHeight;
+          doc.setFontSize(7);
+          doc.text('correotourchicoj@gmail.com', pageWidth/2, y, { align: 'center' });
+          
+          // Línea separadora
+          y += lineHeight;
+          doc.setLineWidth(0.5);
+          doc.line(5, y, pageWidth - 5, y);
+          
+          // Info de la orden
+          y += lineHeight + 2;
+          doc.setFontSize(10);
+          doc.setFont(undefined, 'bold');
+          doc.text(`ORDEN: ${orderNum}`, 5, y);
+          
+          y += lineHeight;
+          doc.setFont(undefined, 'normal');
+          doc.text(`Mesa: ${mesa}`, 5, y);
+          
+          y += lineHeight;
+          const fecha = new Date().toLocaleString('es-GT');
+          doc.setFontSize(8);
+          doc.text(`Fecha: ${fecha}`, 5, y);
+          
+          // Línea separadora
+          y += lineHeight;
+          doc.line(5, y, pageWidth - 5, y);
+          
+          // Platillos
+          y += lineHeight + 2;
+          doc.setFontSize(10);
+          doc.setFont(undefined, 'bold');
+          doc.text('DETALLE', 5, y);
+          
+          y += lineHeight + 1;
+          doc.setFontSize(9);
+          doc.setFont(undefined, 'normal');
+          
+          comandas.forEach(item => {
+            const cantidad = item.cantidad || 1;
+            const nombre = item.platillo_nombre || 'Platillo';
+            const precioUnit = parseFloat(item.precio_unitario || 0);
+            const extraPrecio = parseFloat(item.extra_precio || 0);
+            const subtotal = (precioUnit + extraPrecio) * cantidad;
+            
+            // Nombre del platillo
+            doc.text(`${cantidad}x ${nombre}`, 5, y);
+            y += lineHeight;
+            
+            // Precio
+            doc.text(`Q ${subtotal.toFixed(2)}`, pageWidth - 5, y - lineHeight, { align: 'right' });
+            
+            // Observaciones
+            if (item.observaciones) {
+              doc.setFontSize(7);
+              doc.text(`   ${item.observaciones}`, 5, y);
+              y += lineHeight - 1;
+            }
+            
+            // Extras
+            if (item.extra_observacion) {
+              doc.setFontSize(7);
+              doc.text(`   + ${item.extra_observacion} (Q${extraPrecio.toFixed(2)})`, 5, y);
+              y += lineHeight - 1;
+              doc.setFontSize(9);
+            }
+            
+            y += 1;
+          });
+          
+          // Línea separadora
+          y += 2;
+          doc.setLineWidth(0.5);
+          doc.line(5, y, pageWidth - 5, y);
+          
+          // Total
+          y += lineHeight + 2;
+          doc.setFontSize(12);
+          doc.setFont(undefined, 'bold');
+          doc.text('TOTAL:', 5, y);
+          doc.text(`Q ${parseFloat(total).toFixed(2)}`, pageWidth - 5, y, { align: 'right' });
+          
+          // Método de pago
+          y += lineHeight + 2;
+          doc.setFontSize(9);
+          doc.setFont(undefined, 'normal');
+          doc.text(`Método de pago: ${metodoPago}`, 5, y);
+          
+          // Línea separadora
+          y += lineHeight;
+          doc.line(5, y, pageWidth - 5, y);
+          
+          // Footer
+          y += lineHeight + 2;
+          doc.setFontSize(8);
+          doc.text('¡Gracias por su preferencia!', pageWidth/2, y, { align: 'center' });
+          
+          y += lineHeight;
+          doc.text('Vuelva pronto', pageWidth/2, y, { align: 'center' });
+          
+          // Guardar PDF
+          doc.save(`Ticket_${orderNum}_Mesa${mesa}.pdf`);
+          
+          console.log('✅ Ticket PDF generado exitosamente');
+          
+        } catch (error) {
+          console.error('❌ Error al generar ticket:', error);
+          alert('Error al generar el ticket PDF');
+        }
+      }
+      
+      // Exportar funciones globales
+      window.cajaApp = {
+        openModal,
+        closeModal,
+        descargarTicket
+      };
+      
+      // Iniciar
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
 </body>
 </html>
+

@@ -235,3 +235,5 @@ Ctrl + Shift + N (modo incógnito)
 
 Haz hard refresh y prueba en modo responsive (F12 → Ctrl + Shift + M). 📱
 
+
+

@@ -231,3 +231,5 @@ Ahora cuando abres cualquier vista de Chicoj:
 **Vistas actualizadas:** 9 vistas principales  
 **Manifest:** ✅ Configurado para PWA
 
+
+

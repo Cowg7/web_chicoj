@@ -390,3 +390,5 @@ docker compose logs nginx | findstr "CSP"
 **Sistema:** Chicoj Restaurant Management  
 **Versión de Seguridad:** 1.0
 
+
+

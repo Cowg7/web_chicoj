@@ -91,8 +91,8 @@
 }
 
 .tabla-orden thead {
-  background: linear-gradient(135deg, #4A90E2 0%, #2E5C8A 100%);
-  color: white;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  color: #ffffff;
   position: sticky;
   top: 0;
   z-index: 10;
@@ -105,6 +105,7 @@
   font-size: 0.9375rem;
   white-space: nowrap;
   border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff !important;
 }
 
 .tabla-orden td {
@@ -119,16 +120,16 @@
 }
 
 .tabla-orden tbody tr:nth-child(even) {
-  background: #fafbfc;
+  background: #F5F7FA;
 }
 
 .tabla-orden tbody tr:hover {
-  background: #f0f6ff;
+  background: #eff6ff;
   cursor: pointer;
 }
 
 .tabla-orden tbody tr.selected {
-  background: #e3f2fd;
+  background: #dbeafe;
   outline: 2px solid var(--primary);
   outline-offset: -2px;
 }
@@ -299,8 +300,8 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(74, 144, 226, 0.1);
-    color: #4A90E2;
+    background: rgba(30, 64, 175, 0.1);
+    color: var(--primary);
     text-align: center;
     padding: var(--spacing-sm);
     font-size: 0.75rem;
@@ -410,7 +411,7 @@
   }
   
   .tabla-orden thead {
-    background: #4A90E2 !important;
+    background: var(--primary) !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }

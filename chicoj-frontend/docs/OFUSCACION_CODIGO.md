@@ -330,3 +330,5 @@ npx javascript-obfuscator scripts/config.js --output dist/config.min.js
 ---
 
 **¿Quieres que te ayude a configurar HTTPS para producción? O ¿prefieres implementar alguna otra medida de seguridad?** 🔒
+
+

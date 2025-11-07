@@ -11,21 +11,24 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
   
   <!-- IMPORTANTE: Auth simple sin interferir -->
-  <script src="/scripts/simple-auth.js?v=20251108cache"></script>
+  <script src="/scripts/toast-notifications.js?v=20251108final"></script>
+  <script src="/scripts/confirm-modal.js?v=20251108final"></script>
+  <script src="/scripts/simple-auth.js?v=20251108final"></script>
   
   <!-- Meta tags para prevenir caché -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   
-  <link rel="stylesheet" href="/css/base.css?v=20251108cache">
-  <link rel="stylesheet" href="/css/components.css?v=20251108cache">
-  <link rel="stylesheet" href="/css/utilities.css?v=20251108cache">
-  <link rel="stylesheet" href="/css/mejoras-ux.css?v=20251108cache">
-  <link rel="stylesheet" href="/css/tablas-modernas.css?v=20251108cache">
-  <link rel="stylesheet" href="/css/estilos-control-platillos.css?v=20251108cache">
-  <link rel="stylesheet" href="/css/responsive.css?v=20251108cache">
-  <link rel="stylesheet" href="/css/responsive-platillos.css?v=20251108cache">
+  <link rel="stylesheet" href="/css/base.css?v=20251108final">
+  <link rel="stylesheet" href="/css/components.css?v=20251108final">
+  <link rel="stylesheet" href="/css/utilities.css?v=20251108final">
+  <link rel="stylesheet" href="/css/mejoras-ux.css?v=20251108final">
+  <link rel="stylesheet" href="/css/tablas-modernas.css?v=20251108final">
+  <link rel="stylesheet" href="/css/estilos-control-platillos.css?v=20251108final">
+  <link rel="stylesheet" href="/css/responsive.css?v=20251108final">
+  <link rel="stylesheet" href="/css/responsive-platillos.css?v=20251108final">
+  <link rel="stylesheet" href="/css/toast-notifications.css?v=20251108final">
 </head>
 <body>
   <div class="contenedor-app">
@@ -50,7 +53,15 @@
       <section class="tabla-container">
         <div class="tabla-header">
           <h2>Lista de platillos</h2>
-          <a class="btn btn-success" href="/templates/administracion/platillo">+ Agregar platillo</a>
+          <div class="header-actions">
+            <a class="btn btn-outline" href="/templates/administracion/gestion-categorias">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
+                <path d="M4 6h16M4 12h16M4 18h16"></path>
+              </svg>
+              Gestionar Categorías
+            </a>
+            <a class="btn btn-success" href="/templates/administracion/platillo">+ Agregar platillo</a>
+          </div>
         </div>
 
         <!-- Barra de búsqueda -->
@@ -92,10 +103,11 @@
   </div>
 
   <!-- Scripts -->
-  <script src="/scripts/ultra-simple-logout.js?v=20251108cache"></script>
-  <script src="/scripts/config.js?v=20251108cache"></script>
-  <script src="/scripts/api.js?v=20251108cache"></script>
-  <script src="/scripts/control-platillos.js?v=20251108cache"></script>
+  <script src="/scripts/disable-logs-production.js?v=20251108final"></script>
+  <script src="/scripts/ultra-simple-logout.js?v=20251108final"></script>
+  <script src="/scripts/config.js?v=20251108final"></script>
+  <script src="/scripts/api.js?v=20251108final"></script>
+  <script src="/scripts/control-platillos.js?v=20251108final"></script>
   
   <!-- Estilos para búsqueda -->
   <style>
@@ -184,6 +196,13 @@
     /* Área sin resultados */
     .area-section.no-results {
       opacity: 0.5;
+    }
+    
+    /* Header con múltiples acciones */
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
     }
   </style>
 </body>

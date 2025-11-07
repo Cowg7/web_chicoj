@@ -11,10 +11,10 @@
   <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
   <link rel="manifest" href="/assets/site.webmanifest">
-  <link rel="stylesheet" href="/css/base.css?v=20251108cache" />
-  <link rel="stylesheet" href="/css/components.css?v=20251108cache" />
-  <link rel="stylesheet" href="/css/utilities.css?v=20251108cache" />
-  <link rel="stylesheet" href="/css/mejoras-ux.css?v=20251108cache" />
+  <link rel="stylesheet" href="/css/base.css?v=20251108final" />
+  <link rel="stylesheet" href="/css/components.css?v=20251108final" />
+  <link rel="stylesheet" href="/css/utilities.css?v=20251108final" />
+  <link rel="stylesheet" href="/css/mejoras-ux.css?v=20251108final" />
   <style>
     /* Estilos específicos para Login */
     body {
@@ -314,13 +314,14 @@
       to { transform: rotate(360deg); }
     }
   </style>
+  <link rel="stylesheet" href="/css/toast-notifications.css?v=20251108final">
 </head>
 <body>
   <div class="login-container">
     <!-- Header con Logo -->
     <div class="login-header">
       <div class="login-logo" aria-label="Logo Restaurante Chicooj"></div>
-      <h1>Restaurante Chicooj</h1>
+      <h1>Restaurante Chicoj</h1>
       <p>Sistema de Gestión</p>
     </div>
 
@@ -346,6 +347,9 @@
                required 
                autocomplete="username"
                autofocus
+               minlength="3"
+               maxlength="50"
+               spellcheck="false"
              />
            </div>
          </div>
@@ -366,6 +370,11 @@
                placeholder="Ingresa tu contraseña" 
                required 
                autocomplete="current-password"
+               minlength="8"
+               maxlength="50"
+               oncopy="return false"
+               oncut="return false"
+               onpaste="return false"
              />
            </div>
          </div>
@@ -384,21 +393,23 @@
         </div>
 
         <!-- Link de recuperación -->
-        <div class="forgot-password">
+       <!--   <div class="forgot-password">
           <a href="/templates/recuperar_contrasenia">¿Olvidaste tu contraseña?</a>
-        </div>
+        </div> -->
       </form>
 
 
     <!-- Footer -->
     <div class="login-footer">
-      <p>© 2025 Restaurante Chicooj. Todos los derechos reservados.</p>
+      <p>© 2025 Restaurante Chicoj. Todos los derechos reservados.</p>
     </div>
   </div>
 
   <!-- Scripts -->
-  <script src="/scripts/config.js?v=20251108cache"></script>
-  <script src="/scripts/api.js?v=20251108cache"></script>
-  <script src="/scripts/login.js?v=20251108cache" defer></script>
+    <script src="/scripts/toast-notifications.js?v=20251108final"></script>
+  <script src="/scripts/disable-logs-production.js?v=20251108final"></script>
+  <script src="/scripts/config.js?v=20251108final"></script>
+  <script src="/scripts/api.js?v=20251108final"></script>
+  <script src="/scripts/login.js?v=20251108final" defer></script>
 </body>
 </html>

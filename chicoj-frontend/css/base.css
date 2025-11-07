@@ -4,24 +4,25 @@
 
 /* Variables CSS */
 :root {
-  /* Colores Principales - Paleta Moderna */
-  --bg: #f8f9fa;
-  --bg-secondary: #e9ecef;
-  --panel: #ffffff;
-  --brand: #2563eb;
-  --primary: #2563eb;
+  /* Colores Principales - Paleta Profesional Unificada */
+  --bg: #F5F7FA;              /* Fondo principal - gris muy claro */
+  --bg-secondary: #E5E7EB;    /* Fondo secundario */
+  --panel: #ffffff;           /* Paneles y tarjetas */
+  --brand: #1E40AF;           /* Color de marca - azul profundo */
+  --primary: #1E40AF;         /* Primario - azul profundo */
   --primary-50: #eff6ff;
   --primary-100: #dbeafe;
   --primary-200: #bfdbfe;
-  --primary-600: #2563eb;
-  --primary-700: #1d4ed8;
-  --primary-800: #1e40af;
+  --primary-600: #1E40AF;     /* Base primario */
+  --primary-700: #1e3a8a;
+  --primary-800: #1e3a8a;
   --primary-900: #1e3a8a;
+  --secondary: #2563EB;       /* Secundario - azul brillante (hover) */
   
   /* Colores de Estado */
-  --success: #10b981;
+  --success: #10B981;         /* Acento natural - verde esmeralda */
   --success-50: #f0fdf4;
-  --success-600: #10b981;
+  --success-600: #10B981;
   --success-700: #059669;
   
   --warning: #f59e0b;
@@ -34,19 +35,19 @@
   --danger-600: #ef4444;
   --danger-700: #dc2626;
   
-  --info: #3b82f6;
+  --info: #2563EB;            /* Info usa el secundario */
   --info-50: #eff6ff;
-  --info-600: #3b82f6;
-  --info-700: #2563eb;
+  --info-600: #2563EB;
+  --info-700: #1E40AF;
   
   /* Textos */
-  --text: #111827;
+  --text: #111827;            /* Texto principal - gris casi negro */
   --text-secondary: #4b5563;
   --text-light: #6b7280;
   --muted: #9ca3af;
   
   /* Bordes y Fondos */
-  --border: #e5e7eb;
+  --border: #E5E7EB;          /* Bordes - gris claro */
   --border-light: #f3f4f6;
   
   /* Espaciado */

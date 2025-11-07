@@ -18,7 +18,10 @@
 
   // Inicializar sistema de notificaciones
   async function initNotifications() {
-    console.log('🔔 Inicializando sistema de notificaciones...');
+    console.log('[NOTIF] Inicializando sistema de notificaciones...');
+
+    // Solicitar permisos de notificaciones del navegador
+    requestNotificationPermission();
 
     // Cargar notificaciones iniciales
     await loadNotifications();
@@ -51,7 +54,7 @@
       await loadNotifications();
     }, 10000);
 
-    console.log('✅ Sistema de notificaciones iniciado');
+    console.log('[OK] Sistema de notificaciones iniciado');
   }
 
   // Cargar notificaciones del servidor
@@ -61,19 +64,19 @@
     try {
       isLoadingNotifications = true;
 
-      console.log('📡 Consultando notificaciones al servidor...');
-      console.log('🔑 Token:', AuthManager.getToken() ? 'Presente ✅' : 'Ausente ❌');
-      console.log('👤 Usuario:', AuthManager.getUser());
+      console.log('[FETCH] Consultando notificaciones al servidor...');
+      console.log('[AUTH] Token:', AuthManager.getToken() ? 'Presente [OK]' : 'Ausente [ERROR]');
+      console.log('[USER] Usuario:', AuthManager.getUser());
 
       const response = await API.notifications.getUnread();
-      console.log('📦 Respuesta completa del servidor:', response);
+      console.log('[DATA] Respuesta completa del servidor:', response);
       
       const data = response.data || response;
       const notifications = data.notificaciones || [];
       const count = notifications.length;
 
-      console.log(`🔔 ${count} notificaciones no leídas`);
-      console.log('📋 Notificaciones recibidas:', notifications);
+      console.log(`[NOTIF] ${count} notificaciones no leídas`);
+      console.log('[INFO] Notificaciones recibidas:', notifications);
 
       // Actualizar badge de contador
       if (count > 0) {
@@ -97,33 +100,118 @@
       // Renderizar notificaciones
       renderNotifications(notifications);
     } catch (error) {
-      console.error('❌ Error al cargar notificaciones:', error);
-      console.error('📊 Detalles del error:', {
+      console.error('[ERROR] Error al cargar notificaciones:', error);
+      console.error('[STATS] Detalles del error:', {
         message: error.message,
         stack: error.stack
       });
       
       // Si es un error 401, puede ser que el token expiró
       if (error.message?.includes('401')) {
-        console.error('🔒 Error de autenticación - El token puede haber expirado');
-        console.error('💡 Intenta cerrar sesión y volver a iniciar sesión');
+        console.error('[LOCK] Error de autenticación - El token puede haber expirado');
+        console.error('[TIP] Intenta cerrar sesión y volver a iniciar sesión');
       }
     } finally {
       isLoadingNotifications = false;
     }
   }
 
+  // Solicitar permisos de notificaciones del navegador
+  function requestNotificationPermission() {
+    if ('Notification' in window) {
+      if (Notification.permission === 'default') {
+        console.log('[NOTIF] Solicitando permisos de notificación...');
+        Notification.requestPermission().then(permission => {
+          if (permission === 'granted') {
+            console.log('[OK] Permisos de notificación otorgados');
+            // Mostrar notificación de prueba
+            new Notification('[OK] Notificaciones Activadas', {
+              body: 'Ahora recibirás alertas de platillos listos',
+              icon: '/assets/favicon-96x96.png',
+              tag: 'chicoj-welcome'
+            });
+          } else {
+            console.log('[WARN] Permisos de notificación denegados');
+          }
+        });
+      } else if (Notification.permission === 'granted') {
+        console.log('[OK] Permisos de notificación ya otorgados');
+      } else {
+        console.log('[ERROR] Permisos de notificación denegados');
+      }
+    } else {
+      console.log('[WARN] Este navegador no soporta notificaciones');
+    }
+  }
+
+  // Crear sonido de notificación con Web Audio API
+  function createNotificationBeep() {
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      const audioContext = new AudioContext();
+      
+      // Crear tres tonos ascendentes (Do-Mi-Sol)
+      const frequencies = [523.25, 659.25, 783.99]; // C5, E5, G5
+      const duration = 0.15;
+      const gap = 0.05;
+      
+      frequencies.forEach((freq, index) => {
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.value = freq;
+        oscillator.type = 'sine';
+        
+        const startTime = audioContext.currentTime + (index * (duration + gap));
+        const endTime = startTime + duration;
+        
+        gainNode.gain.setValueAtTime(0, startTime);
+        gainNode.gain.linearRampToValueAtTime(0.3, startTime + 0.01);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, endTime);
+        
+        oscillator.start(startTime);
+        oscillator.stop(endTime);
+      });
+      
+      console.log('[SOUND] Beep melódico reproducido');
+    } catch (error) {
+      console.log('[WARN] Error al crear beep:', error.message);
+    }
+  }
+
   // Reproducir sonido de notificación
   function playNotificationSound() {
-    if (notificationSound) {
-      try {
-        notificationSound.volume = 0.5;
-        notificationSound.play().catch(err => {
-          console.log('No se pudo reproducir sonido:', err);
-        });
-      } catch (error) {
-        console.log('Error al reproducir sonido:', error);
-      }
+    console.log('[AUDIO] Reproduciendo sonido de notificación...');
+    
+    // 1. Sonido melódico con Web Audio API
+    createNotificationBeep();
+    
+    // 2. Vibración (si el dispositivo lo soporta)
+    if ('vibrate' in navigator) {
+      navigator.vibrate([200, 100, 200]); // Vibrar: 200ms, pausa 100ms, 200ms
+    }
+    
+    // 3. Mostrar notificación del navegador (si tiene permisos)
+    if ('Notification' in window && Notification.permission === 'granted') {
+      new Notification('[NOTIF] Platillo Listo', {
+        body: 'Tienes una nueva notificación',
+        icon: '/assets/favicon-96x96.png',
+        badge: '/assets/favicon-96x96.png',
+        tag: 'chicoj-notification',
+        requireInteraction: false,
+        silent: false // Usar el sonido del sistema
+      });
+    }
+    
+    // 4. Flash visual en el badge
+    if (notificationCount) {
+      notificationCount.style.animation = 'none';
+      setTimeout(() => {
+        notificationCount.style.animation = 'pulse 0.5s ease-in-out 3';
+      }, 10);
     }
   }
 
@@ -135,7 +223,7 @@
       notificationsList.innerHTML = `
         <div style="text-align: center; padding: 3rem; color: #999;">
           <div style="font-size: 3rem; margin-bottom: 1rem;">✅</div>
-          <p>No tienes notificaciones pendientes</p>
+          <p style="color: #6B7280; font-size: 0.95rem;">No tienes notificaciones pendientes</p>
         </div>
       `;
       return;
@@ -146,14 +234,62 @@
       const timeAgo = getTimeAgo(fecha);
       const tipo = notif.tipo || 'info';
       const leida = notif.leida ? 'read' : 'unread';
+      
+      // Icono según el tipo de notificación
+      let statusIcon = '✅';
+      let statusColor = '#10B981';
+      let statusLabel = 'Completado';
+      
+      if (tipo === 'success' || tipo === 'order_ready') {
+        statusIcon = '✅';
+        statusColor = '#10B981';
+        statusLabel = 'Listo';
+      } else if (tipo === 'warning') {
+        statusIcon = '⚠️';
+        statusColor = '#F59E0B';
+        statusLabel = 'Atención';
+      } else if (tipo === 'error') {
+        statusIcon = '❌';
+        statusColor = '#EF4444';
+        statusLabel = 'Error';
+      } else if (tipo === 'info') {
+        statusIcon = 'ℹ️';
+        statusColor = '#3B82F6';
+        statusLabel = 'Info';
+      }
 
       return `
         <div class="notification-item ${leida} ${tipo}" data-id="${notif.id_notificacion}">
-          <button class="btn-delete" onclick="window.deleteNotification(${notif.id_notificacion})">🗑️</button>
+          <div class="notification-header">
+            <span class="notification-status-badge" style="background: ${statusColor}15; color: ${statusColor}; border: 1px solid ${statusColor}30;">
+              <span style="font-size: 0.9rem;">${statusIcon}</span>
+              <span style="font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">${statusLabel}</span>
+            </span>
+            <button class="btn-delete-modern" onclick="window.deleteNotification(${notif.id_notificacion})" title="Eliminar notificación">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 6L6 18M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
           <div class="notification-title">${notif.titulo}</div>
           <div class="notification-message">${notif.mensaje}</div>
-          ${notif.no_mesa ? `<div class="notification-message">📍 ${notif.no_mesa}</div>` : ''}
-          <div class="notification-time">⏰ ${timeAgo}</div>
+          ${notif.no_mesa ? `
+            <div class="notification-badge-container">
+              <span class="notification-badge-mesa">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+                </svg>
+                <span>Mesa ${notif.no_mesa}</span>
+              </span>
+            </div>
+          ` : ''}
+          <div class="notification-time">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 6v6l4 2"/>
+            </svg>
+            <span>${timeAgo}</span>
+          </div>
         </div>
       `;
     }).join('');
@@ -164,7 +300,7 @@
     const items = notificationsList.querySelectorAll('.notification-item');
     items.forEach(item => {
       item.addEventListener('click', async (e) => {
-        if (e.target.classList.contains('btn-delete')) return;
+        if (e.target.closest('.btn-delete-modern')) return;
         
         const id = item.getAttribute('data-id');
         await markAsRead(id);
@@ -256,7 +392,7 @@
     if (document.hidden) {
       if (notificationsRefreshInterval) {
         clearInterval(notificationsRefreshInterval);
-        console.log('⏸️ Notificaciones pausadas (pestaña oculta)');
+        console.log('[PAUSE] Notificaciones pausadas (pestaña oculta)');
       }
     } else {
       // Reanudar
@@ -266,7 +402,7 @@
       notificationsRefreshInterval = setInterval(async () => {
         await loadNotifications();
       }, 10000);
-      console.log('▶️ Notificaciones reanudadas');
+      console.log('[PLAY] Notificaciones reanudadas');
       
       // Cargar inmediatamente al volver
       loadNotifications();

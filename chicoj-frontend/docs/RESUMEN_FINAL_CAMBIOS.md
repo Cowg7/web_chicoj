@@ -153,3 +153,5 @@ Todos los documentos están en: `chicoj-frontend/docs/`
 **Sistema:** Gestión completa de restaurante y tours
 **Estado:** ✅ Funcional y Seguro
 
+
+

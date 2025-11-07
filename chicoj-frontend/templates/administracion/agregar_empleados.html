@@ -11,17 +11,66 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
   
   <!-- IMPORTANTE: Auth simple sin interferir -->
-  <script src="/scripts/simple-auth.js?v=20251108cache"></script>
+    <script src="/scripts/toast-notifications.js?v=20251108final"></script>
+  <script src="/scripts/simple-auth.js?v=20251108final"></script>
   
   <!-- Meta tags para prevenir caché -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   
-  <link rel="stylesheet" href="/css/base.css">
-<link rel="stylesheet" href="/css/components.css">
-<link rel="stylesheet" href="/css/utilities.css">
-  <link rel="stylesheet" href="/css/estilos-empleados.css">
+  <link rel="stylesheet" href="/css/base.css?v=20251108final">
+  <link rel="stylesheet" href="/css/components.css?v=20251108final">
+  <link rel="stylesheet" href="/css/utilities.css">
+  <link rel="stylesheet" href="/css/estilos-empleados.css?v=20251108final">
+  
+  <style>
+    .help-text {
+      display: block;
+      font-size: 0.85rem;
+      color: #6B7280;
+      margin-top: 4px;
+      margin-bottom: 0;
+    }
+    
+    .seccion > * {
+      width: 100%;
+    }
+    
+    .seccion label {
+      margin-top: 0.5rem;
+    }
+    
+    .seccion label:first-of-type {
+      margin-top: 0;
+    }
+    
+    input.error {
+      border-color: #ef4444 !important;
+      background-color: #fef2f2 !important;
+    }
+    
+    input.success {
+      border-color: #10B981 !important;
+    }
+    
+    .error-message {
+      display: block;
+      color: #ef4444;
+      font-size: 0.875rem;
+      margin-top: 4px;
+      font-weight: 500;
+    }
+    
+    input:invalid:not(:placeholder-shown) {
+      border-color: #ef4444;
+    }
+    
+    input:valid:not(:placeholder-shown) {
+      border-color: #10B981;
+    }
+  </style>
+  <link rel="stylesheet" href="/css/toast-notifications.css?v=20251108final">
 </head>
 <body>
   <div class="contenedor-app">
@@ -46,17 +95,49 @@
           <fieldset class="seccion">
             <legend>Datos del Colaborador</legend>
 
-            <label for="nombre">Nombre</label>
-            <input id="nombre" type="text" placeholder="Ejemplo: Juan">
+            <label for="nombre">Nombre *</label>
+            <input 
+              id="nombre" 
+              type="text" 
+              placeholder="Ejemplo: Juan"
+              required
+              pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"
+              title="Solo se permiten letras y espacios"
+              maxlength="50">
+            <small class="help-text">Solo letras (sin números ni símbolos)</small>
 
-            <label for="apellidos">Apellidos</label>
-            <input id="apellidos" type="text" placeholder="Ejemplo: Pérez López">
+            <label for="apellidos">Apellidos *</label>
+            <input 
+              id="apellidos" 
+              type="text" 
+              placeholder="Ejemplo: Pérez López"
+              required
+              pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"
+              title="Solo se permiten letras y espacios"
+              maxlength="100">
+            <small class="help-text">Solo letras (sin números ni símbolos)</small>
 
-            <label for="edad">Edad</label>
-            <input id="edad" type="number" placeholder="Ejemplo: 25" min="0" max="99">
+            <label for="edad">Edad *</label>
+            <input 
+              id="edad" 
+              type="number" 
+              placeholder="Ejemplo: 25"
+              required
+              min="18" 
+              max="100"
+              title="Edad debe estar entre 18 y 100 años">
+            <small class="help-text">Edad válida: 18 a 100 años</small>
 
-            <label for="correo">Correo electrónico</label>
-            <input id="correo" type="email" placeholder="Ejemplo: colaborador@correo.com">
+            <label for="correo">Correo electrónico *</label>
+            <input 
+              id="correo" 
+              type="email" 
+              placeholder="Ejemplo: colaborador@correo.com"
+              required
+              pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+              title="Debe ser un correo válido (ejemplo: usuario@dominio.com)"
+              maxlength="100">
+            <small class="help-text">Formato: usuario@dominio.com</small>
           </fieldset>
 
           <div class="botones-acciones">
@@ -74,9 +155,10 @@
   </div>
 
   <!-- Scripts -->
-  <script src="/scripts/ultra-simple-logout.js?v=20251108cache"></script>
+  <script src="/scripts/disable-logs-production.js?v=20251108final"></script>
+  <script src="/scripts/ultra-simple-logout.js?v=20251108final"></script>
   <script src="/scripts/config.js"></script>
   <script src="/scripts/api.js"></script>
-  <script src="/scripts/agregar-empleados.js"></script>
+  <script src="/scripts/agregar-empleados.js?v=20251108final"></script>
 </body>
 </html>
