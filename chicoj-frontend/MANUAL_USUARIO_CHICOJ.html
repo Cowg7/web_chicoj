@@ -1,0 +1,2200 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manual de Usuario - Sistema Chicoj</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.8;
+      color: #333;
+      background: white;
+      padding: 40px 60px;
+      font-size: 11pt;
+    }
+    
+    h1 {
+      color: #2c3e50;
+      font-size: 32pt;
+      font-weight: 700;
+      margin: 40px 0 20px 0;
+      padding-bottom: 10px;
+      border-bottom: 4px solid #4CAF50;
+      page-break-after: avoid;
+    }
+    
+    h2 {
+      color: #34495e;
+      font-size: 22pt;
+      font-weight: 700;
+      margin: 30px 0 15px 0;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #e0e0e0;
+      page-break-after: avoid;
+    }
+    
+    h3 {
+      color: #4CAF50;
+      font-size: 16pt;
+      font-weight: 600;
+      margin: 20px 0 12px 0;
+      page-break-after: avoid;
+    }
+    
+    h4 {
+      color: #555;
+      font-size: 13pt;
+      font-weight: 600;
+      margin: 15px 0 10px 0;
+      page-break-after: avoid;
+    }
+    
+    p {
+      margin: 0 0 12px 0;
+      text-align: justify;
+    }
+    
+    strong {
+      color: #2c3e50;
+      font-weight: 600;
+    }
+    
+    em {
+      font-style: italic;
+      color: #666;
+    }
+    
+    ul, ol {
+      margin: 10px 0 15px 25px;
+    }
+    
+    li {
+      margin: 6px 0;
+      line-height: 1.6;
+    }
+    
+    code {
+      background: #f5f5f5;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 10pt;
+      color: #c7254e;
+    }
+    
+    pre {
+      background: #f8f8f8;
+      border: 1px solid #e0e0e0;
+      border-left: 4px solid #4CAF50;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 4px;
+      overflow-x: auto;
+      page-break-inside: avoid;
+    }
+    
+    pre code {
+      background: none;
+      padding: 0;
+      color: #333;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      page-break-inside: avoid;
+    }
+    
+    table th {
+      background: #4CAF50;
+      color: white;
+      padding: 10px;
+      text-align: left;
+      font-weight: 600;
+      border: 1px solid #45a049;
+    }
+    
+    table td {
+      padding: 8px 10px;
+      border: 1px solid #e0e0e0;
+    }
+    
+    table tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+    
+    blockquote {
+      border-left: 4px solid #4CAF50;
+      background: #f0f8f0;
+      padding: 12px 20px;
+      margin: 15px 0;
+      border-radius: 4px;
+      page-break-inside: avoid;
+    }
+    
+    hr {
+      border: none;
+      border-top: 2px solid #e0e0e0;
+      margin: 30px 0;
+    }
+    
+    a {
+      color: #4CAF50;
+      text-decoration: none;
+    }
+    
+    a:hover {
+      text-decoration: underline;
+    }
+    
+    /* Cajas de información */
+    .info-box {
+      background: #e3f2fd;
+      border-left: 4px solid #2196F3;
+      padding: 12px 20px;
+      margin: 15px 0;
+      border-radius: 4px;
+    }
+    
+    .warning-box {
+      background: #fff3e0;
+      border-left: 4px solid #ff9800;
+      padding: 12px 20px;
+      margin: 15px 0;
+      border-radius: 4px;
+    }
+    
+    .success-box {
+      background: #f0f8f0;
+      border-left: 4px solid #4CAF50;
+      padding: 12px 20px;
+      margin: 15px 0;
+      border-radius: 4px;
+    }
+    
+    /* Página de portada */
+    .cover-page {
+      page-break-after: always;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    
+    .cover-title {
+      font-size: 48pt;
+      font-weight: 700;
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+    
+    .cover-subtitle {
+      font-size: 24pt;
+      color: #4CAF50;
+      margin-bottom: 40px;
+    }
+    
+    .cover-version {
+      font-size: 14pt;
+      color: #666;
+      margin-top: 60px;
+    }
+    
+    /* Paginación */
+    @page {
+      margin: 2cm;
+      
+      @bottom-right {
+        content: "Página " counter(page);
+        font-size: 9pt;
+        color: #666;
+      }
+      
+      @bottom-left {
+        content: "Manual de Usuario - Sistema Chicoj";
+        font-size: 9pt;
+        color: #666;
+      }
+    }
+    
+    /* Evitar saltos de página inapropiados */
+    h1, h2, h3, h4 {
+      page-break-after: avoid;
+    }
+    
+    table, pre, blockquote {
+      page-break-inside: avoid;
+    }
+    
+    /* Tabla de contenidos */
+    .toc {
+      page-break-after: always;
+    }
+    
+    .toc h2 {
+      margin-top: 0;
+    }
+    
+    .toc ul {
+      list-style: none;
+      margin-left: 0;
+    }
+    
+    .toc li {
+      margin: 8px 0;
+    }
+    
+    .toc a {
+      color: #2c3e50;
+      text-decoration: none;
+      border-bottom: 1px dotted #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>📖 MANUAL DE USUARIO</h1>
+<h2>Sistema de Gestión - Restaurante Chicoj</h2>
+<p><strong>Versión 1.0 - 2025</strong></p>
+<hr>
+<h2>Tabla de Contenidos</h2>
+<ol>
+<li><a href="#introducci%C3%B3n">Introducción</a></li>
+<li><a href="#acceso-al-sistema">Acceso al Sistema</a></li>
+<li><a href="#roles-y-permisos">Roles y Permisos</a></li>
+<li><a href="#m%C3%B3dulo-de-meseros">Módulo de Meseros</a></li>
+<li><a href="#m%C3%B3dulo-de-cocina-kds">Módulo de Cocina (KDS)</a></li>
+<li><a href="#m%C3%B3dulo-de-caja">Módulo de Caja</a></li>
+<li><a href="#m%C3%B3dulo-de-tours">Módulo de Tours</a></li>
+<li><a href="#m%C3%B3dulo-de-reportes">Módulo de Reportes</a></li>
+<li><a href="#m%C3%B3dulo-de-administraci%C3%B3n">Módulo de Administración</a></li>
+<li><a href="#soluci%C3%B3n-de-problemas">Solución de Problemas</a></li>
+</ol>
+<hr>
+<h2>1. Introducción</h2>
+<h3>¿Qué es el Sistema Chicoj?</h3>
+<p>El Sistema de Gestión Restaurante Chicoj es una plataforma digital integral diseñada para optimizar y automatizar los procesos operativos del restaurante, coffee shop y Coffee Tour de la Cooperativa Agrícola Integral Chicoj, R.L.</p>
+<h3>Características Principales</h3>
+<ul>
+<li>✅ <strong>Gestión de Órdenes en Tiempo Real</strong>: Control completo del flujo de pedidos desde la toma hasta el cobro</li>
+<li>✅ <strong>Sistema KDS (Kitchen Display System)</strong>: Pantallas de cocina por área (Cocina, Bebidas, Coffee)</li>
+<li>✅ <strong>Control de Caja</strong>: Procesamiento de pagos y generación de comprobantes</li>
+<li>✅ <strong>Gestión de Tours</strong>: Registro y control de reservas de Coffee Tours</li>
+<li>✅ <strong>Reportes y Estadísticas</strong>: Análisis de ventas, platillos más vendidos, horas pico</li>
+<li>✅ <strong>Administración de Usuarios</strong>: Control de acceso basado en roles (RBAC)</li>
+<li>✅ <strong>Responsive Design</strong>: Funciona en computadoras, tablets y smartphones</li>
+</ul>
+<h3>Tecnologías Utilizadas</h3>
+<ul>
+<li><strong>Frontend</strong>: HTML5, CSS3, JavaScript (Vanilla)</li>
+<li><strong>Backend</strong>: Node.js, Express, Prisma ORM</li>
+<li><strong>Base de Datos</strong>: PostgreSQL</li>
+<li><strong>Contenedores</strong>: Docker, Docker Compose</li>
+</ul>
+<hr>
+<h2>2. Acceso al Sistema</h2>
+<h3>2.1 URL de Acceso</h3>
+<p>Para acceder al sistema, abra su navegador web (Chrome, Firefox, Edge) y navegue a:</p>
+<pre><code>http://localhost
+</code></pre>
+<p>O la URL proporcionada por el administrador del sistema.</p>
+<h3>2.2 Pantalla de Login</h3>
+<p><img src="./imgs/login-screen.png" alt="Pantalla de Login"></p>
+<p>La pantalla de login consta de:</p>
+<ol>
+<li><strong>Campo Usuario</strong>: Ingrese su nombre de usuario</li>
+<li><strong>Campo Contraseña</strong>: Ingrese su contraseña</li>
+<li><strong>Botón Ingresar</strong>: Click para acceder al sistema</li>
+<li><strong>Link &quot;¿Olvidaste tu contraseña?&quot;</strong>: Para recuperación de contraseña</li>
+</ol>
+<h3>2.3 Credenciales Predeterminadas</h3>
+<p>El sistema viene con usuarios de prueba preconfigurados:</p>
+<table>
+<thead>
+<tr>
+<th>Usuario</th>
+<th>Contraseña</th>
+<th>Rol</th>
+<th>Vista Inicial</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>admin</code></td>
+<td><code>admin123</code></td>
+<td>Administrador</td>
+<td>Dashboard Principal</td>
+</tr>
+<tr>
+<td><code>gerente1</code></td>
+<td><code>gerente123</code></td>
+<td>Gerente</td>
+<td>Reportes</td>
+</tr>
+<tr>
+<td><code>cajero1</code></td>
+<td><code>cajero123</code></td>
+<td>Cajero</td>
+<td>Caja</td>
+</tr>
+<tr>
+<td><code>mesero1</code></td>
+<td><code>mesero123</code></td>
+<td>Mesero</td>
+<td>Comandas</td>
+</tr>
+<tr>
+<td><code>cocina1</code></td>
+<td><code>cocina123</code></td>
+<td>Cocina</td>
+<td>KDS Cocina</td>
+</tr>
+<tr>
+<td><code>bebidas1</code></td>
+<td><code>bebidas123</code></td>
+<td>Bebidas</td>
+<td>KDS Bebidas</td>
+</tr>
+<tr>
+<td><code>coffee1</code></td>
+<td><code>coffee123</code></td>
+<td>Coffee</td>
+<td>KDS Coffee</td>
+</tr>
+<tr>
+<td><code>tour1</code></td>
+<td><code>tour123</code></td>
+<td>Tour</td>
+<td>Gestión de Tours</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>⚠️ <strong>Importante</strong>: Cambie estas contraseñas después del primer acceso por seguridad.</p>
+</blockquote>
+<h3>2.4 Cerrar Sesión</h3>
+<p>Para cerrar sesión de forma segura:</p>
+<ol>
+<li>Haga click en el botón <strong>&quot;Cerrar sesión&quot;</strong> ubicado en la esquina superior derecha</li>
+<li>Será redirigido automáticamente a la pantalla de login</li>
+<li>Su sesión quedará completamente cerrada</li>
+</ol>
+<hr>
+<h2>3. Roles y Permisos</h2>
+<p>El sistema implementa un Control de Acceso Basado en Roles (RBAC). Cada usuario tiene acceso solo a las funcionalidades correspondientes a su rol.</p>
+<h3>3.1 Administrador</h3>
+<p><strong>Acceso</strong>: ✅ Completo a todo el sistema</p>
+<p><strong>Funcionalidades</strong>:</p>
+<ul>
+<li>📊 Dashboard principal con estadísticas generales</li>
+<li>👥 Gestión de empleados (crear, editar, eliminar)</li>
+<li>🔐 Gestión de usuarios y asignación de roles</li>
+<li>🍽️ Gestión de platillos (CRUD completo)</li>
+<li>📋 Visualización de todas las comandas</li>
+<li>💰 Acceso a caja</li>
+<li>📈 Reportes y estadísticas</li>
+<li>🏞️ Gestión de tours</li>
+<li>👨‍🍳 Acceso a todas las áreas del KDS</li>
+</ul>
+<p><strong>Vista Inicial</strong>: <code>/main.html</code></p>
+<h3>3.2 Gerente</h3>
+<p><strong>Acceso</strong>: ✅ Reportes y estadísticas únicamente</p>
+<p><strong>Funcionalidades</strong>:</p>
+<ul>
+<li>📈 Reportes de ventas por período</li>
+<li>📊 Estadísticas de platillos más vendidos</li>
+<li>⏰ Análisis de horas pico</li>
+<li>💵 Ingresos por área (Cocina, Bebidas, Coffee)</li>
+<li>📉 Gráficas y análisis de tendencias</li>
+</ul>
+<p><strong>Restricciones</strong>: ❌ No puede acceder a caja, órdenes, KDS ni administración</p>
+<p><strong>Vista Inicial</strong>: <code>/templates/reportes/reportes.html</code></p>
+<h3>3.3 Cajero</h3>
+<p><strong>Acceso</strong>: ✅ Caja y reportes básicos</p>
+<p><strong>Funcionalidades</strong>:</p>
+<ul>
+<li>💳 Procesar pagos (Efectivo, Tarjeta, Transferencia)</li>
+<li>🧾 Generar comprobantes de pago</li>
+<li>📋 Ver órdenes pendientes de pago (Estado: &quot;En Caja&quot;)</li>
+<li>📊 Ver historial del día</li>
+<li>💰 Estadísticas de ventas del día</li>
+<li>📈 Acceso a reportes básicos</li>
+</ul>
+<p><strong>Restricciones</strong>: ❌ No puede crear órdenes, acceder a KDS ni administración</p>
+<p><strong>Vista Inicial</strong>: <code>/templates/caja/caja.html</code></p>
+<h3>3.4 Mesero</h3>
+<p><strong>Acceso</strong>: ✅ Gestión de órdenes únicamente</p>
+<p><strong>Funcionalidades</strong>:</p>
+<ul>
+<li>➕ Crear nuevas órdenes</li>
+<li>✏️ Editar órdenes (antes de enviar o en preparación)</li>
+<li>➕ Agregar/editar/eliminar platillos de la orden</li>
+<li>📝 Agregar observaciones y extras a platillos</li>
+<li>📤 Enviar órdenes a cocina</li>
+<li>💰 Cerrar cuentas (cuando el cliente las solicita)</li>
+<li>👀 Visualizar todas las órdenes activas</li>
+<li>🔄 Ver el estado de las órdenes en tiempo real</li>
+</ul>
+<p><strong>Restricciones</strong>: ❌ No puede acceder a caja, reportes, KDS ni administración</p>
+<p><strong>Vista Inicial</strong>: <code>/templates/mesero/mesero_comanda.html</code></p>
+<h3>3.5 Cocina (KDS)</h3>
+<p><strong>Acceso</strong>: ✅ Solo KDS del área Cocina</p>
+<p><strong>Funcionalidades</strong>:</p>
+<ul>
+<li>📺 Visualización de tickets de cocina en tiempo real</li>
+<li>✅ Marcar platillos como &quot;Preparado&quot;</li>
+<li>👀 Ver detalles: No. Orden, Mesa, Cantidad, Platillo, Observaciones, Extras</li>
+<li>🔄 Auto-refresh cada 5 segundos</li>
+<li>🔔 Notificaciones de nuevas órdenes</li>
+</ul>
+<p><strong>Restricciones</strong>: </p>
+<ul>
+<li>❌ Solo ve órdenes del área &quot;Cocina&quot;</li>
+<li>❌ No puede acceder a Bebidas ni Coffee</li>
+<li>❌ No puede acceder a caja, reportes ni administración</li>
+</ul>
+<p><strong>Vista Inicial</strong>: <code>/templates/cocina/cocina.html?area=Cocina</code></p>
+<h3>3.6 Bebidas (KDS)</h3>
+<p><strong>Acceso</strong>: ✅ Solo KDS del área Bebidas</p>
+<p><strong>Funcionalidades</strong>: (Iguales que Cocina, pero solo para área Bebidas)</p>
+<ul>
+<li>📺 Visualización de tickets de bebidas</li>
+<li>✅ Marcar bebidas como &quot;Preparadas&quot;</li>
+<li>🔄 Auto-refresh cada 5 segundos</li>
+</ul>
+<p><strong>Restricciones</strong>: </p>
+<ul>
+<li>❌ Solo ve órdenes del área &quot;Bebidas&quot;</li>
+<li>❌ No puede acceder a otras áreas</li>
+</ul>
+<p><strong>Vista Inicial</strong>: <code>/templates/cocina/cocina.html?area=Bebidas</code></p>
+<h3>3.7 Coffee (KDS)</h3>
+<p><strong>Acceso</strong>: ✅ Solo KDS del área Coffee</p>
+<p><strong>Funcionalidades</strong>: (Iguales que Cocina, pero solo para área Coffee)</p>
+<ul>
+<li>📺 Visualización de tickets del coffee shop</li>
+<li>✅ Marcar productos de coffee como &quot;Preparados&quot;</li>
+<li>🔄 Auto-refresh cada 5 segundos</li>
+</ul>
+<p><strong>Restricciones</strong>: </p>
+<ul>
+<li>❌ Solo ve órdenes del área &quot;Coffee&quot;</li>
+<li>❌ No puede acceder a otras áreas</li>
+</ul>
+<p><strong>Vista Inicial</strong>: <code>/templates/cocina/cocina.html?area=Coffee</code></p>
+<h3>3.8 Tour</h3>
+<p><strong>Acceso</strong>: ✅ Gestión de tours únicamente</p>
+<p><strong>Funcionalidades</strong>:</p>
+<ul>
+<li>➕ Registrar nuevas reservas de tour</li>
+<li>✏️ Editar información de tours</li>
+<li>👥 Gestionar tipos de visitantes (Adultos, Niños, Tercera Edad)</li>
+<li>🗣️ Especificar idioma del tour</li>
+<li>📅 Control de fechas y horarios</li>
+<li>👀 Visualizar tours programados</li>
+</ul>
+<p><strong>Restricciones</strong>: ❌ No puede acceder a órdenes, caja, reportes ni administración</p>
+<p><strong>Vista Inicial</strong>: <code>/templates/tour/tour.html</code></p>
+<hr>
+<h2>4. Módulo de Meseros</h2>
+<h3>4.1 Crear una Nueva Orden</h3>
+<h4>Paso 1: Acceder al Módulo de Comandas</h4>
+<ol>
+<li>Inicie sesión con credenciales de mesero (<code>mesero1</code> / <code>mesero123</code>)</li>
+<li>Será redirigido automáticamente a la vista de <strong>Toma de Orden</strong></li>
+</ol>
+<h4>Paso 2: Ingresar Datos de la Orden</h4>
+<p><img src="./imgs/mesero-nueva-orden.png" alt="Formulario de Nueva Orden"></p>
+<ol>
+<li><p><strong>Seleccionar Mesa</strong>:</p>
+<ul>
+<li>Click en el campo &quot;Mesa&quot;</li>
+<li>Seleccione el número de mesa (1-30)</li>
+<li>✅ Solo puede seleccionar mesas disponibles</li>
+</ul>
+</li>
+<li><p><strong>Agregar Platillos</strong>:</p>
+<p>a. <strong>Seleccionar Área</strong>:</p>
+<ul>
+<li>Click en el desplegable &quot;Área&quot;</li>
+<li>Opciones: Cocina, Bebidas, Coffee</li>
+</ul>
+<p>b. <strong>Seleccionar Platillo</strong>:</p>
+<ul>
+<li>El desplegable se actualizará con los platillos del área seleccionada</li>
+<li>Seleccione el platillo deseado</li>
+<li>El precio se mostrará automáticamente</li>
+</ul>
+<p>c. <strong>Especificar Cantidad</strong>:</p>
+<ul>
+<li>Ingrese la cantidad deseada</li>
+<li>Mínimo: 1</li>
+</ul>
+<p>d. <strong>Agregar Observaciones</strong> (Opcional):</p>
+<ul>
+<li>Ej: &quot;Sin cebolla&quot;, &quot;Término medio&quot;, &quot;Extra picante&quot;</li>
+</ul>
+<p>e. <strong>Agregar Extras</strong> (Opcional):</p>
+<ul>
+<li>Descripción del extra: &quot;Queso extra&quot;, &quot;Aguacate&quot;</li>
+<li>Precio del extra: Ingrese el monto adicional</li>
+</ul>
+</li>
+<li><p><strong>Agregar el Platillo</strong>:</p>
+<ul>
+<li>Click en el botón <strong>&quot;+ Agregar Platillo&quot;</strong></li>
+<li>El platillo aparecerá en la lista de &quot;Platillos Agregados&quot;</li>
+</ul>
+</li>
+</ol>
+<h4>Paso 3: Revisar y Editar Platillos</h4>
+<p><img src="./imgs/mesero-platillos-agregados.png" alt="Lista de Platillos Agregados"></p>
+<p>En la sección &quot;Platillos Agregados&quot; puede:</p>
+<ul>
+<li>👀 <strong>Ver todos los platillos</strong>: Nombre, Cantidad, Precio, Observaciones, Extras</li>
+<li>✏️ <strong>Editar un platillo</strong>: Click en el botón &quot;✏️ Editar&quot;</li>
+<li>❌ <strong>Eliminar un platillo</strong>: Click en el botón &quot;🗑️ Eliminar&quot;</li>
+<li>💰 <strong>Ver el Total</strong>: Se calcula automáticamente (platillos + extras)</li>
+</ul>
+<h4>Paso 4: Enviar la Orden a Cocina</h4>
+<ol>
+<li>Revise que todos los datos sean correctos</li>
+<li>Click en el botón <strong>&quot;Enviar a Cocina&quot;</strong> (botón verde grande)</li>
+<li>La orden cambiará a estado <strong>&quot;En Preparación&quot;</strong></li>
+<li>La orden aparecerá en las pantallas KDS correspondientes</li>
+</ol>
+<blockquote>
+<p>✅ <strong>Confirmación</strong>: Verá un mensaje de éxito &quot;Orden creada exitosamente&quot;</p>
+</blockquote>
+<h3>4.2 Visualizar Órdenes Activas</h3>
+<h4>Acceso al Control de Comandas</h4>
+<ol>
+<li>Desde el menú principal, click en <strong>&quot;Control de Comandas&quot;</strong></li>
+<li>O navegue directamente a: <code>/templates/mesero/comanda-control.html</code></li>
+</ol>
+<p><img src="./imgs/mesero-control.png" alt="Control de Comandas"></p>
+<h4>Filtros Disponibles</h4>
+<p>La vista de control ofrece múltiples filtros:</p>
+<ol>
+<li><p><strong>Por Estado</strong>:</p>
+<ul>
+<li>Todas</li>
+<li>Pendiente</li>
+<li>En Preparación</li>
+<li>Preparada</li>
+<li>En Caja</li>
+<li>Finalizada</li>
+</ul>
+</li>
+<li><p><strong>Por Fecha</strong>:</p>
+<ul>
+<li>Filtrar desde una fecha específica</li>
+<li>Filtrar hasta una fecha específica</li>
+</ul>
+</li>
+<li><p><strong>Por Mesa</strong>:</p>
+<ul>
+<li>Seleccionar mesa específica (1-30)</li>
+</ul>
+</li>
+<li><p><strong>Por Área</strong>:</p>
+<ul>
+<li>Todas las áreas</li>
+<li>Cocina</li>
+<li>Bebidas</li>
+<li>Coffee</li>
+</ul>
+</li>
+</ol>
+<h4>Información Mostrada</h4>
+<p>Para cada orden verá:</p>
+<ul>
+<li>🔢 <strong>Número de Orden</strong></li>
+<li>🪑 <strong>Mesa</strong></li>
+<li>📅 <strong>Fecha y Hora</strong></li>
+<li>📊 <strong>Estado</strong> (con badge de color)</li>
+<li>💰 <strong>Total</strong></li>
+<li>🔘 <strong>Acciones disponibles</strong></li>
+</ul>
+<h4>Acciones por Estado</h4>
+<p>Dependiendo del estado de la orden, puede:</p>
+<p><strong>Estado &quot;Pendiente&quot;</strong>:</p>
+<ul>
+<li>✏️ Editar la orden</li>
+<li>📤 Enviar a cocina</li>
+<li>❌ Eliminar la orden</li>
+</ul>
+<p><strong>Estado &quot;En Preparación&quot;</strong>:</p>
+<ul>
+<li>👀 Ver detalles</li>
+<li>⏳ Esperar a que cocina termine</li>
+</ul>
+<p><strong>Estado &quot;Preparada&quot;</strong>:</p>
+<ul>
+<li>💰 <strong>Cerrar Cuenta</strong> (Enviar a caja)</li>
+<li>👀 Ver detalles</li>
+</ul>
+<p><strong>Estado &quot;En Caja&quot;</strong>:</p>
+<ul>
+<li>⏳ Esperar a que caja procese el pago</li>
+<li>👀 Ver detalles</li>
+</ul>
+<p><strong>Estado &quot;Finalizada&quot;</strong>:</p>
+<ul>
+<li>👀 Ver detalles</li>
+<li>📊 Consultar comprobante</li>
+</ul>
+<h3>4.3 Editar una Orden</h3>
+<h4>Paso 1: Localizar la Orden</h4>
+<ol>
+<li>En &quot;Control de Comandas&quot;, busque la orden que desea editar</li>
+<li>La orden debe estar en estado <strong>&quot;Pendiente&quot;</strong> o <strong>&quot;En Preparación&quot;</strong></li>
+</ol>
+<h4>Paso 2: Click en Editar</h4>
+<ol>
+<li>Click en el botón <strong>&quot;✏️ Editar&quot;</strong></li>
+<li>Será redirigido al formulario de edición</li>
+</ol>
+<h4>Paso 3: Modificar la Orden</h4>
+<p>Puede modificar:</p>
+<ul>
+<li>➕ Agregar nuevos platillos</li>
+<li>❌ Eliminar platillos existentes</li>
+<li>✏️ Editar cantidades</li>
+<li>📝 Modificar observaciones</li>
+<li>💵 Agregar o quitar extras</li>
+</ul>
+<h4>Paso 4: Guardar Cambios</h4>
+<ol>
+<li>Click en <strong>&quot;💾 Actualizar Orden&quot;</strong></li>
+<li>Los cambios se reflejarán automáticamente en KDS</li>
+<li>El total se recalculará</li>
+</ol>
+<blockquote>
+<p>⚠️ <strong>Nota</strong>: No puede editar una orden que ya está en estado &quot;En Caja&quot; o &quot;Finalizada&quot;</p>
+</blockquote>
+<h3>4.4 Cerrar una Cuenta</h3>
+<h4>¿Cuándo cerrar una cuenta?</h4>
+<p>Cierre una cuenta cuando:</p>
+<ul>
+<li>✅ El cliente solicita la cuenta</li>
+<li>✅ Todos los platillos están preparados (Estado &quot;Preparada&quot;)</li>
+<li>✅ El cliente está listo para pagar</li>
+</ul>
+<h4>Paso 1: Verificar Estado</h4>
+<ol>
+<li>En &quot;Control de Comandas&quot;, localice la orden</li>
+<li>Verifique que el estado sea <strong>&quot;Preparada&quot;</strong> (badge verde)</li>
+</ol>
+<h4>Paso 2: Cerrar Cuenta</h4>
+<ol>
+<li>Click en el botón <strong>&quot;💰 Cerrar Cuenta&quot;</strong></li>
+<li>Confirme la acción</li>
+<li>La orden cambiará a estado <strong>&quot;En Caja&quot;</strong></li>
+</ol>
+<blockquote>
+<p>✅ La orden ahora aparecerá en la vista del <strong>Cajero</strong> para procesar el pago</p>
+</blockquote>
+<h3>4.5 Consejos y Mejores Prácticas</h3>
+<h4>✅ Hacer</h4>
+<ul>
+<li>✅ Verificar la mesa antes de crear la orden</li>
+<li>✅ Revisar los platillos agregados antes de enviar a cocina</li>
+<li>✅ Usar observaciones para especificaciones del cliente</li>
+<li>✅ Agregar extras cuando el cliente lo solicite</li>
+<li>✅ Cerrar la cuenta solo cuando el cliente la solicite</li>
+</ul>
+<h4>❌ No Hacer</h4>
+<ul>
+<li>❌ No enviar órdenes vacías (sin platillos)</li>
+<li>❌ No cerrar cuentas sin verificar que todo esté preparado</li>
+<li>❌ No eliminar órdenes sin verificar con el supervisor</li>
+<li>❌ No modificar órdenes que ya están en caja</li>
+</ul>
+<hr>
+<h2>5. Módulo de Cocina (KDS)</h2>
+<h3>5.1 ¿Qué es el KDS?</h3>
+<p><strong>KDS (Kitchen Display System)</strong> es el sistema de pantallas de cocina que muestra las órdenes en tiempo real. Cada área (Cocina, Bebidas, Coffee) tiene su propia pantalla y solo ve sus propios tickets.</p>
+<h3>5.2 Acceso al KDS</h3>
+<h4>Para Personal de Cocina</h4>
+<ol>
+<li>Inicie sesión con:<ul>
+<li>Usuario: <code>cocina1</code> / Contraseña: <code>cocina123</code></li>
+</ul>
+</li>
+<li>Será redirigido automáticamente al KDS del área <strong>Cocina</strong></li>
+</ol>
+<h4>Para Personal de Bebidas</h4>
+<ol>
+<li>Inicie sesión con:<ul>
+<li>Usuario: <code>bebidas1</code> / Contraseña: <code>bebidas123</code></li>
+</ul>
+</li>
+<li>Será redirigido al KDS del área <strong>Bebidas</strong></li>
+</ol>
+<h4>Para Personal de Coffee Shop</h4>
+<ol>
+<li>Inicie sesión con:<ul>
+<li>Usuario: <code>coffee1</code> / Contraseña: <code>coffee123</code></li>
+</ul>
+</li>
+<li>Será redirigido al KDS del área <strong>Coffee</strong></li>
+</ol>
+<h3>5.3 Interfaz del KDS</h3>
+<p><img src="./imgs/kds-pantalla.png" alt="KDS Interface"></p>
+<p>La pantalla del KDS muestra:</p>
+<ol>
+<li><p><strong>Header</strong>:</p>
+<ul>
+<li>Nombre del área (ej: &quot;🍳 KDS - Cocina&quot;)</li>
+<li>Botón &quot;Inicio&quot;</li>
+<li>Botón &quot;Cerrar sesión&quot;</li>
+</ul>
+</li>
+<li><p><strong>Contador de Tickets</strong>:</p>
+<ul>
+<li>Número total de tickets pendientes</li>
+<li>Se actualiza en tiempo real</li>
+</ul>
+</li>
+<li><p><strong>Grid de Tickets</strong>:</p>
+<ul>
+<li>Cada ticket en una card individual</li>
+<li>Colores según prioridad/tiempo</li>
+<li>Auto-refresh cada 5 segundos</li>
+</ul>
+</li>
+</ol>
+<h3>5.4 Anatomía de un Ticket</h3>
+<p>Cada ticket muestra:</p>
+<pre><code>┌─────────────────────────────────┐
+│  ORDEN #123        Mesa: 5      │
+│  ⏰ Hace 5 minutos              │
+├─────────────────────────────────┤
+│  🍽️ Pollo Asado    x 2         │
+│  📝 Término medio               │
+│  🌟 Extra: Papas fritas (Q10)   │
+│                                 │
+│  [✅ Terminar]                  │
+└─────────────────────────────────┘
+</code></pre>
+<p><strong>Información del Ticket</strong>:</p>
+<ul>
+<li>🔢 <strong>Número de Orden</strong>: Identificador único</li>
+<li>🪑 <strong>Mesa</strong>: Número de mesa del cliente</li>
+<li>⏰ <strong>Tiempo</strong>: Hace cuánto se creó la orden</li>
+<li>🍽️ <strong>Platillo</strong>: Nombre y cantidad</li>
+<li>📝 <strong>Observaciones</strong>: Especificaciones del cliente</li>
+<li>🌟 <strong>Extras</strong>: Ingredientes adicionales con precio</li>
+<li>🔘 <strong>Botón &quot;Terminar&quot;</strong>: Para marcar como preparado</li>
+</ul>
+<h3>5.5 Preparar un Platillo</h3>
+<h4>Paso 1: Identificar el Ticket</h4>
+<ol>
+<li>Los tickets se ordenan por <strong>tiempo</strong> (más antiguos primero)</li>
+<li>Puede haber <strong>colores diferentes</strong>:<ul>
+<li>🟢 Verde: Ticket reciente (&lt; 10 min)</li>
+<li>🟡 Amarillo: Ticket en proceso (10-20 min)</li>
+<li>🔴 Rojo: Ticket urgente (&gt; 20 min)</li>
+</ul>
+</li>
+</ol>
+<h4>Paso 2: Leer la Información</h4>
+<ol>
+<li>Verifique el <strong>número de orden</strong> y <strong>mesa</strong></li>
+<li>Lea el <strong>platillo</strong> y <strong>cantidad</strong></li>
+<li>Preste atención a las <strong>observaciones</strong></li>
+<li>No olvide los <strong>extras</strong> si los hay</li>
+</ol>
+<h4>Paso 3: Preparar el Platillo</h4>
+<ol>
+<li>Prepare el platillo según las especificaciones</li>
+<li>Incluya todos los extras solicitados</li>
+<li>Asegúrese de que cumpla con los estándares de calidad</li>
+</ol>
+<h4>Paso 4: Marcar como Preparado</h4>
+<ol>
+<li>Una vez listo el platillo, click en el botón <strong>&quot;✅ Terminar&quot;</strong></li>
+<li>El ticket desaparecerá de su pantalla</li>
+<li>El contador de tickets pendientes se actualizará</li>
+</ol>
+<blockquote>
+<p>🔄 <strong>Auto-actualización</strong>: La pantalla se actualiza automáticamente cada 5 segundos</p>
+</blockquote>
+<h3>5.6 Órdenes con Múltiples Platillos</h3>
+<p>Cuando una orden tiene platillos de diferentes áreas:</p>
+<p><strong>Ejemplo</strong>:</p>
+<ul>
+<li>Mesa 5 ordena:<ul>
+<li>2x Pollo Asado (Cocina)</li>
+<li>1x Cerveza (Bebidas)</li>
+<li>1x Cappuccino (Coffee)</li>
+</ul>
+</li>
+</ul>
+<p><strong>¿Qué verá cada área?</strong></p>
+<ul>
+<li><strong>Cocina</strong>: Solo verá &quot;2x Pollo Asado&quot;</li>
+<li><strong>Bebidas</strong>: Solo verá &quot;1x Cerveza&quot;</li>
+<li><strong>Coffee</strong>: Solo verá &quot;1x Cappuccino&quot;</li>
+</ul>
+<p><strong>¿Cuándo se marca como &quot;Preparada&quot;?</strong></p>
+<p>La orden completa se marca como <strong>&quot;Preparada&quot;</strong> automáticamente cuando <strong>todas las áreas</strong> terminan sus respectivos platillos.</p>
+<h3>5.7 Notificaciones</h3>
+<p>El KDS incluye notificaciones:</p>
+<ul>
+<li>🔔 <strong>Sonido</strong>: Cuando llega una nueva orden</li>
+<li>💬 <strong>Toast notification</strong>: Mensaje temporal en pantalla</li>
+<li>🔴 <strong>Badge</strong>: Contador de tickets pendientes</li>
+</ul>
+<h3>5.8 Consejos para Personal de Cocina</h3>
+<h4>✅ Hacer</h4>
+<ul>
+<li>✅ Mantener la pantalla visible en todo momento</li>
+<li>✅ Priorizar tickets más antiguos (arriba)</li>
+<li>✅ Leer completamente las observaciones</li>
+<li>✅ Marcar como &quot;Terminado&quot; solo cuando esté listo</li>
+<li>✅ Comunicarse con otras áreas si hay demora</li>
+</ul>
+<h4>❌ No Hacer</h4>
+<ul>
+<li>❌ No marcar como terminado antes de tiempo</li>
+<li>❌ No ignorar las observaciones del cliente</li>
+<li>❌ No olvidar los extras</li>
+<li>❌ No cerrar sesión durante el servicio</li>
+</ul>
+<hr>
+<h2>6. Módulo de Caja</h2>
+<h3>6.1 Acceso al Módulo de Caja</h3>
+<ol>
+<li>Inicie sesión con credenciales de cajero:<ul>
+<li>Usuario: <code>cajero1</code></li>
+<li>Contraseña: <code>cajero123</code></li>
+</ul>
+</li>
+<li>Será redirigido automáticamente a la vista de <strong>Caja</strong></li>
+</ol>
+<h3>6.2 Interfaz de Caja</h3>
+<p><img src="./imgs/caja-principal.png" alt="Vista de Caja"></p>
+<p>La interfaz consta de:</p>
+<ol>
+<li><p><strong>Header</strong>:</p>
+<ul>
+<li>Logo y nombre &quot;Restaurante Chicoj&quot;</li>
+<li>Botones de navegación</li>
+</ul>
+</li>
+<li><p><strong>Estadísticas del Día</strong>:</p>
+<ul>
+<li>💰 Total Ventas</li>
+<li>📋 Órdenes Procesadas</li>
+<li>⏱️ Promedio por Orden</li>
+</ul>
+</li>
+<li><p><strong>Pestañas</strong>:</p>
+<ul>
+<li><strong>Órdenes Pendientes</strong>: Órdenes listas para cobrar</li>
+<li><strong>Historial del Día</strong>: Órdenes ya cobradas</li>
+</ul>
+</li>
+</ol>
+<h3>6.3 Procesar un Pago</h3>
+<h4>Paso 1: Verificar Órdenes Pendientes</h4>
+<ol>
+<li>En la pestaña <strong>&quot;Órdenes Pendientes&quot;</strong>, verá todas las órdenes en estado &quot;En Caja&quot;</li>
+<li>La tabla muestra:<ul>
+<li>🔢 Orden No.</li>
+<li>🪑 Mesa</li>
+<li>⏰ Hora</li>
+<li>📋 Platillos</li>
+<li>💰 Total</li>
+<li>🔘 Acción</li>
+</ul>
+</li>
+</ol>
+<p><img src="./imgs/caja-pendientes.png" alt="Órdenes Pendientes"></p>
+<h4>Paso 2: Iniciar el Cobro</h4>
+<ol>
+<li>Localice la orden que desea cobrar</li>
+<li>Click en el botón <strong>&quot;💳 Cobrar&quot;</strong></li>
+<li>Se abrirá el <strong>Modal de Pago</strong></li>
+</ol>
+<h4>Paso 3: Modal de Pago</h4>
+<p><img src="./imgs/caja-modal-pago.png" alt="Modal de Pago"></p>
+<p>El modal muestra:</p>
+<p><strong>Información de la Orden</strong>:</p>
+<ul>
+<li>Orden No.</li>
+<li>Mesa</li>
+<li>Total a pagar</li>
+</ul>
+<p><strong>Formulario de Pago</strong>:</p>
+<ol>
+<li><p><strong>Método de Pago</strong> (requerido):</p>
+<ul>
+<li>💵 Efectivo</li>
+<li>💳 Tarjeta</li>
+<li>🏦 Transferencia</li>
+</ul>
+</li>
+<li><p><strong>Monto Recibido</strong> (requerido):</p>
+<ul>
+<li>Ingrese el monto que el cliente entrega</li>
+<li>Para Tarjeta/Transferencia: Ingrese el total exacto</li>
+</ul>
+</li>
+<li><p><strong>Cambio</strong> (automático):</p>
+<ul>
+<li>Se calcula automáticamente</li>
+<li>Solo para pagos en Efectivo</li>
+<li>Ejemplo: Total Q100, Recibido Q150 → Cambio Q50</li>
+</ul>
+</li>
+<li><p><strong>NIT</strong> (opcional):</p>
+<ul>
+<li>Ingrese el NIT si el cliente lo solicita</li>
+<li>Formato: 12345678-9</li>
+<li>Puede dejarse en blanco (C/F)</li>
+</ul>
+</li>
+</ol>
+<h4>Paso 4: Finalizar el Pago</h4>
+<ol>
+<li>Verifique que todos los datos sean correctos</li>
+<li>Click en el botón <strong>&quot;✅ Finalizar Pago&quot;</strong> (verde)</li>
+<li>La orden cambiará a estado <strong>&quot;Finalizada&quot;</strong></li>
+<li>Se generará automáticamente el comprobante</li>
+</ol>
+<blockquote>
+<p>✅ <strong>Confirmación</strong>: Verá un mensaje &quot;Pago procesado exitosamente&quot;</p>
+</blockquote>
+<h4>Paso 5: Entregar el Comprobante</h4>
+<ol>
+<li>El sistema generará un comprobante digital</li>
+<li>Puede imprimirlo o enviarlo por correo</li>
+<li>Entregue el cambio (si aplica)</li>
+</ol>
+<h3>6.4 Consultar Historial del Día</h3>
+<h4>Pestaña &quot;Historial del Día&quot;</h4>
+<ol>
+<li>Click en la pestaña <strong>&quot;Historial del Día&quot;</strong></li>
+<li>Verá todas las órdenes finalizadas del día actual</li>
+</ol>
+<p><img src="./imgs/caja-historial.png" alt="Historial del Día"></p>
+<p><strong>Información mostrada</strong>:</p>
+<ul>
+<li>Orden No.</li>
+<li>Mesa</li>
+<li>Hora de Pago</li>
+<li>Método de Pago</li>
+<li>Total</li>
+<li>Cajero que procesó</li>
+</ul>
+<p><strong>Acciones disponibles</strong>:</p>
+<ul>
+<li>👀 <strong>Ver Detalles</strong>: Muestra información completa de la orden</li>
+<li>🖨️ <strong>Reimprimir</strong>: Genera nuevamente el comprobante</li>
+</ul>
+<h3>6.5 Estadísticas de Ventas</h3>
+<p>En la parte superior de la vista, verá estadísticas en tiempo real:</p>
+<p><strong>Total Ventas del Día</strong>:</p>
+<ul>
+<li>Suma de todas las órdenes finalizadas</li>
+<li>Ejemplo: Q 5,450.00</li>
+</ul>
+<p><strong>Órdenes Procesadas</strong>:</p>
+<ul>
+<li>Número total de órdenes cobradas</li>
+<li>Ejemplo: 42 órdenes</li>
+</ul>
+<p><strong>Promedio por Orden</strong>:</p>
+<ul>
+<li>Ticket promedio</li>
+<li>Ejemplo: Q 129.76</li>
+</ul>
+<h3>6.6 Métodos de Pago</h3>
+<h4>Efectivo 💵</h4>
+<p><strong>Flujo</strong>:</p>
+<ol>
+<li>Cliente entrega efectivo</li>
+<li>Usted ingresa el monto recibido</li>
+<li>Sistema calcula el cambio</li>
+<li>Usted entrega el cambio al cliente</li>
+</ol>
+<p><strong>Ejemplo</strong>:</p>
+<ul>
+<li>Total: Q 85.50</li>
+<li>Recibido: Q 100.00</li>
+<li><strong>Cambio: Q 14.50</strong> ✅</li>
+</ul>
+<h4>Tarjeta 💳</h4>
+<p><strong>Flujo</strong>:</p>
+<ol>
+<li>Cliente paga con tarjeta (Visa, MasterCard, etc.)</li>
+<li>Procese el pago en la terminal bancaria</li>
+<li>Ingrese el monto exacto en el sistema</li>
+<li>No hay cambio</li>
+</ol>
+<p><strong>Ejemplo</strong>:</p>
+<ul>
+<li>Total: Q 245.00</li>
+<li>Recibido: Q 245.00</li>
+<li><strong>Cambio: Q 0.00</strong> ✅</li>
+</ul>
+<h4>Transferencia 🏦</h4>
+<p><strong>Flujo</strong>:</p>
+<ol>
+<li>Cliente realiza transferencia bancaria</li>
+<li>Verifique la transferencia en su app bancaria</li>
+<li>Ingrese el monto exacto en el sistema</li>
+<li>No hay cambio</li>
+</ol>
+<p><strong>Ejemplo</strong>:</p>
+<ul>
+<li>Total: Q 189.75</li>
+<li>Recibido: Q 189.75</li>
+<li><strong>Cambio: Q 0.00</strong> ✅</li>
+</ul>
+<h3>6.7 Manejo de NIT</h3>
+<h4>¿Cuándo solicitar NIT?</h4>
+<ul>
+<li>✅ Si el cliente lo solicita para factura</li>
+<li>✅ Si el monto es mayor a Q 2,500 (según política)</li>
+<li>✅ Si es un cliente corporativo</li>
+</ul>
+<h4>¿Cómo registrarlo?</h4>
+<ol>
+<li>En el campo &quot;NIT&quot;, ingrese el número</li>
+<li>Formato: <code>12345678-9</code> o <code>CF</code> (Consumidor Final)</li>
+<li>Valide que el formato sea correcto</li>
+</ol>
+<h3>6.8 Solución de Problemas Comunes</h3>
+<h4>Problema: &quot;El cambio no se calcula&quot;</h4>
+<p><strong>Solución</strong>:</p>
+<ol>
+<li>Verifique que el &quot;Método de Pago&quot; sea &quot;Efectivo&quot;</li>
+<li>Asegúrese de que el monto recibido sea mayor al total</li>
+<li>El campo &quot;Cambio&quot; se actualiza automáticamente</li>
+</ol>
+<h4>Problema: &quot;No puedo finalizar el pago&quot;</h4>
+<p><strong>Solución</strong>:</p>
+<ol>
+<li>Verifique que el método de pago esté seleccionado</li>
+<li>Verifique que el monto recibido sea válido</li>
+<li>Para Tarjeta/Transferencia: Monto = Total</li>
+</ol>
+<h4>Problema: &quot;Necesito cancelar un pago&quot;</h4>
+<p><strong>Solución</strong>:</p>
+<ol>
+<li>Click en el botón &quot;❌ Cancelar&quot; en el modal</li>
+<li>La orden volverá al estado &quot;En Caja&quot;</li>
+<li>Puede procesarla nuevamente</li>
+</ol>
+<h3>6.9 Consejos y Mejores Prácticas</h3>
+<h4>✅ Hacer</h4>
+<ul>
+<li>✅ Verificar el total antes de cobrar</li>
+<li>✅ Contar el efectivo recibido frente al cliente</li>
+<li>✅ Contar el cambio frente al cliente</li>
+<li>✅ Verificar transferencias antes de finalizar</li>
+<li>✅ Ofrecer comprobante al cliente</li>
+<li>✅ Mantener la caja organizada</li>
+</ul>
+<h4>❌ No Hacer</h4>
+<ul>
+<li>❌ No finalizar pagos sin verificar el dinero</li>
+<li>❌ No olvidar entregar el cambio</li>
+<li>❌ No procesar pagos sin autorización</li>
+<li>❌ No dejar la sesión abierta sin supervisión</li>
+</ul>
+<hr>
+<h2>7. Módulo de Tours</h2>
+<h3>7.1 Acceso al Módulo de Tours</h3>
+<ol>
+<li>Inicie sesión con credenciales de tour:<ul>
+<li>Usuario: <code>tour1</code></li>
+<li>Contraseña: <code>tour123</code></li>
+</ul>
+</li>
+<li>Será redirigido automáticamente a la vista de <strong>Gestión de Tours</strong></li>
+</ol>
+<h3>7.2 Registrar un Nuevo Tour</h3>
+<h4>Paso 1: Acceder al Formulario</h4>
+<ol>
+<li>En la vista principal, click en <strong>&quot;+ Nuevo Tour&quot;</strong></li>
+<li>Se mostrará el formulario de registro</li>
+</ol>
+<p><img src="./imgs/tour-formulario.png" alt="Formulario de Tour"></p>
+<h4>Paso 2: Datos del Tour</h4>
+<p>Complete los siguientes campos:</p>
+<p><strong>1. Información Básica</strong>:</p>
+<ul>
+<li><p><strong>Nombre del Visitante</strong> (requerido):</p>
+<ul>
+<li>Nombre completo del cliente o representante del grupo</li>
+<li>Ejemplo: &quot;Juan Pérez&quot;</li>
+</ul>
+</li>
+<li><p><strong>Fecha del Tour</strong> (requerido):</p>
+<ul>
+<li>Seleccione la fecha del tour</li>
+<li>📅 No puede seleccionar fechas pasadas</li>
+<li>⚠️ Limitado hasta la fecha actual</li>
+</ul>
+</li>
+<li><p><strong>Hora</strong> (requerido):</p>
+<ul>
+<li>Seleccione la hora de inicio del tour</li>
+<li>Horarios disponibles: 8:00 AM - 4:00 PM</li>
+<li>Ejemplo: &quot;10:00 AM&quot;</li>
+</ul>
+</li>
+</ul>
+<p><strong>2. Idioma del Tour</strong> (requerido):</p>
+<p>Seleccione el idioma en el que se realizará el tour:</p>
+<ul>
+<li>🇪🇸 Español</li>
+<li>🇬🇧 Inglés</li>
+<li>🇫🇷 Francés</li>
+<li>🇩🇪 Alemán</li>
+</ul>
+<p><strong>3. Tipos de Visitantes</strong>:</p>
+<p>Especifique la cantidad de visitantes por categoría:</p>
+<ul>
+<li><p>👨 <strong>Adultos</strong>:</p>
+<ul>
+<li>Precio: Q 100.00 por persona</li>
+<li>Cantidad: Ingrese el número de adultos</li>
+</ul>
+</li>
+<li><p>👶 <strong>Niños</strong>:</p>
+<ul>
+<li>Precio: Q 50.00 por niño</li>
+<li>Cantidad: Ingrese el número de niños</li>
+</ul>
+</li>
+<li><p>👴 <strong>Tercera Edad</strong>:</p>
+<ul>
+<li>Precio: Q 75.00 por persona</li>
+<li>Cantidad: Ingrese el número de personas de tercera edad</li>
+</ul>
+</li>
+</ul>
+<p><strong>4. Servicios Adicionales</strong> (opcional):</p>
+<ul>
+<li><p><strong>Almuerzo Incluido</strong>:</p>
+<ul>
+<li>☑️ Marque la casilla si incluye almuerzo</li>
+<li>Precio adicional: Q 60.00 por persona</li>
+</ul>
+</li>
+<li><p><strong>Transporte</strong>:</p>
+<ul>
+<li>☑️ Marque la casilla si requiere transporte</li>
+<li>Precio adicional: Q 150.00 (grupal)</li>
+</ul>
+</li>
+</ul>
+<p><strong>5. Total del Tour</strong> (automático):</p>
+<p>El sistema calcula automáticamente el total sumando:</p>
+<ul>
+<li>Adultos × Q100</li>
+<li>Niños × Q50</li>
+<li>Tercera Edad × Q75</li>
+<li>Almuerzo (si aplica) × Número de personas</li>
+<li>Transporte (si aplica)</li>
+</ul>
+<p><strong>Ejemplo de Cálculo</strong>:</p>
+<pre><code>2 Adultos:     2 × Q100 = Q200
+1 Niño:        1 × Q50  = Q50
+Almuerzo:      3 × Q60  = Q180
+Transporte:    1 × Q150 = Q150
+─────────────────────────────
+TOTAL:                   Q580
+</code></pre>
+<h4>Paso 3: Registrar el Tour</h4>
+<ol>
+<li>Revise que todos los datos sean correctos</li>
+<li>Click en el botón <strong>&quot;💾 Registrar Tour&quot;</strong></li>
+<li>El tour quedará registrado en el sistema</li>
+</ol>
+<blockquote>
+<p>✅ <strong>Confirmación</strong>: &quot;Tour registrado exitosamente&quot;</p>
+</blockquote>
+<h3>7.3 Visualizar Tours Programados</h3>
+<h4>Vista de Control de Tours</h4>
+<p><img src="./imgs/tour-control.png" alt="Control de Tours"></p>
+<ol>
+<li>Click en <strong>&quot;Control de Tours&quot;</strong> en el menú</li>
+<li>Verá una lista de todos los tours programados</li>
+</ol>
+<p><strong>Información mostrada</strong>:</p>
+<ul>
+<li>📅 Fecha</li>
+<li>⏰ Hora</li>
+<li>👤 Nombre del visitante</li>
+<li>🗣️ Idioma</li>
+<li>👥 Cantidad de personas (Adultos/Niños/Tercera Edad)</li>
+<li>💰 Total</li>
+<li>📊 Estado (Programado, Completado, Cancelado)</li>
+</ul>
+<h4>Filtros Disponibles</h4>
+<p>Puede filtrar los tours por:</p>
+<ul>
+<li>📅 <strong>Rango de fechas</strong>: Desde - Hasta</li>
+<li>🗣️ <strong>Idioma</strong>: Español, Inglés, Francés, Alemán</li>
+<li>📊 <strong>Estado</strong>: Todos, Programados, Completados, Cancelados</li>
+</ul>
+<h3>7.4 Editar un Tour</h3>
+<h4>Paso 1: Localizar el Tour</h4>
+<ol>
+<li>En &quot;Control de Tours&quot;, busque el tour que desea editar</li>
+<li>Solo puede editar tours con estado &quot;Programado&quot;</li>
+</ol>
+<h4>Paso 2: Modificar Datos</h4>
+<ol>
+<li>Click en el botón <strong>&quot;✏️ Editar&quot;</strong></li>
+<li>Modifique los campos necesarios</li>
+<li>El total se recalculará automáticamente</li>
+</ol>
+<h4>Paso 3: Guardar Cambios</h4>
+<ol>
+<li>Click en <strong>&quot;💾 Actualizar&quot;</strong></li>
+<li>Los cambios se guardarán</li>
+</ol>
+<blockquote>
+<p>⚠️ <strong>Nota</strong>: No puede editar tours que ya están &quot;Completados&quot;</p>
+</blockquote>
+<h3>7.5 Cancelar un Tour</h3>
+<p>Si un tour necesita ser cancelado:</p>
+<ol>
+<li>Localice el tour en &quot;Control de Tours&quot;</li>
+<li>Click en <strong>&quot;❌ Cancelar Tour&quot;</strong></li>
+<li>Confirme la acción</li>
+<li>El estado cambiará a &quot;Cancelado&quot;</li>
+</ol>
+<h3>7.6 Marcar Tour como Completado</h3>
+<p>Cuando un tour finaliza:</p>
+<ol>
+<li>Localice el tour en &quot;Control de Tours&quot;</li>
+<li>Click en <strong>&quot;✅ Completar&quot;</strong></li>
+<li>El estado cambiará a &quot;Completado&quot;</li>
+<li>El tour se archivará en el historial</li>
+</ol>
+<h3>7.7 Mejores Prácticas</h3>
+<h4>✅ Hacer</h4>
+<ul>
+<li>✅ Registrar tours con anticipación</li>
+<li>✅ Verificar disponibilidad antes de confirmar</li>
+<li>✅ Confirmar idioma con el cliente</li>
+<li>✅ Preguntar por restricciones alimentarias (si incluye almuerzo)</li>
+<li>✅ Actualizar el estado del tour puntualmente</li>
+</ul>
+<h4>❌ No Hacer</h4>
+<ul>
+<li>❌ No registrar tours para fechas pasadas</li>
+<li>❌ No olvidar confirmar con el cliente</li>
+<li>❌ No mezclar idiomas en un mismo grupo</li>
+<li>❌ No exceder la capacidad máxima del tour</li>
+</ul>
+<hr>
+<h2>8. Módulo de Reportes</h2>
+<h3>8.1 Acceso al Módulo de Reportes</h3>
+<p><strong>Usuarios con acceso</strong>:</p>
+<ul>
+<li>✅ Administrador (<code>admin</code>)</li>
+<li>✅ Gerente (<code>gerente1</code>)</li>
+<li>✅ Cajero (<code>cajero1</code> - acceso limitado)</li>
+</ul>
+<ol>
+<li>Inicie sesión con credenciales correspondientes</li>
+<li>Navegue a <strong>&quot;Reportes&quot;</strong> en el menú</li>
+</ol>
+<h3>8.2 Interfaz de Reportes</h3>
+<p><img src="./imgs/reportes-principal.png" alt="Vista de Reportes"></p>
+<p>La vista consta de:</p>
+<ol>
+<li><strong>Filtros de Período</strong></li>
+<li><strong>Estadísticas Generales</strong></li>
+<li><strong>Gráficas</strong></li>
+<li><strong>Tablas de Datos</strong></li>
+</ol>
+<h3>8.3 Filtros de Período</h3>
+<h4>Seleccionar Rango de Fechas</h4>
+<ol>
+<li><strong>Fecha Desde</strong>: Fecha inicial del período</li>
+<li><strong>Fecha Hasta</strong>: Fecha final del período</li>
+<li>Click en <strong>&quot;📊 Generar Reporte&quot;</strong></li>
+</ol>
+<p><strong>Opciones rápidas</strong>:</p>
+<ul>
+<li>📅 Hoy</li>
+<li>📅 Esta Semana</li>
+<li>📅 Este Mes</li>
+<li>📅 Mes Anterior</li>
+<li>📅 Personalizado</li>
+</ul>
+<blockquote>
+<p>📌 <strong>Importante</strong>: No puede seleccionar fechas futuras</p>
+</blockquote>
+<h3>8.4 Estadísticas Generales</h3>
+<p>Una vez generado el reporte, verá:</p>
+<h4>Tarjetas de Estadísticas</h4>
+<p><strong>1. Total Ventas del Período</strong>:</p>
+<ul>
+<li>💰 Monto total en Quetzales</li>
+<li>📈 Comparación con período anterior</li>
+<li>Ejemplo: &quot;Q 45,890.50 (+12.5%)&quot;</li>
+</ul>
+<p><strong>2. Número de Órdenes</strong>:</p>
+<ul>
+<li>📋 Total de órdenes procesadas</li>
+<li>📊 Promedio por día</li>
+<li>Ejemplo: &quot;342 órdenes (12/día)&quot;</li>
+</ul>
+<p><strong>3. Ticket Promedio</strong>:</p>
+<ul>
+<li>💵 Promedio por orden</li>
+<li>📉 Comparación con el mes anterior</li>
+<li>Ejemplo: &quot;Q 134.18 (-2.3%)&quot;</li>
+</ul>
+<p><strong>4. Platillos Vendidos</strong>:</p>
+<ul>
+<li>🍽️ Número total de platillos</li>
+<li>🏆 Top 3 más vendidos</li>
+<li>Ejemplo: &quot;1,245 platillos&quot;</li>
+</ul>
+<h3>8.5 Platillos Más Vendidos</h3>
+<h4>Tabla de Top Platillos</h4>
+<p><img src="./imgs/reportes-platillos.png" alt="Top Platillos"></p>
+<p>Muestra:</p>
+<ol>
+<li><strong>Posición</strong> (1, 2, 3, ...)</li>
+<li><strong>Nombre del Platillo</strong></li>
+<li><strong>Área</strong> (Cocina, Bebidas, Coffee)</li>
+<li><strong>Cantidad Vendida</strong></li>
+<li><strong>Total en Ventas</strong> (Q)</li>
+</ol>
+<p><strong>Ejemplo</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Platillo</th>
+<th>Área</th>
+<th>Cant.</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Pollo Asado</td>
+<td>Cocina</td>
+<td>156</td>
+<td>Q 12,480</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Cerveza Nacional</td>
+<td>Bebidas</td>
+<td>203</td>
+<td>Q 5,075</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Cappuccino</td>
+<td>Coffee</td>
+<td>187</td>
+<td>Q 4,675</td>
+</tr>
+</tbody></table>
+<h3>8.6 Ventas por Área</h3>
+<h4>Gráfica de Distribución</h4>
+<p><img src="./imgs/reportes-areas.png" alt="Ventas por Área"></p>
+<p><strong>Muestra</strong>:</p>
+<ul>
+<li>🔵 Cocina: Porcentaje y monto</li>
+<li>🟢 Bebidas: Porcentaje y monto</li>
+<li>🟡 Coffee: Porcentaje y monto</li>
+</ul>
+<p><strong>Ejemplo</strong>:</p>
+<ul>
+<li>Cocina: 60% (Q 27,534)</li>
+<li>Bebidas: 25% (Q 11,472)</li>
+<li>Coffee: 15% (Q 6,883)</li>
+</ul>
+<h3>8.7 Horas Pico</h3>
+<h4>Gráfica de Ventas por Hora</h4>
+<p><img src="./imgs/reportes-horas.png" alt="Horas Pico"></p>
+<p>Muestra la distribución de ventas por hora del día:</p>
+<p><strong>Ejemplo</strong>:</p>
+<pre><code>8:00  ████░░░░░░  Q 1,250
+9:00  ██████░░░░  Q 2,890
+10:00 ████████░░  Q 4,120
+11:00 ████████░░  Q 3,780
+12:00 ██████████  Q 8,450  ← Hora pico
+13:00 ██████████  Q 8,120
+14:00 ████████░░  Q 3,560
+15:00 ██████░░░░  Q 2,340
+</code></pre>
+<p><strong>Información útil</strong>:</p>
+<ul>
+<li>🏆 Hora con más ventas</li>
+<li>📉 Hora con menos ventas</li>
+<li>⏰ Mejores horarios para staffing</li>
+</ul>
+<h3>8.8 Métodos de Pago</h3>
+<h4>Distribución de Métodos de Pago</h4>
+<p><img src="./imgs/reportes-pagos.png" alt="Métodos de Pago"></p>
+<p>Muestra cómo los clientes prefieren pagar:</p>
+<p><strong>Ejemplo</strong>:</p>
+<ul>
+<li>💵 Efectivo: 65% (Q 29,828)</li>
+<li>💳 Tarjeta: 28% (Q 12,849)</li>
+<li>🏦 Transferencia: 7% (Q 3,213)</li>
+</ul>
+<h3>8.9 Exportar Reportes</h3>
+<h4>Opciones de Exportación</h4>
+<p>En la parte superior de la vista, encontrará botones para exportar:</p>
+<ol>
+<li><p><strong>📄 Exportar a PDF</strong>:</p>
+<ul>
+<li>Genera un documento PDF con todo el reporte</li>
+<li>Incluye gráficas y tablas</li>
+<li>Ideal para imprimir o compartir</li>
+</ul>
+</li>
+<li><p><strong>📊 Exportar a Excel</strong>:</p>
+<ul>
+<li>Genera un archivo .xlsx</li>
+<li>Permite análisis adicional</li>
+<li>Incluye todos los datos tabulados</li>
+</ul>
+</li>
+<li><p><strong>🖨️ Imprimir</strong>:</p>
+<ul>
+<li>Imprime directamente el reporte</li>
+<li>Formato optimizado para papel</li>
+</ul>
+</li>
+</ol>
+<h3>8.10 Reportes Personalizados</h3>
+<h4>Crear Reporte Personalizado</h4>
+<ol>
+<li><p>En la sección &quot;Reportes Personalizados&quot;, click en <strong>&quot;+ Nuevo&quot;</strong></p>
+</li>
+<li><p>Seleccione los datos que desea incluir:</p>
+<ul>
+<li>☑️ Ventas totales</li>
+<li>☑️ Platillos más vendidos</li>
+<li>☑️ Horas pico</li>
+<li>☑️ Métodos de pago</li>
+<li>☑️ Ventas por mesero</li>
+<li>☑️ Ventas por área</li>
+</ul>
+</li>
+<li><p>Defina el período</p>
+</li>
+<li><p>Click en <strong>&quot;📊 Generar&quot;</strong></p>
+</li>
+</ol>
+<h3>8.11 Análisis y Toma de Decisiones</h3>
+<h4>¿Cómo usar los reportes?</h4>
+<p><strong>Para Gerentes</strong>:</p>
+<ul>
+<li>📊 Identificar platillos de bajo rendimiento</li>
+<li>💰 Evaluar rentabilidad por área</li>
+<li>👥 Planificar staffing según horas pico</li>
+<li>📈 Analizar tendencias de ventas</li>
+</ul>
+<p><strong>Para Administradores</strong>:</p>
+<ul>
+<li>💼 Tomar decisiones de menú</li>
+<li>💵 Proyectar ingresos</li>
+<li>🎯 Definir estrategias de marketing</li>
+<li>📉 Detectar problemas operativos</li>
+</ul>
+<p><strong>Para Cajeros</strong>:</p>
+<ul>
+<li>💰 Verificar cuadre de caja</li>
+<li>📊 Consultar ventas del día</li>
+<li>💳 Analizar métodos de pago más usados</li>
+</ul>
+<hr>
+<h2>9. Módulo de Administración</h2>
+<h3>9.1 Acceso al Módulo de Administración</h3>
+<p><strong>Solo para</strong>: Administrador (<code>admin</code> / <code>admin123</code>)</p>
+<ol>
+<li>Inicie sesión con credenciales de administrador</li>
+<li>Será redirigido al <strong>Dashboard Principal</strong></li>
+<li>Desde ahí puede acceder a todos los módulos de administración</li>
+</ol>
+<h3>9.2 Dashboard Principal</h3>
+<p><img src="./imgs/admin-dashboard.png" alt="Dashboard Admin"></p>
+<p>El dashboard muestra:</p>
+<p><strong>Widgets de Acceso Rápido</strong>:</p>
+<ul>
+<li>👥 <strong>Usuarios</strong>: Gestión de usuarios del sistema</li>
+<li>🧑‍🍳 <strong>Empleados</strong>: Gestión de empleados</li>
+<li>🍽️ <strong>Platillos</strong>: Gestión del menú</li>
+<li>📋 <strong>Comandas</strong>: Visualización de órdenes</li>
+<li>💰 <strong>Caja</strong>: Acceso al módulo de caja</li>
+<li>📊 <strong>Reportes</strong>: Estadísticas y análisis</li>
+<li>🏞️ <strong>Tours</strong>: Gestión de tours</li>
+</ul>
+<p><strong>Estadísticas del Dashboard</strong>:</p>
+<ul>
+<li>Total de órdenes del día</li>
+<li>Ventas del día</li>
+<li>Usuarios activos</li>
+<li>Empleados registrados</li>
+</ul>
+<h3>9.3 Gestión de Empleados</h3>
+<h4>9.3.1 Ver Lista de Empleados</h4>
+<ol>
+<li>En el dashboard, click en <strong>&quot;👥 Empleados&quot;</strong></li>
+<li>O navegue a: <code>/templates/administracion/empleados_control.html</code></li>
+</ol>
+<p><img src="./imgs/admin-empleados-lista.png" alt="Lista de Empleados"></p>
+<p><strong>Información mostrada</strong>:</p>
+<ul>
+<li>ID</li>
+<li>Nombre completo</li>
+<li>Edad</li>
+<li>Correo electrónico</li>
+<li>Acciones (Editar, Eliminar)</li>
+</ul>
+<h4>9.3.2 Agregar Nuevo Empleado</h4>
+<p><strong>Paso 1</strong>: Click en el botón <strong>&quot;+ Agregar Empleado&quot;</strong></p>
+<p><strong>Paso 2</strong>: Complete el formulario:</p>
+<p><img src="./imgs/admin-empleado-form.png" alt="Formulario Empleado"></p>
+<ul>
+<li><strong>Nombre</strong> (requerido): Nombre(s) del empleado</li>
+<li><strong>Apellidos</strong> (requerido): Apellido(s) del empleado</li>
+<li><strong>Edad</strong> (opcional): Edad en años</li>
+<li><strong>Correo Electrónico</strong> (requerido): Email válido y único</li>
+</ul>
+<p><strong>Validaciones</strong>:</p>
+<ul>
+<li>✅ Correo debe ser válido (formato email)</li>
+<li>✅ Correo debe ser único (no repetido)</li>
+<li>✅ Nombre y apellidos son obligatorios</li>
+</ul>
+<p><strong>Paso 3</strong>: Click en <strong>&quot;💾 Guardar&quot;</strong></p>
+<blockquote>
+<p>✅ El empleado quedará registrado en el sistema</p>
+</blockquote>
+<h4>9.3.3 Editar un Empleado</h4>
+<ol>
+<li>En la lista de empleados, click en <strong>&quot;✏️ Editar&quot;</strong></li>
+<li>Modifique los datos necesarios</li>
+<li>Click en <strong>&quot;💾 Actualizar&quot;</strong></li>
+</ol>
+<blockquote>
+<p>⚠️ <strong>Nota</strong>: El correo debe seguir siendo único</p>
+</blockquote>
+<h4>9.3.4 Eliminar un Empleado</h4>
+<ol>
+<li>En la lista de empleados, click en <strong>&quot;🗑️ Eliminar&quot;</strong></li>
+<li>Confirme la eliminación</li>
+</ol>
+<blockquote>
+<p>⚠️ <strong>Restricción</strong>: No puede eliminar un empleado que tiene un <strong>usuario asignado</strong>. Primero debe eliminar el usuario.</p>
+</blockquote>
+<h3>9.4 Gestión de Usuarios</h3>
+<h4>9.4.1 Ver Lista de Usuarios</h4>
+<ol>
+<li>En el dashboard, click en <strong>&quot;🔐 Usuarios&quot;</strong></li>
+<li>O navegue a: <code>/templates/administracion/control-usuarios.html</code></li>
+</ol>
+<p><img src="./imgs/admin-usuarios-lista.png" alt="Lista de Usuarios"></p>
+<p><strong>Información mostrada</strong>:</p>
+<ul>
+<li>ID</li>
+<li>Empleado asociado</li>
+<li>Nombre de usuario (con @)</li>
+<li>Rol (con badge de color)</li>
+<li>Acciones (Editar, Eliminar)</li>
+</ul>
+<p><strong>Colores de Roles</strong>:</p>
+<ul>
+<li>🔴 Rojo: Administrador</li>
+<li>🔵 Azul: Gerente</li>
+<li>🟢 Verde: Mesero</li>
+<li>🟡 Amarillo: Cajero</li>
+<li>🟠 Naranja: Cocina/Bebidas/Coffee</li>
+<li>🟣 Morado: Tour</li>
+</ul>
+<h4>9.4.2 Agregar Nuevo Usuario</h4>
+<p><strong>Paso 1</strong>: Click en <strong>&quot;+ Agregar Usuario&quot;</strong></p>
+<p><strong>Paso 2</strong>: Complete el formulario:</p>
+<p><img src="./imgs/admin-usuario-form.png" alt="Formulario Usuario"></p>
+<ul>
+<li><p><strong>Empleado</strong> (requerido):</p>
+<ul>
+<li>Seleccione de la lista de empleados <strong>SIN usuario asignado</strong></li>
+<li>Si no hay empleados disponibles, primero cree un empleado</li>
+</ul>
+</li>
+<li><p><strong>Nombre de Usuario</strong> (requerido):</p>
+<ul>
+<li>Nombre único para login</li>
+<li>Formato: Letras minúsculas y números</li>
+<li>Ejemplo: <code>mesero2</code>, <code>cajero2</code></li>
+</ul>
+</li>
+<li><p><strong>Contraseña</strong> (requerido):</p>
+<ul>
+<li>Mínimo 6 caracteres</li>
+<li>Debe incluir letras y números</li>
+</ul>
+</li>
+<li><p><strong>Confirmar Contraseña</strong> (requerido):</p>
+<ul>
+<li>Debe coincidir con la contraseña</li>
+</ul>
+</li>
+<li><p><strong>Rol</strong> (requerido):</p>
+<ul>
+<li>Seleccione el rol del usuario:<ul>
+<li>Administrador</li>
+<li>Gerente</li>
+<li>Cajero</li>
+<li>Mesero</li>
+<li>Cocina</li>
+<li>Bebidas</li>
+<li>Coffee</li>
+<li>Tour</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>Validaciones</strong>:</p>
+<ul>
+<li>✅ Nombre de usuario único</li>
+<li>✅ Contraseña mínimo 6 caracteres</li>
+<li>✅ Contraseñas deben coincidir</li>
+<li>✅ Un empleado solo puede tener UN usuario</li>
+</ul>
+<p><strong>Paso 3</strong>: Click en <strong>&quot;💾 Crear Usuario&quot;</strong></p>
+<blockquote>
+<p>✅ El usuario podrá iniciar sesión inmediatamente</p>
+</blockquote>
+<h4>9.4.3 Editar un Usuario</h4>
+<ol>
+<li>En la lista de usuarios, click en <strong>&quot;✏️ Editar&quot;</strong></li>
+<li>Puede modificar:<ul>
+<li>Nombre de usuario (si es único)</li>
+<li>Rol</li>
+<li>Contraseña (opcional)</li>
+</ul>
+</li>
+<li>Click en <strong>&quot;💾 Actualizar&quot;</strong></li>
+</ol>
+<h4>9.4.4 Eliminar un Usuario</h4>
+<ol>
+<li>En la lista de usuarios, click en <strong>&quot;🗑️ Eliminar&quot;</strong></li>
+<li>Confirme la eliminación</li>
+</ol>
+<blockquote>
+<p>📌 <strong>Nota</strong>: Al eliminar un usuario, el <strong>empleado NO se elimina</strong>. El empleado queda disponible para asignarle un nuevo usuario.</p>
+</blockquote>
+<h3>9.5 Gestión de Platillos</h3>
+<h4>9.5.1 Ver Lista de Platillos</h4>
+<ol>
+<li>En el dashboard, click en <strong>&quot;🍽️ Platillos&quot;</strong></li>
+<li>O navegue a: <code>/templates/administracion/control-platillos.html</code></li>
+</ol>
+<p><img src="./imgs/admin-platillos-lista.png" alt="Lista de Platillos"></p>
+<p><strong>Información mostrada</strong>:</p>
+<ul>
+<li>ID</li>
+<li>Nombre del platillo</li>
+<li>Área (Cocina, Bebidas, Coffee)</li>
+<li>Categoría</li>
+<li>Precio</li>
+<li>Disponibilidad (Disponible/No disponible)</li>
+<li>Acciones (Editar, Eliminar)</li>
+</ul>
+<h4>Filtros de Platillos</h4>
+<p>Puede filtrar por:</p>
+<ul>
+<li>📂 <strong>Área</strong>: Todos, Cocina, Bebidas, Coffee</li>
+<li>📋 <strong>Categoría</strong>: Entrada, Plato Fuerte, Postre, Bebida, etc.</li>
+<li>✅ <strong>Disponibilidad</strong>: Todos, Disponibles, No disponibles</li>
+</ul>
+<h4>9.5.2 Agregar Nuevo Platillo</h4>
+<p><strong>Paso 1</strong>: Click en <strong>&quot;+ Agregar Platillo&quot;</strong></p>
+<p><strong>Paso 2</strong>: Complete el formulario:</p>
+<p><img src="./imgs/admin-platillo-form.png" alt="Formulario Platillo"></p>
+<ul>
+<li><p><strong>Nombre</strong> (requerido):</p>
+<ul>
+<li>Nombre descriptivo del platillo</li>
+<li>Ejemplo: &quot;Pollo en Pepián&quot;</li>
+</ul>
+</li>
+<li><p><strong>Área</strong> (requerido):</p>
+<ul>
+<li>Cocina: Comidas calientes</li>
+<li>Bebidas: Bebidas alcohólicas y no alcohólicas</li>
+<li>Coffee: Productos del coffee shop</li>
+</ul>
+</li>
+<li><p><strong>Categoría</strong> (requerido):</p>
+<ul>
+<li>Entrada</li>
+<li>Plato Fuerte</li>
+<li>Postre</li>
+<li>Bebida Caliente</li>
+<li>Bebida Fría</li>
+<li>Bebida Alcohólica</li>
+<li>Especialidad</li>
+</ul>
+</li>
+<li><p><strong>Descripción</strong> (opcional):</p>
+<ul>
+<li>Breve descripción del platillo</li>
+<li>Ingredientes principales</li>
+<li>Ejemplo: &quot;Pollo tierno en salsa de pepián con arroz&quot;</li>
+</ul>
+</li>
+<li><p><strong>Precio</strong> (requerido):</p>
+<ul>
+<li>Precio en Quetzales</li>
+<li>Formato: 00.00</li>
+<li>Ejemplo: 85.50</li>
+</ul>
+</li>
+<li><p><strong>Disponible</strong> (checkbox):</p>
+<ul>
+<li>☑️ Marcado: El platillo está disponible para ordenar</li>
+<li>☐ Desmarcado: El platillo no está disponible</li>
+</ul>
+</li>
+</ul>
+<p><strong>Paso 3</strong>: Click en <strong>&quot;💾 Guardar Platillo&quot;</strong></p>
+<blockquote>
+<p>✅ El platillo aparecerá inmediatamente en el sistema de comandas</p>
+</blockquote>
+<h4>9.5.3 Editar un Platillo</h4>
+<ol>
+<li>En la lista de platillos, click en <strong>&quot;✏️ Editar&quot;</strong></li>
+<li>Modifique los campos necesarios</li>
+<li>Click en <strong>&quot;💾 Actualizar&quot;</strong></li>
+</ol>
+<p><strong>Casos de uso</strong>:</p>
+<ul>
+<li>💰 Cambiar el precio</li>
+<li>📝 Actualizar la descripción</li>
+<li>❌ Marcar como no disponible (temporalmente agotado)</li>
+<li>📂 Cambiar de categoría</li>
+</ul>
+<h4>9.5.4 Marcar Platillo como No Disponible</h4>
+<p>Cuando un platillo se agota temporalmente:</p>
+<ol>
+<li>Localice el platillo en la lista</li>
+<li>Click en <strong>&quot;✏️ Editar&quot;</strong></li>
+<li>Desmarque la casilla <strong>&quot;Disponible&quot;</strong></li>
+<li>Click en <strong>&quot;💾 Actualizar&quot;</strong></li>
+</ol>
+<blockquote>
+<p>⚠️ El platillo <strong>NO aparecerá</strong> en el formulario de comandas hasta que lo vuelva a marcar como disponible</p>
+</blockquote>
+<h4>9.5.5 Eliminar un Platillo</h4>
+<ol>
+<li>En la lista de platillos, click en <strong>&quot;🗑️ Eliminar&quot;</strong></li>
+<li>Confirme la eliminación</li>
+</ol>
+<blockquote>
+<p>⚠️ <strong>Advertencia</strong>: La eliminación es permanente. Si el platillo ya tiene órdenes asociadas, NO podrá eliminarse.</p>
+</blockquote>
+<h3>9.6 Gestión de Roles</h3>
+<h4>9.6.1 Ver Roles del Sistema</h4>
+<ol>
+<li>En el menú, click en <strong>&quot;🎭 Roles&quot;</strong></li>
+<li>Verá la lista de roles configurados</li>
+</ol>
+<p><img src="./imgs/admin-roles.png" alt="Roles del Sistema"></p>
+<p><strong>Roles predeterminados</strong>:</p>
+<ul>
+<li>👑 Administrador</li>
+<li>📊 Gerente</li>
+<li>💰 Cajero</li>
+<li>🧑‍🍳 Mesero</li>
+<li>🍳 Cocina</li>
+<li>🍹 Bebidas</li>
+<li>☕ Coffee</li>
+<li>🏞️ Tour</li>
+</ul>
+<h4>9.6.2 Crear Nuevo Rol (Opcional)</h4>
+<p>Si necesita un rol personalizado:</p>
+<ol>
+<li>Click en <strong>&quot;+ Agregar Rol&quot;</strong></li>
+<li>Complete el formulario:<ul>
+<li>Nombre del rol</li>
+<li>Descripción</li>
+<li>Permisos (seleccione módulos accesibles)</li>
+</ul>
+</li>
+<li>Click en <strong>&quot;💾 Guardar&quot;</strong></li>
+</ol>
+<h3>9.7 Visualización de Comandas (Admin)</h3>
+<p>Como administrador, puede ver <strong>todas las órdenes</strong> del sistema:</p>
+<ol>
+<li>En el dashboard, click en <strong>&quot;📋 Comandas&quot;</strong></li>
+<li>Verá una vista similar a la de meseros, pero con acceso completo</li>
+</ol>
+<p><strong>Funcionalidades</strong>:</p>
+<ul>
+<li>👀 Ver todas las órdenes de todos los meseros</li>
+<li>✏️ Editar cualquier orden</li>
+<li>❌ Cancelar órdenes (con justificación)</li>
+<li>📊 Ver estadísticas en tiempo real</li>
+</ul>
+<h3>9.8 Respaldo y Seguridad</h3>
+<h4>9.8.1 Respaldo de Datos</h4>
+<p><strong>Recomendaciones</strong>:</p>
+<ul>
+<li>🔄 Realizar respaldos diarios automáticos</li>
+<li>💾 Guardar respaldos en ubicación segura</li>
+<li>☁️ Usar almacenamiento en la nube</li>
+</ul>
+<h4>9.8.2 Seguridad de Usuarios</h4>
+<p><strong>Mejores prácticas</strong>:</p>
+<ul>
+<li>🔐 Cambiar contraseñas cada 3 meses</li>
+<li>❌ No compartir credenciales</li>
+<li>👀 Revisar logs de acceso regularmente</li>
+<li>🚫 Eliminar usuarios inactivos</li>
+</ul>
+<h4>9.8.3 Auditoría</h4>
+<p>El sistema registra:</p>
+<ul>
+<li>📝 Todas las acciones de usuarios</li>
+<li>💰 Todas las transacciones</li>
+<li>✏️ Modificaciones a platillos</li>
+<li>🗑️ Eliminaciones de registros</li>
+</ul>
+<p><strong>Acceder a logs</strong>:</p>
+<ol>
+<li>En el dashboard admin, click en <strong>&quot;📊 Logs&quot;</strong></li>
+<li>Filtre por usuario, fecha o acción</li>
+<li>Exporte para auditoría externa</li>
+</ol>
+<hr>
+<h2>10. Solución de Problemas</h2>
+<h3>10.1 Problemas de Inicio de Sesión</h3>
+<h4>Problema: &quot;Usuario o contraseña incorrectos&quot;</h4>
+<p><strong>Soluciones</strong>:</p>
+<ol>
+<li>✅ Verifique que está escribiendo correctamente</li>
+<li>✅ Verifique que Caps Lock esté desactivado</li>
+<li>✅ Pruebe con las credenciales predeterminadas</li>
+<li>✅ Contacte al administrador para resetear su contraseña</li>
+</ol>
+<h4>Problema: &quot;Sesión expirada&quot;</h4>
+<p><strong>Solución</strong>:</p>
+<ol>
+<li>Inicie sesión nuevamente</li>
+<li>Su sesión se mantiene por 8 horas de inactividad</li>
+<li>Use &quot;Recordar sesión&quot; para sesiones más largas (no recomendado en dispositivos compartidos)</li>
+</ol>
+<h4>Problema: &quot;No puedo cerrar sesión&quot;</h4>
+<p><strong>Solución</strong>:</p>
+<ol>
+<li>Click en el botón &quot;Cerrar sesión&quot; en la esquina superior derecha</li>
+<li>Si no responde, cierre el navegador</li>
+<li>Limpie la caché del navegador (Ctrl + Shift + Delete)</li>
+</ol>
+<h3>10.2 Problemas con Órdenes</h3>
+<h4>Problema: &quot;No puedo enviar la orden a cocina&quot;</h4>
+<p><strong>Soluciones</strong>:</p>
+<ol>
+<li>✅ Verifique que haya agregado al menos un platillo</li>
+<li>✅ Verifique que haya seleccionado una mesa</li>
+<li>✅ Verifique su conexión a internet</li>
+<li>✅ Recargue la página (F5)</li>
+</ol>
+<h4>Problema: &quot;Los platillos no aparecen en el formulario&quot;</h4>
+<p><strong>Soluciones</strong>:</p>
+<ol>
+<li>✅ Verifique que el área esté seleccionada</li>
+<li>✅ Puede que no haya platillos disponibles en esa área</li>
+<li>✅ Contacte al administrador para verificar disponibilidad de platillos</li>
+</ol>
+<h4>Problema: &quot;No puedo editar una orden&quot;</h4>
+<p><strong>Soluciones</strong>:</p>
+<ol>
+<li>✅ Solo puede editar órdenes en estado &quot;Pendiente&quot; o &quot;En Preparación&quot;</li>
+<li>✅ No puede editar órdenes en &quot;En Caja&quot; o &quot;Finalizada&quot;</li>
+<li>✅ Verifique que tenga los permisos necesarios</li>
+</ol>
+<h3>10.3 Problemas en el KDS (Cocina)</h3>
+<h4>Problema: &quot;No aparecen los tickets&quot;</h4>
+<p><strong>Soluciones</strong>:</p>
+<ol>
+<li>✅ Verifique que haya órdenes para su área</li>
+<li>✅ Verifique su conexión a internet</li>
+<li>✅ Recargue la página (F5)</li>
+<li>✅ El auto-refresh está configurado a 5 segundos, espere</li>
+</ol>
+<h4>Problema: &quot;El ticket no desaparece al marcar como terminado&quot;</h4>
+<p><strong>Soluciones</strong>:</p>
+<ol>
+<li>✅ Recargue la página (F5)</li>
+<li>✅ Verifique su conexión a internet</li>
+<li>✅ El ticket puede tener múltiples platillos de diferentes áreas</li>
+</ol>
+<h3>10.4 Problemas en Caja</h3>
+<h4>Problema: &quot;El cambio no se calcula&quot;</h4>
+<p><strong>Soluciones</strong>:</p>
+<ol>
+<li>✅ Verifique que el método de pago sea &quot;Efectivo&quot;</li>
+<li>✅ Verifique que el monto recibido sea mayor al total</li>
+<li>✅ Para Tarjeta/Transferencia no hay cambio</li>
+</ol>
+<h4>Problema: &quot;No puedo finalizar el pago&quot;</h4>
+<p><strong>Soluciones</strong>:</p>
+<ol>
+<li>✅ Verifique que el método de pago esté seleccionado</li>
+<li>✅ Verifique que el monto recibido esté ingresado</li>
+<li>✅ Verifique su conexión a internet</li>
+</ol>
+<h3>10.5 Problemas Generales</h3>
+<h4>Problema: &quot;La página no carga&quot;</h4>
+<p><strong>Soluciones</strong>:</p>
+<ol>
+<li>✅ Verifique su conexión a internet</li>
+<li>✅ Recargue la página (F5) o Ctrl + Shift + R (limpiar caché)</li>
+<li>✅ Intente con otro navegador</li>
+<li>✅ Limpie la caché del navegador</li>
+<li>✅ Contacte al administrador del sistema</li>
+</ol>
+<h4>Problema: &quot;Los datos no se guardan&quot;</h4>
+<p><strong>Soluciones</strong>:</p>
+<ol>
+<li>✅ Verifique su conexión a internet</li>
+<li>✅ Verifique que todos los campos requeridos estén completos</li>
+<li>✅ Verifique que no haya errores en el formulario</li>
+<li>✅ Intente nuevamente en unos minutos</li>
+</ol>
+<h4>Problema: &quot;Error 404 - Página no encontrada&quot;</h4>
+<p><strong>Soluciones</strong>:</p>
+<ol>
+<li>✅ Verifique la URL</li>
+<li>✅ Vuelva al inicio y navegue desde ahí</li>
+<li>✅ Puede que no tenga permisos para esa página</li>
+</ol>
+<h3>10.6 Contacto de Soporte</h3>
+<p>Si los problemas persisten, contacte al equipo de soporte:</p>
+<p><strong>Equipo de Desarrollo</strong>:</p>
+<ul>
+<li>📧 Email: <a href="mailto:soporte@chicoj.com">soporte@chicoj.com</a></li>
+<li>📞 Teléfono: [Número de teléfono]</li>
+<li>⏰ Horario: Lunes a Viernes, 8:00 AM - 5:00 PM</li>
+</ul>
+<p><strong>Información a proporcionar</strong>:</p>
+<ul>
+<li>👤 Su nombre de usuario</li>
+<li>🎭 Su rol</li>
+<li>📝 Descripción detallada del problema</li>
+<li>📸 Capturas de pantalla (si es posible)</li>
+<li>🕒 Hora y fecha cuando ocurrió el problema</li>
+</ul>
+<hr>
+<h2>Glosario de Términos</h2>
+<p><strong>Área</strong>: Sección del restaurante (Cocina, Bebidas, Coffee)</p>
+<p><strong>Badge</strong>: Etiqueta de color que indica un estado o rol</p>
+<p><strong>Comanda</strong>: Orden de platillos tomada por un mesero</p>
+<p><strong>Comprobante</strong>: Documento de pago generado por el sistema</p>
+<p><strong>KDS</strong>: Kitchen Display System - Sistema de pantallas de cocina</p>
+<p><strong>Modal</strong>: Ventana emergente en la pantalla</p>
+<p><strong>NIT</strong>: Número de Identificación Tributaria</p>
+<p><strong>Orden</strong>: Conjunto de platillos solicitados por una mesa</p>
+<p><strong>Platillo</strong>: Cada ítem del menú</p>
+<p><strong>RBAC</strong>: Role-Based Access Control - Control de acceso basado en roles</p>
+<p><strong>Ticket</strong>: Representación visual de una orden en el KDS</p>
+<p><strong>Tour</strong>: Visita guiada al Coffee Tour Chicoj</p>
+<hr>
+<h2>Apéndices</h2>
+<h3>Apéndice A: Atajos de Teclado</h3>
+<table>
+<thead>
+<tr>
+<th>Acción</th>
+<th>Atajo</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Actualizar página</td>
+<td>F5</td>
+</tr>
+<tr>
+<td>Limpiar caché y recargar</td>
+<td>Ctrl + Shift + R</td>
+</tr>
+<tr>
+<td>Cerrar modal</td>
+<td>Esc</td>
+</tr>
+<tr>
+<td>Buscar en página</td>
+<td>Ctrl + F</td>
+</tr>
+</tbody></table>
+<h3>Apéndice B: Estados de Órdenes</h3>
+<table>
+<thead>
+<tr>
+<th>Estado</th>
+<th>Descripción</th>
+<th>Color</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Pendiente</td>
+<td>Orden creada, puede editarse</td>
+<td>🟡 Amarillo</td>
+</tr>
+<tr>
+<td>En Preparación</td>
+<td>Enviada a cocina</td>
+<td>🔵 Azul</td>
+</tr>
+<tr>
+<td>Preparada</td>
+<td>Lista para entregar</td>
+<td>🟢 Verde</td>
+</tr>
+<tr>
+<td>En Caja</td>
+<td>Esperando pago</td>
+<td>🟠 Naranja</td>
+</tr>
+<tr>
+<td>Finalizada</td>
+<td>Pagada y archivada</td>
+<td>⚪ Gris</td>
+</tr>
+</tbody></table>
+<h3>Apéndice C: Permisos por Rol</h3>
+<table>
+<thead>
+<tr>
+<th>Módulo</th>
+<th>Admin</th>
+<th>Gerente</th>
+<th>Cajero</th>
+<th>Mesero</th>
+<th>Cocina</th>
+<th>Tour</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Dashboard</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Comandas</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>KDS</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Caja</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Reportes</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Usuarios</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Empleados</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Platillos</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Tours</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Información del Documento</h2>
+<p><strong>Título</strong>: Manual de Usuario - Sistema de Gestión Restaurante Chicoj<br><strong>Versión</strong>: 1.0<br><strong>Fecha</strong>: Noviembre 2025<br><strong>Autores</strong>:  </p>
+<ul>
+<li>Pedro José Quiñonez López</li>
+<li>Christian Aníbal Elí Cabnal Pereira  </li>
+<li>Kristian Josué González Barrientos</li>
+</ul>
+<p><strong>Universidad</strong>: Universidad Mariano Gálvez de Guatemala<br><strong>Facultad</strong>: Ingeniería en Sistemas de Información y Ciencias de la Computación<br><strong>Campus</strong>: Cobán, Alta Verapaz</p>
+<hr>
+<p><strong>© 2025 Cooperativa Agrícola Integral Chicoj, R.L. - Todos los derechos reservados</strong></p>
+
+</body>
+</html>

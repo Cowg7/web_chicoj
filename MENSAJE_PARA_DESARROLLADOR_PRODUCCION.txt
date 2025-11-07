@@ -1,0 +1,77 @@
+===================================================================
+🚨 URGENTE: ERROR 404 EN PRODUCCIÓN - NO SE PUEDEN CREAR ROLES
+===================================================================
+
+PROBLEMA:
+---------
+Al intentar crear un rol en https://coopechicoj.com aparece:
+POST https://coopechicoj.com/api/users/roles → 404 (Not Found)
+
+CAUSA:
+------
+El backend en producción tiene código ANTERIOR a la implementación 
+de las rutas de roles.
+
+SOLUCIÓN (5 minutos):
+---------------------
+
+1. Conectar al servidor:
+   ssh usuario@servidor-produccion
+
+2. Ir al directorio del proyecto:
+   cd /ruta/al/proyecto
+
+3. Actualizar código:
+   git pull origin main
+   
+   (O subir manualmente los archivos actualizados)
+
+4. Rebuild del backend:
+   docker-compose build backend
+
+5. Reiniciar backend:
+   docker-compose up -d backend
+
+6. Verificar que funcione:
+   curl http://localhost:3000/api/health
+   
+   Debe responder: {"status":"OK",...}
+
+7. Probar endpoint de roles:
+   docker logs chicoj-backend --tail 20
+   
+   Debe mostrar: "✅ Servidor corriendo en puerto 3000"
+
+ARCHIVOS QUE DEBEN ESTAR ACTUALIZADOS:
+--------------------------------------
+- Chicoj_System_R-T/backend/src/routes/users.routes.js
+- Chicoj_System_R-T/backend/src/modules/users/users.controller.js
+
+VERIFICACIÓN DESDE EL NAVEGADOR:
+---------------------------------
+Después de aplicar los cambios, probar en https://coopechicoj.com:
+
+1. Abrir consola del navegador (F12)
+2. Ejecutar:
+
+fetch('https://coopechicoj.com/api/health')
+  .then(r => r.json())
+  .then(d => console.log('✅ Backend OK:', d))
+  .catch(e => console.error('❌ Error:', e));
+
+DOWNTIME: ~30 segundos durante el reinicio del backend
+RIESGO: Bajo (solo reinicia el servicio backend)
+
+DOCUMENTACIÓN COMPLETA:
+-----------------------
+Ver archivos adjuntos:
+- FIX_ERROR_404_ROLES_PRODUCCION.md
+- URGENTE_PRODUCCION_ERROR_404_ROLES.md
+- diagnosticar-error-404.sh (script de diagnóstico)
+
+===================================================================
+PRIORIDAD: ALTA - Impide gestión de usuarios desde el panel admin
+===================================================================
+
+
+
