@@ -146,4 +146,3 @@ Y envía el archivo `diagnostico.txt`.
 
 
 
-

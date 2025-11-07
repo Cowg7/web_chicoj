@@ -112,4 +112,3 @@ Para un platillo NUEVO (no en KDS):
 
 
 
-

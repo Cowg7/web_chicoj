@@ -104,3 +104,5 @@ console.log('\n💡 Próximo paso:');
 console.log('   1. Actualiza los <script src> para usar archivos .min.js');
 console.log('   2. Reinicia nginx: docker compose restart nginx');
 
+
+

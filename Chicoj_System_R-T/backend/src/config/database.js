@@ -18,10 +18,10 @@ process.on('beforeExit', async () => {
 export const checkDatabaseConnection = async () => {
   try {
     await prisma.$queryRaw`SELECT 1`;
-    console.log('✅ Database connected successfully');
+    console.log('[OK] Database connected successfully');
     return true;
   } catch (error) {
-    console.error('❌ Database connection failed:', error.message);
+    console.error('[ERROR] Database connection failed:', error.message);
     return false;
   }
 };

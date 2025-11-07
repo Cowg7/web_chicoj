@@ -253,4 +253,3 @@ docker exec chicoj-postgres psql -U postgres -d restaurante_db -c "INSERT INTO r
 
 
 
-

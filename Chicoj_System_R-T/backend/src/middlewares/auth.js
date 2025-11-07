@@ -44,7 +44,7 @@ export const authenticateToken = async (req, res, next) => {
     
     next();
   } catch (error) {
-    console.error('❌ Error en authenticateToken:', error);
+    console.error('[ERROR] Error en authenticateToken:', error);
     
     if (error.name === 'TokenExpiredError') {
       return res.status(401).json({ error: 'Token expirado.' });

@@ -58,25 +58,43 @@ model area {
   descripcion String? @db.VarChar(200)
 
   platillos     platillos[]
+  categorias    categorias[]
   area_registro area_registro[]
 
   @@map("area")
 }
 
-model platillos {
-  id_platillo Int     @id @default(autoincrement())
-  nombre      String  @unique @db.VarChar(120)
-  descripcion String? @db.VarChar(255)
-  precio      Decimal @db.Decimal(10, 2)
-  id_area     Int
-  categoria   String? @db.VarChar(100) // Subcategoría: Desayunos, Almuerzo, Licuados, etc.
-  disponible  Boolean @default(true)
+model categorias {
+  id_categoria Int     @id @default(autoincrement())
+  nombre       String  @db.VarChar(100)
+  descripcion  String? @db.VarChar(200)
+  id_area      Int
+  activa       Boolean @default(true)
 
-  area     area      @relation(fields: [id_area], references: [id_area])
-  comandas comanda[]
+  area      area        @relation(fields: [id_area], references: [id_area], onDelete: Cascade)
+  platillos platillos[]
+
+  @@unique([nombre, id_area], name: "unique_categoria_por_area")
+  @@index([id_area], name: "ix_categorias_area")
+  @@index([activa], name: "ix_categorias_activa")
+  @@map("categorias")
+}
+
+model platillos {
+  id_platillo  Int     @id @default(autoincrement())
+  nombre       String  @unique @db.VarChar(120)
+  descripcion  String? @db.VarChar(255)
+  precio       Decimal @db.Decimal(10, 2)
+  id_area      Int
+  id_categoria Int?
+  disponible   Boolean @default(true)
+
+  area      area         @relation(fields: [id_area], references: [id_area])
+  categoria categorias?  @relation(fields: [id_categoria], references: [id_categoria], onDelete: SetNull)
+  comandas  comanda[]
 
   @@index([id_area], name: "ix_platillos_area")
-  @@index([categoria], name: "ix_platillos_categoria")
+  @@index([id_categoria], name: "ix_platillos_categoria")
   @@index([disponible], name: "ix_platillos_disponible")
   @@map("platillos")
 }

@@ -19,7 +19,7 @@ const io = new Server(server, {
 
 // ============ WEBSOCKET HANDLERS ============
 io.on('connection', (socket) => {
-  console.log(`🔌 Cliente conectado: ${socket.id}`);
+  console.log(`[SOCKET] Cliente conectado: ${socket.id}`);
   
   // Unirse a salas específicas (por área de KDS)
   socket.on('join-area', (area) => {
@@ -35,7 +35,7 @@ io.on('connection', (socket) => {
   
   // Desconexión
   socket.on('disconnect', () => {
-    console.log(`🔌 Cliente desconectado: ${socket.id}`);
+    console.log(`[SOCKET] Cliente desconectado: ${socket.id}`);
   });
 });
 
@@ -63,13 +63,13 @@ const startServer = async () => {
     const dbConnected = await checkDatabaseConnection();
     
     if (!dbConnected) {
-      console.error('❌ No se pudo conectar a la base de datos');
+      console.error('[ERROR] No se pudo conectar a la base de datos');
       process.exit(1);
     }
     
     // Iniciar servidor
     server.listen(config.port, () => {
-      console.log('\n🚀 ========================================');
+      console.log('\n[START] ========================================');
       console.log(`   Servidor iniciado exitosamente`);
       console.log(`   Ambiente: ${config.env}`);
       console.log(`   Puerto: ${config.port}`);
@@ -79,19 +79,19 @@ const startServer = async () => {
     });
     
   } catch (error) {
-    console.error('❌ Error al iniciar el servidor:', error);
+    console.error('[ERROR] Error al iniciar el servidor:', error);
     process.exit(1);
   }
 };
 
 // Manejo de errores no capturados
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
+  console.error('[ERROR] Unhandled Rejection at:', promise, 'reason:', reason);
   server.close(() => process.exit(1));
 });
 
 process.on('uncaughtException', (error) => {
-  console.error('❌ Uncaught Exception:', error);
+  console.error('[ERROR] Uncaught Exception:', error);
   server.close(() => process.exit(1));
 });
 
@@ -99,7 +99,7 @@ process.on('uncaughtException', (error) => {
 process.on('SIGTERM', () => {
   console.log('👋 SIGTERM recibido, cerrando servidor...');
   server.close(() => {
-    console.log('✅ Servidor cerrado correctamente');
+    console.log('[OK] Servidor cerrado correctamente');
     process.exit(0);
   });
 });
@@ -107,7 +107,7 @@ process.on('SIGTERM', () => {
 process.on('SIGINT', () => {
   console.log('\n👋 SIGINT recibido, cerrando servidor...');
   server.close(() => {
-    console.log('✅ Servidor cerrado correctamente');
+    console.log('[OK] Servidor cerrado correctamente');
     process.exit(0);
   });
 });

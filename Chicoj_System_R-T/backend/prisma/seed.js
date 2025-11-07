@@ -49,6 +49,14 @@ async function main() {
         nombre_rol: 'Cocina',
         descripcion: 'Preparación de alimentos'
       }
+    }),
+    prisma.roles.upsert({
+      where: { nombre_rol: 'Tour' },
+      update: {},
+      create: {
+        nombre_rol: 'Tour',
+        descripcion: 'Gestión de tours y reservas'
+      }
     })
   ]);
   console.log(`✅ ${roles.length} roles creados\n`);
@@ -227,6 +235,31 @@ async function main() {
     }
   });
 
+  // Usuario Tour
+  const tourEmpleado = await prisma.empleados.upsert({
+    where: { correo_electronico: 'tour@chicoj.com' },
+    update: {},
+    create: {
+      nombre: 'Sofia',
+      apellidos: 'Méndez Torres',
+      edad: 27,
+      genero: 'Femenino',
+      correo_electronico: 'tour@chicoj.com'
+    }
+  });
+
+  const tourPassword = await bcrypt.hash('tour123', 10);
+  await prisma.usuarios.upsert({
+    where: { usuario_nombre: 'tour1' },
+    update: {},
+    create: {
+      usuario_nombre: 'tour1',
+      contrasena_hash: tourPassword,
+      id_empleado: tourEmpleado.id_empleado,
+      id_rol: roles[5].id_rol // Tour
+    }
+  });
+
   console.log('✅ Usuarios creados:');
   console.log('   - admin/admin123 (Administrador)');
   console.log('   - gerente1/gerente123 (Gerente)');
@@ -234,7 +267,8 @@ async function main() {
   console.log('   - mesero1/mesero123 (Mesero)');
   console.log('   - cocina1/cocina123 (Cocina)');
   console.log('   - bebidas1/bebidas123 (Bebidas)');
-  console.log('   - coffee1/coffee123 (Coffee)\n');
+  console.log('   - coffee1/coffee123 (Coffee)');
+  console.log('   - tour1/tour123 (Tour)\n');
 
   // ============ ÁREAS ============
   console.log('🍳 Creando áreas...');
@@ -266,25 +300,76 @@ async function main() {
   ]);
   console.log(`✅ ${areas.length} áreas creadas\n`);
 
-  // ============ PLATILLOS ============
-  console.log('🍽️  Creando platillos...');
+  // ============ PLATILLOS CON CATEGORÍAS ============
+  console.log('🍽️  Creando platillos con categorías...');
   
   const platillosCocina = [
-    { nombre: 'Pepián de Pollo', descripcion: 'Plato típico guatemalteco', precio: 65.00 },
-    { nombre: 'Hilachas', descripcion: 'Carne deshilachada en salsa', precio: 55.00 },
-    { nombre: 'Kaq Ik', descripcion: 'Caldo de chompipe', precio: 70.00 },
+    // Desayunos
+    { nombre: 'Desayuno Chapin', descripcion: 'Huevos, frijoles, plátano, queso y tortillas', precio: 35.00, categoria: 'Desayunos' },
+    { nombre: 'Huevos con Longaniza', descripcion: 'Huevos revueltos con longaniza guatemalteca', precio: 40.00, categoria: 'Desayunos' },
+    { nombre: 'Panqueques', descripcion: 'Panqueques con miel y fruta', precio: 30.00, categoria: 'Desayunos' },
+    
+    // Almuerzos
+    { nombre: 'Pepián de Pollo', descripcion: 'Plato típico guatemalteco con especias tradicionales', precio: 65.00, categoria: 'Almuerzos' },
+    { nombre: 'Hilachas', descripcion: 'Carne de res deshilachada en salsa de tomate', precio: 55.00, categoria: 'Almuerzos' },
+    { nombre: 'Kaq Ik', descripcion: 'Caldo de chompipe con chile y especias', precio: 70.00, categoria: 'Almuerzos' },
+    { nombre: 'Churrasco Chapín', descripcion: 'Carne asada con chimol y guacamol', precio: 85.00, categoria: 'Almuerzos' },
+    { nombre: 'Pollo Encebollado', descripcion: 'Pechuga de pollo con cebolla y salsa', precio: 50.00, categoria: 'Almuerzos' },
+    
+    // Menú Infantil
+    { nombre: 'Nuggets con Papas', descripcion: 'Nuggets de pollo con papas fritas', precio: 35.00, categoria: 'Menu Infantil' },
+    { nombre: 'Mini Hamburguesa', descripcion: 'Hamburguesa pequeña con papas', precio: 38.00, categoria: 'Menu Infantil' },
+    
+    // Refacciones
+    { nombre: 'Sandwich de Pollo', descripcion: 'Sandwich de pollo con vegetales frescos', precio: 28.00, categoria: 'Refacciones' },
+    { nombre: 'Ensalada Mixta', descripcion: 'Ensalada fresca con aderezo', precio: 25.00, categoria: 'Refacciones' },
+    
+    // Refacciones Típicas
+    { nombre: 'Tamalitos de Chipilín', descripcion: 'Tamalitos con hojas de chipilín', precio: 20.00, categoria: 'Refacciones Tipicas' },
+    { nombre: 'Plátanos Fritos', descripcion: 'Plátanos maduros fritos con crema y frijoles', precio: 25.00, categoria: 'Refacciones Tipicas' },
+    { nombre: 'Chuchitos', descripcion: 'Tamalitos guatemaltecos con salsa', precio: 18.00, categoria: 'Refacciones Tipicas' },
   ];
 
   const platillosBar = [
-    { nombre: 'Michelada', descripcion: 'Cerveza preparada', precio: 30.00 },
-    { nombre: 'Mojito', descripcion: 'Coctel de ron', precio: 35.00 },
-    { nombre: 'Piña Colada', descripcion: 'Coctel tropical', precio: 38.00 },
+    // Bebidas Frías
+    { nombre: 'Limonada Natural', descripcion: 'Limonada fresca natural', precio: 15.00, categoria: 'Bebidas Frias' },
+    { nombre: 'Jugo de Naranja', descripcion: 'Jugo de naranja recién exprimido', precio: 18.00, categoria: 'Bebidas Frias' },
+    { nombre: 'Agua Mineral', descripcion: 'Agua mineral con gas o sin gas', precio: 12.00, categoria: 'Bebidas Frias' },
+    { nombre: 'Te Helado', descripcion: 'Té frío con limón', precio: 16.00, categoria: 'Bebidas Frias' },
+    
+    // Licuados
+    { nombre: 'Licuado de Fresa', descripcion: 'Licuado natural de fresa con leche', precio: 22.00, categoria: 'Licuados' },
+    { nombre: 'Licuado de Banano', descripcion: 'Licuado de banano con leche y miel', precio: 20.00, categoria: 'Licuados' },
+    { nombre: 'Licuado de Papaya', descripcion: 'Licuado tropical de papaya', precio: 22.00, categoria: 'Licuados' },
+    
+    // Cervezas
+    { nombre: 'Cerveza Nacional', descripcion: 'Cerveza guatemalteca fría', precio: 25.00, categoria: 'Cervezas' },
+    { nombre: 'Cerveza Importada', descripcion: 'Cerveza importada premium', precio: 35.00, categoria: 'Cervezas' },
+    { nombre: 'Michelada', descripcion: 'Cerveza preparada con limón y sal', precio: 30.00, categoria: 'Cervezas' },
+    
+    // Bebidas Desechables
+    { nombre: 'Refresco Lata', descripcion: 'Bebida gaseosa en lata', precio: 10.00, categoria: 'Bebidas Desechables' },
+    { nombre: 'Agua Purificada', descripcion: 'Botella de agua purificada', precio: 8.00, categoria: 'Bebidas Desechables' },
+    { nombre: 'Jugo Envasado', descripcion: 'Jugo de caja en varios sabores', precio: 12.00, categoria: 'Bebidas Desechables' },
   ];
 
   const platillosCoffee = [
-    { nombre: 'Café Americano', descripcion: 'Café negro', precio: 18.00 },
-    { nombre: 'Capuccino', descripcion: 'Café con leche espumada', precio: 25.00 },
-    { nombre: 'Rellenitos de Plátano', descripcion: 'Postre típico', precio: 15.00 },
+    // Café
+    { nombre: 'Café Americano', descripcion: 'Café negro tradicional', precio: 18.00, categoria: 'Cafe' },
+    { nombre: 'Capuccino', descripcion: 'Café con leche espumada y canela', precio: 25.00, categoria: 'Cafe' },
+    { nombre: 'Café Latte', descripcion: 'Café con leche vaporizada', precio: 28.00, categoria: 'Cafe' },
+    { nombre: 'Espresso', descripcion: 'Café concentrado italiano', precio: 20.00, categoria: 'Cafe' },
+    { nombre: 'Café Moka', descripcion: 'Café con chocolate y crema', precio: 30.00, categoria: 'Cafe' },
+    { nombre: 'Frappe', descripcion: 'Café helado batido con hielo', precio: 32.00, categoria: 'Cafe' },
+    { nombre: 'Café con Leche', descripcion: 'Café tradicional con leche caliente', precio: 22.00, categoria: 'Cafe' },
+    
+    // Postres
+    { nombre: 'Rellenitos de Plátano', descripcion: 'Postre típico guatemalteco de plátano con frijol', precio: 15.00, categoria: 'Postres' },
+    { nombre: 'Pastel de Chocolate', descripcion: 'Porción de pastel de chocolate húmedo', precio: 22.00, categoria: 'Postres' },
+    { nombre: 'Pie de Manzana', descripcion: 'Pie de manzana con canela', precio: 24.00, categoria: 'Postres' },
+    { nombre: 'Churros con Chocolate', descripcion: 'Churros crujientes con chocolate caliente', precio: 20.00, categoria: 'Postres' },
+    { nombre: 'Tres Leches', descripcion: 'Pastel de tres leches tradicional', precio: 26.00, categoria: 'Postres' },
+    { nombre: 'Flan de Caramelo', descripcion: 'Flan casero con caramelo', precio: 18.00, categoria: 'Postres' },
   ];
 
   for (const p of platillosCocina) {
@@ -311,7 +396,13 @@ async function main() {
     });
   }
 
-  console.log(`✅ ${platillosCocina.length + platillosBar.length + platillosCoffee.length} platillos creados\n`);
+  const totalPlatillos = platillosCocina.length + platillosBar.length + platillosCoffee.length;
+  console.log(`✅ ${totalPlatillos} platillos creados con categorías\n`);
+  
+  console.log('📊 Resumen de categorías:');
+  console.log('   Cocina (15): Desayunos (3), Almuerzos (5), Menu Infantil (2), Refacciones (2), Refacciones Tipicas (3)');
+  console.log('   Bebidas (13): Bebidas Frias (4), Licuados (3), Cervezas (3), Bebidas Desechables (3)');
+  console.log('   Coffee (13): Cafe (7), Postres (6)\n');
 
   console.log('✨ Seed completado exitosamente!');
 }

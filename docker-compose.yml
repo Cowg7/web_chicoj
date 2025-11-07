@@ -103,8 +103,6 @@ services:
       - pgadmin_data:/var/lib/pgadmin
     networks:
       - chicoj-network
-    profiles:
-      - debug
 
 volumes:
   postgres_data:

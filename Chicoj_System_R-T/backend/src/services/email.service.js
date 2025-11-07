@@ -20,7 +20,7 @@ class EmailService {
     try {
       // Verificar que las variables de entorno estén configuradas
       if (!config.email.service || !config.email.user || !config.email.password) {
-        console.warn('⚠️ Email no configurado. Variables de entorno faltantes.');
+        console.warn('[WARN] Email no configurado. Variables de entorno faltantes.');
         return false;
       }
 
@@ -59,18 +59,18 @@ class EmailService {
         });
       }
       else {
-        console.warn(`⚠️ Servicio de email no reconocido: ${config.email.service}`);
+        console.warn(`[WARN] Servicio de email no reconocido: ${config.email.service}`);
         return false;
       }
 
       // Verificar la configuración
       await this.transporter.verify();
       this.initialized = true;
-      console.log(`✅ Servicio de email inicializado: ${config.email.service}`);
+      console.log(`[OK] Servicio de email inicializado: ${config.email.service}`);
       return true;
 
     } catch (error) {
-      console.error('❌ Error al inicializar servicio de email:', error.message);
+      console.error('[ERROR] Error al inicializar servicio de email:', error.message);
       this.initialized = false;
       return false;
     }
@@ -101,7 +101,7 @@ class EmailService {
       return { success: true, messageId: info.messageId };
 
     } catch (error) {
-      console.error('❌ Error al enviar email:', error);
+      console.error('[ERROR] Error al enviar email:', error);
       throw new Error(`Error al enviar email: ${error.message}`);
     }
   }
@@ -110,7 +110,7 @@ class EmailService {
    * Enviar código de recuperación de contraseña
    */
   async enviarCodigoRecuperacion(email, nombre, codigo) {
-    const subject = '🔐 Código de Recuperación - Restaurante Chicooj';
+    const subject = '[SECURE] Código de Recuperación - Restaurante Chicooj';
     
     const html = `
       <!DOCTYPE html>
@@ -237,7 +237,7 @@ class EmailService {
           </div>
 
           <div class="warning-box">
-            <strong>⚠️ Si no solicitaste este código:</strong>
+            <strong>[WARN] Si no solicitaste este código:</strong>
             <p style="margin: 10px 0 0 0;">
               Ignora este correo. Tu cuenta está segura y no se ha realizado ningún cambio.
             </p>
@@ -268,7 +268,7 @@ class EmailService {
    * Enviar confirmación de cambio de contraseña
    */
   async enviarConfirmacionCambio(email, nombre) {
-    const subject = '✅ Contraseña Cambiada - Restaurante Chicooj';
+    const subject = '[OK] Contraseña Cambiada - Restaurante Chicooj';
     
     const html = `
       <!DOCTYPE html>
@@ -339,7 +339,7 @@ class EmailService {
             <p>Sistema de Gestión</p>
           </div>
 
-          <div class="success-icon">✅</div>
+          <div class="success-icon">[OK]</div>
 
           <h2 style="text-align: center; color: #4CAF50;">Contraseña Actualizada</h2>
 
@@ -348,7 +348,7 @@ class EmailService {
           <p>Tu contraseña ha sido <strong>cambiada exitosamente</strong>.</p>
 
           <div class="info-box">
-            <strong>✅ Cambio exitoso</strong>
+            <strong>[OK] Cambio exitoso</strong>
             <p style="margin: 10px 0 0 0;">
               Tu contraseña se actualizó el <strong>${new Date().toLocaleString('es-GT')}</strong>
             </p>
@@ -357,7 +357,7 @@ class EmailService {
           <p>Ya puedes iniciar sesión con tu nueva contraseña.</p>
 
           <div class="warning-box">
-            <strong>⚠️ Si no realizaste este cambio:</strong>
+            <strong>[WARN] Si no realizaste este cambio:</strong>
             <p style="margin: 10px 0 0 0;">
               Contacta inmediatamente a tu administrador de sistema. Tu cuenta podría estar comprometida.
             </p>

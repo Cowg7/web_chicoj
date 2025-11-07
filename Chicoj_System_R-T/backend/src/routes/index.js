@@ -2,6 +2,7 @@
 import express from 'express';
 import authRoutes from './auth.routes.js';
 import menuRoutes from './menu.routes.js';
+import categoriasRoutes from './categorias.routes.js';
 import ordersRoutes from './orders.routes.js';
 import kdsRoutes from './kds.routes.js';
 import cashierRoutes from './cashier.routes.js';
@@ -25,6 +26,7 @@ router.get('/health', (req, res) => {
 // Rutas de módulos
 router.use('/auth', authRoutes);
 router.use('/menu', menuRoutes);
+router.use('/categorias', categoriasRoutes);
 router.use('/orders', ordersRoutes);
 router.use('/kds', kdsRoutes);
 router.use('/cashier', cashierRoutes);
