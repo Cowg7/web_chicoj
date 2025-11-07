@@ -367,9 +367,9 @@ Este proyecto fue desarrollado como parte de un seminario universitario.
 
 ## 👥 Contribuidores
 
-- **Backend + BD:** Kristennssen
-- **Frontend:** [Tu compañero]
-- **DevOps + Deployment:** [Tu nombre]
+- **Backend + BD:** Christian Cabnal
+- **Frontend:** Pedro Quiñonez
+- **DevOps + Deployment:** Kristian González
 
 ## 📞 Soporte
 
@@ -380,8 +380,8 @@ Para reportar problemas o solicitar features:
 
 ## 🙏 Agradecimientos
 
-- Universidad [Nombre]
-- Seminario [Nombre]
+- Universidad Mariano Gálvez de Guatemala
+- Ing. en Sistemas - Seminario 2025 
 - Restaurant Chicoj
 
 ---
