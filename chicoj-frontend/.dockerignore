@@ -1,0 +1,44 @@
+# Dependencies
+node_modules
+npm-debug.log
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Logs
+logs
+*.log
+
+# Documentation
+*.md
+README.md
+
+# Build tools
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Misc
+.prettierrc
+.eslintrc
+.editorconfig
+
+

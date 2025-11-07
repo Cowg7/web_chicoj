@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test de Logout</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 800px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    h1 {
+      color: #667eea;
+      margin-bottom: 30px;
+      font-size: 2em;
+    }
+    .test-section {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+      border-left: 4px solid #667eea;
+    }
+    .btn {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 10px 5px;
+      transition: all 0.3s;
+    }
+    .btn:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+    .btn-danger {
+      background: #e74c3c;
+    }
+    .btn-danger:hover {
+      background: #c0392b;
+      box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+    }
+    .btn-success {
+      background: #27ae60;
+    }
+    .btn-success:hover {
+      background: #229954;
+      box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+    }
+    .status {
+      padding: 15px;
+      border-radius: 8px;
+      margin: 15px 0;
+      font-weight: 600;
+    }
+    .status-ok {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .status-error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    .status-warning {
+      background: #fff3cd;
+      color: #856404;
+      border: 1px solid #ffeeba;
+    }
+    code {
+      background: #2d3748;
+      color: #68d391;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    ol, ul {
+      margin-left: 20px;
+      line-height: 1.8;
+    }
+    li {
+      margin: 10px 0;
+    }
+    .instructions {
+      background: #fff3cd;
+      border: 2px solid #ffc107;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .instructions h3 {
+      color: #856404;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔒 Test de Sistema de Logout</h1>
+    
+    <div class="test-section">
+      <h3>1️⃣ Verificar Auth Guard</h3>
+      <p>Presiona F12, ve a Console y busca estos mensajes:</p>
+      <ul>
+        <li><code>🛡️ Auth Guard: Verificando...</code></li>
+        <li><code>💀 BFCache Killer activado</code></li>
+      </ul>
+      <div id="guard-status"></div>
+    </div>
+
+    <div class="test-section">
+      <h3>2️⃣ Estado del Token</h3>
+      <div id="token-status"></div>
+      <button class="btn btn-success" onclick="crearTokenPrueba()">✅ Crear Token de Prueba</button>
+      <button class="btn btn-danger" onclick="eliminarToken()">❌ Eliminar Token</button>
+    </div>
+
+    <div class="test-section">
+      <h3>3️⃣ Test de Logout</h3>
+      <ol>
+        <li>Presiona "Crear Token de Prueba"</li>
+        <li>Ve a cualquier vista (ej: <a href="/main.html" target="_blank">Inicio</a>)</li>
+        <li>Regresa aquí y presiona "Test de Logout"</li>
+        <li>Ve a la vista otra vez</li>
+        <li>Deberías ser redirigido a login ✅</li>
+      </ol>
+      <button class="btn" onclick="testLogout()">🧪 Test de Logout</button>
+    </div>
+
+    <div class="instructions">
+      <h3>⚠️ SI EL TEST FALLA:</h3>
+      <p><strong>El problema es el CACHÉ de tu navegador. Haz esto:</strong></p>
+      <ol>
+        <li><strong>Opción A (Más fácil):</strong>
+          <ul>
+            <li>Presiona <code>Ctrl + Shift + N</code> (modo incógnito)</li>
+            <li>Repite el test en esa ventana</li>
+          </ul>
+        </li>
+        <li><strong>Opción B (Más efectivo):</strong>
+          <ul>
+            <li>Presiona <code>F12</code> (DevTools)</li>
+            <li>Click derecho en el botón <strong>"Recargar"</strong> del navegador</li>
+            <li>Selecciona <strong>"Vaciar caché y volver a cargar de forma forzada"</strong></li>
+          </ul>
+        </li>
+        <li><strong>Opción C (Nuclear):</strong>
+          <ul>
+            <li><code>Ctrl + Shift + Delete</code></li>
+            <li>Marca <strong>"Imágenes y archivos en caché"</strong></li>
+            <li>Periodo: <strong>"Desde siempre"</strong></li>
+            <li>Click <strong>"Borrar datos"</strong></li>
+            <li>Cierra TODAS las pestañas del sitio</li>
+            <li>Abre una nueva pestaña</li>
+          </ul>
+        </li>
+      </ol>
+    </div>
+
+    <div class="test-section">
+      <h3>4️⃣ Verificar Cache Disabled</h3>
+      <p>Con DevTools abierto (F12):</p>
+      <ol>
+        <li>Ve a la pestaña <strong>"Network"</strong></li>
+        <li>Marca el checkbox <strong>"Disable cache"</strong></li>
+        <li>Recarga la página</li>
+        <li>Repite el test</li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    // Verificar estado del guard
+    function verificarGuard() {
+      const guardStatus = document.getElementById('guard-status');
+      
+      // Verificar si window.stop está disponible (el guard lo usa)
+      const hasWindowStop = typeof window.stop === 'function';
+      
+      guardStatus.innerHTML = `
+        <div class="status status-ok">
+          ✅ Script de test cargado correctamente
+          ${hasWindowStop ? '<br>✅ window.stop disponible' : '<br>⚠️ window.stop no disponible'}
+        </div>
+      `;
+    }
+
+    // Verificar token
+    function verificarToken() {
+      const tokenStatus = document.getElementById('token-status');
+      const token = localStorage.getItem('auth_token');
+      
+      if (token) {
+        tokenStatus.innerHTML = `
+          <div class="status status-ok">
+            ✅ Token encontrado: <code>${token.substring(0, 20)}...</code>
+          </div>
+        `;
+      } else {
+        tokenStatus.innerHTML = `
+          <div class="status status-error">
+            ❌ No hay token en localStorage
+          </div>
+        `;
+      }
+    }
+
+    // Crear token de prueba
+    function crearTokenPrueba() {
+      const tokenPrueba = 'test_token_' + Date.now();
+      localStorage.setItem('auth_token', tokenPrueba);
+      localStorage.setItem('user_data', JSON.stringify({
+        nombre: 'Usuario de Prueba',
+        rol: 'administrador'
+      }));
+      
+      console.log('✅ Token de prueba creado:', tokenPrueba);
+      verificarToken();
+      
+      alert('✅ Token creado!\nAhora ve a /main.html y deberías poder entrar.');
+    }
+
+    // Eliminar token
+    function eliminarToken() {
+      localStorage.clear();
+      sessionStorage.clear();
+      console.log('❌ Token eliminado');
+      verificarToken();
+      alert('❌ Token eliminado!\nAhora NO deberías poder entrar a /main.html');
+    }
+
+    // Test de logout
+    function testLogout() {
+      console.log('🧪 Iniciando test de logout...');
+      
+      // Limpiar todo
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      // Limpiar cookies
+      document.cookie.split(";").forEach(function(c) { 
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+      });
+      
+      console.log('✅ Almacenamiento limpiado');
+      verificarToken();
+      
+      alert('✅ Logout simulado!\n\nAhora:\n1. Ve a /main.html\n2. Deberías ser redirigido a /templates/login.html');
+    }
+
+    // Ejecutar al cargar
+    window.addEventListener('DOMContentLoaded', function() {
+      verificarGuard();
+      verificarToken();
+      
+      // Actualizar cada segundo
+      setInterval(verificarToken, 1000);
+    });
+
+    // Log de pageshow para detectar bfcache
+    window.addEventListener('pageshow', function(event) {
+      if (event.persisted) {
+        console.warn('⚠️ PÁGINA CARGADA DESDE BFCACHE');
+        alert('⚠️ Esta página vino del caché del navegador!\n\nEsto es exactamente el problema.\nBorra el caché del navegador.');
+      }
+    });
+  </script>
+</body>
+</html>
+

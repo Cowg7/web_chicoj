@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agregar Empleado - Chicoj</title>
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+  
+  <!-- IMPORTANTE: Auth simple sin interferir -->
+    <script src="/scripts/toast-notifications.js?v=20251107v"></script>
+  <script src="/scripts/simple-auth.js?v=20251101k"></script>
+  
+  <!-- Meta tags para prevenir caché -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  
+  <link rel="stylesheet" href="/css/base.css?v=20251107g">
+  <link rel="stylesheet" href="/css/components.css?v=20251107g">
+  <link rel="stylesheet" href="/css/utilities.css">
+  <link rel="stylesheet" href="/css/estilos-empleados.css?v=20251107q">
+  
+  <style>
+    .help-text {
+      display: block;
+      font-size: 0.85rem;
+      color: #6B7280;
+      margin-top: 4px;
+      margin-bottom: 0;
+    }
+    
+    .seccion > * {
+      width: 100%;
+    }
+    
+    .seccion label {
+      margin-top: 0.5rem;
+    }
+    
+    .seccion label:first-of-type {
+      margin-top: 0;
+    }
+    
+    input.error {
+      border-color: #ef4444 !important;
+      background-color: #fef2f2 !important;
+    }
+    
+    input.success {
+      border-color: #10B981 !important;
+    }
+    
+    .error-message {
+      display: block;
+      color: #ef4444;
+      font-size: 0.875rem;
+      margin-top: 4px;
+      font-weight: 500;
+    }
+    
+    input:invalid:not(:placeholder-shown) {
+      border-color: #ef4444;
+    }
+    
+    input:valid:not(:placeholder-shown) {
+      border-color: #10B981;
+    }
+  </style>
+  <link rel="stylesheet" href="/css/toast-notifications.css?v=20251107v">
+</head>
+<body>
+  <div class="contenedor-app">
+    <header class="encabezado">
+      <div class="brand">
+        <div class="logo-placeholder" aria-label="Logo"></div>
+        <div>
+          <span class="badge">Somos</span>
+          <h1>Restaurante Chicoj</h1>
+        </div>
+      </div>
+      <nav class="acciones" aria-label="Acciones">
+        <a class="btn btn-outline" href="/main">Inicio</a>
+        <a class="btn btn-primary" href="#" onclick="return ultraSimpleLogout(event)">Cerrar sesión</a>
+      </nav>
+    </header>
+
+    <main class="contenido" role="main">
+      <section class="form-card">
+        <h2>Agregar Colaboradores</h2>
+        <form class="formulario" autocomplete="off" id="form-empleado">
+          <fieldset class="seccion">
+            <legend>Datos del Colaborador</legend>
+
+            <label for="nombre">Nombre *</label>
+            <input 
+              id="nombre" 
+              type="text" 
+              placeholder="Ejemplo: Juan"
+              required
+              pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"
+              title="Solo se permiten letras y espacios"
+              maxlength="50">
+            <small class="help-text">Solo letras (sin números ni símbolos)</small>
+
+            <label for="apellidos">Apellidos *</label>
+            <input 
+              id="apellidos" 
+              type="text" 
+              placeholder="Ejemplo: Pérez López"
+              required
+              pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"
+              title="Solo se permiten letras y espacios"
+              maxlength="100">
+            <small class="help-text">Solo letras (sin números ni símbolos)</small>
+
+            <label for="edad">Edad *</label>
+            <input 
+              id="edad" 
+              type="number" 
+              placeholder="Ejemplo: 25"
+              required
+              min="18" 
+              max="100"
+              title="Edad debe estar entre 18 y 100 años">
+            <small class="help-text">Edad válida: 18 a 100 años</small>
+
+            <label for="correo">Correo electrónico *</label>
+            <input 
+              id="correo" 
+              type="email" 
+              placeholder="Ejemplo: colaborador@correo.com"
+              required
+              pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+              title="Debe ser un correo válido (ejemplo: usuario@dominio.com)"
+              maxlength="100">
+            <small class="help-text">Formato: usuario@dominio.com</small>
+          </fieldset>
+
+          <div class="botones-acciones">
+            <button type="submit" class="btn btn-success">Ingresar</button>
+            
+          </div>
+
+        </form>
+      </section>
+    </main>
+
+    <footer class="pie-pagina">
+      <p>© Derechos Reservados</p>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/scripts/disable-logs-production.js?v=20251107f"></script>
+  <script src="/scripts/ultra-simple-logout.js?v=20251108m"></script>
+  <script src="/scripts/config.js"></script>
+  <script src="/scripts/api.js"></script>
+  <script src="/scripts/agregar-empleados.js?v=20251108s"></script>
+</body>
+</html>

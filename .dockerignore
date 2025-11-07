@@ -1,0 +1,40 @@
+# Root .dockerignore
+
+# Dependencies
+**/node_modules
+**/npm-debug.log
+
+# Environment files
+**/.env
+**/.env.*
+
+# IDE
+**/.vscode
+**/.idea
+**/*.swp
+**/*.swo
+
+# OS
+**/.DS_Store
+**/Thumbs.db
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+**/*.md
+!DEPLOYMENT.md
+
+# Logs
+**/logs
+**/*.log
+
+# Coverage
+**/coverage
+
+# Build artifacts
+**/dist
+**/build
+

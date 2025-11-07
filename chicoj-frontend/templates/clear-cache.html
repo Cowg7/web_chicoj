@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Limpiar Caché - Chicoj</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    .container {
+      background: white;
+      padding: 3rem;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      text-align: center;
+      max-width: 500px;
+    }
+    h1 {
+      margin: 0 0 1rem 0;
+      color: #333;
+    }
+    p {
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+    .btn {
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin: 0.5rem;
+    }
+    .btn-primary {
+      background: #4CAF50;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #45a049;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+    }
+    .btn-secondary {
+      background: #2196F3;
+      color: white;
+    }
+    .btn-secondary:hover {
+      background: #0b7dda;
+    }
+    .status {
+      margin-top: 2rem;
+      padding: 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+    .success {
+      background: #d4edda;
+      color: #155724;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧹 Limpiar Caché del Sistema</h1>
+    <p>
+      Si estás experimentando problemas de login (Error 401) o el sistema no funciona correctamente,
+      haz clic en el botón de abajo para limpiar completamente el caché y volver a intentar.
+    </p>
+    
+    <button class="btn btn-primary" onclick="clearAll()">
+      🗑️ Limpiar Todo y Reiniciar
+    </button>
+    
+    <button class="btn btn-secondary" onclick="window.location.href='/templates/login'">
+      ← Volver al Login
+    </button>
+    
+    <div id="status"></div>
+  </div>
+
+  <script>
+    function clearAll() {
+      const status = document.getElementById('status');
+      
+      try {
+        // 1. Limpiar localStorage
+        localStorage.clear();
+        
+        // 2. Limpiar sessionStorage
+        sessionStorage.clear();
+        
+        // 3. Limpiar cookies
+        document.cookie.split(";").forEach(function(c) { 
+          document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+        });
+        
+        // 4. Limpiar caché (si es posible)
+        if ('caches' in window) {
+          caches.keys().then(names => {
+            names.forEach(name => caches.delete(name));
+          });
+        }
+        
+        status.className = 'status success';
+        status.innerHTML = '✅ Caché limpiado exitosamente<br><br>Redirigiendo al login...';
+        
+        // Redirigir después de 2 segundos
+        setTimeout(() => {
+          window.location.replace('/templates/login?cleared=1');
+        }, 2000);
+        
+      } catch (error) {
+        status.className = 'status error';
+        status.textContent = '❌ Error: ' + error.message;
+      }
+    }
+  </script>
+</body>
+</html>
+

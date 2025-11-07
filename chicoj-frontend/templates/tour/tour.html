@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nuevo Ticket - Chicoj</title>
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+  
+  <!-- IMPORTANTE: Auth simple sin interferir -->
+    <script src="/scripts/toast-notifications.js?v=20251107v"></script>
+  <script src="/scripts/simple-auth.js?v=20251101k"></script>
+  
+  <!-- Meta tags para prevenir caché -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  
+  <link rel="stylesheet" href="/css/base.css?v=20251101g">
+  <link rel="stylesheet" href="/css/components.css?v=20251101g">
+  <link rel="stylesheet" href="/css/utilities.css?v=20251101g">
+  <link rel="stylesheet" href="/css/mejoras-ux.css?v=20251101g">
+  <link rel="stylesheet" href="/css/estilos-tour.css?v=20251101g">
+  <link rel="stylesheet" href="/css/responsive.css?v=20251101k">
+  <link rel="stylesheet" href="/css/responsive-tour.css?v=20251101k">
+  <link rel="stylesheet" href="/css/toast-notifications.css?v=20251107v">
+  
+  <style>
+    /* Estilos para validación */
+    .help-text {
+      display: block;
+      font-size: 0.85rem;
+      color: #6B7280;
+      margin-top: 4px;
+      margin-bottom: 1rem;
+    }
+    
+    input.error {
+      border-color: #ef4444 !important;
+      background-color: #fef2f2 !important;
+    }
+    
+    input.success {
+      border-color: #10B981 !important;
+    }
+    
+    .error-message {
+      display: block;
+      color: #ef4444;
+      font-size: 0.85rem;
+      margin-top: 4px;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="contenedor-app">
+    <header class="encabezado">
+      <div class="brand">
+        <div class="logo-placeholder" aria-label="Logo"></div>
+        <div>
+          <span class="badge">Somos</span>
+          <h1>Restaurante Chicoj</h1>
+        </div>
+      </div>
+      <nav class="acciones" aria-label="Acciones">
+        <a class="btn btn-outline" href="/main">Inicio</a>
+        <a class="btn btn-primary" href="#" onclick="return ultraSimpleLogout(event)">Cerrar sesión</a>
+      </nav>
+    </header>
+
+    <main class="contenido">
+      <section class="form-card">
+        <h2>Crear Ticket</h2>
+        <form class="formulario" id="form-ticket" autocomplete="off" novalidate>
+          <fieldset class="seccion">
+            <legend>Datos del Ticket</legend>
+
+            <!-- Fila 1 -->
+            <div class="campo-form">
+              <label for="id-tour">No.</label>
+              <input id="id-tour" type="text" value="AUTO" readonly>
+            </div>
+
+            <div class="campo-form">
+              <label for="fecha">Fecha</label>
+              <input id="fecha" type="date" required max="">
+            </div>
+
+            <div class="campo-form campo-half">
+              <label for="servicio">Tipo de Servicio</label>
+              <select id="servicio" required>
+                <option value="">Seleccionar servicio…</option>
+                <option value="Recorrido">Recorrido</option>
+                <option value="Recorrido y Canopy">Recorrido y Canopy</option>
+                <option value="Solo Canopy">Solo Canopy</option>
+              </select>
+            </div>
+
+            <!-- Fila 2 -->
+            <div class="campo-form">
+              <label for="precio-servicio">Precio por persona</label>
+              <input 
+                id="precio-servicio" 
+                type="number" 
+                step="0.01" 
+                min="0" 
+                placeholder="0.00" 
+                required
+                oninput="this.value = Math.abs(this.value)"
+                title="El precio debe ser un número positivo">
+              <small class="help-text">Solo valores positivos. Ejemplo: 25.00</small>
+            </div>
+
+            <div class="campo-form">
+              <label for="tipo">Tipo de visitante</label>
+              <select id="tipo" required>
+                <option value="">Seleccionar…</option>
+                <option value="Nacional">Nacional</option>
+                <option value="Extranjero">Extranjero</option>
+                <option value="Estudiante">Estudiante</option>
+              </select>
+            </div>
+
+            <div class="campo-form">
+              <label for="cantidad-visitante">Cantidad de visitantes</label>
+              <input 
+                id="cantidad-visitante" 
+                type="number" 
+                min="1" 
+                step="1" 
+                required
+                pattern="[0-9]+"
+                oninput="this.value = Math.abs(Math.round(this.value))"
+                title="La cantidad debe ser un número entero positivo mayor a 0">
+              <small class="help-text">Mínimo: 1 persona</small>
+            </div>
+
+            <div class="campo-form">
+              <label for="idioma">Idioma</label>
+              <input id="idioma" type="text" placeholder="Español, Inglés, Q'eqchi', etc." required>
+            </div>
+
+            <!-- Fila 3 -->
+            <div class="campo-form campo-half">
+              <label for="precio-total">Precio Total</label>
+              <input id="precio-total" type="number" step="0.01" readonly placeholder="0.00">
+            </div>
+
+            <div class="campo-form campo-half">
+              <label for="observaciones">Observaciones</label>
+              <textarea id="observaciones" rows="3" placeholder="Información adicional (opcional)"></textarea>
+            </div>
+          </fieldset>
+
+          <div class="botones-acciones">
+            <button type="submit" class="btn btn-success">Guardar Ticket</button>
+            <!-- 🔹 Botón agregado para visualizar registros -->
+            <a href="/templates/tour/tour-control" class="btn btn-outline">Visualizar Tickets</a>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <footer class="pie-pagina">
+      <p>© Derechos Reservados</p>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/scripts/ultra-simple-logout.js?v=20251108m"></script>
+  <script src="/scripts/config.js"></script>
+  <script src="/scripts/api.js"></script>
+  <script src="/scripts/access-control.js"></script>
+  <script src="/scripts/tour.js?v=20251108k"></script>
+  
+  <script>
+    // Validación adicional para campos numéricos
+    document.addEventListener('DOMContentLoaded', function() {
+      const precioInput = document.getElementById('precio-servicio');
+      const cantidadInput = document.getElementById('cantidad-visitante');
+      
+      // Validación para precio por persona
+      if (precioInput) {
+        precioInput.addEventListener('blur', function() {
+          const valor = parseFloat(this.value);
+          
+          if (isNaN(valor) || valor < 0) {
+            this.classList.add('error');
+            this.classList.remove('success');
+            this.value = '';
+          } else {
+            this.classList.remove('error');
+            this.classList.add('success');
+          }
+        });
+        
+        precioInput.addEventListener('input', function() {
+          // Remover caracteres no numéricos excepto punto decimal
+          this.value = this.value.replace(/[^0-9.]/g, '');
+          
+          // Asegurar solo un punto decimal
+          const parts = this.value.split('.');
+          if (parts.length > 2) {
+            this.value = parts[0] + '.' + parts.slice(1).join('');
+          }
+          
+          // Si hay valor, asegurarse de que sea positivo
+          if (this.value && parseFloat(this.value) < 0) {
+            this.value = Math.abs(parseFloat(this.value));
+          }
+        });
+      }
+      
+      // Validación para cantidad de visitantes
+      if (cantidadInput) {
+        cantidadInput.addEventListener('blur', function() {
+          const valor = parseInt(this.value);
+          
+          if (isNaN(valor) || valor < 1) {
+            this.classList.add('error');
+            this.classList.remove('success');
+            this.value = '';
+          } else {
+            this.classList.remove('error');
+            this.classList.add('success');
+            // Asegurar que sea entero positivo
+            this.value = Math.abs(Math.round(valor));
+          }
+        });
+        
+        cantidadInput.addEventListener('input', function() {
+          // Remover todo excepto números
+          this.value = this.value.replace(/[^0-9]/g, '');
+          
+          // Si hay valor, asegurarse de que sea positivo y entero
+          if (this.value) {
+            const valor = parseInt(this.value);
+            if (valor < 0) {
+              this.value = Math.abs(valor);
+            }
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

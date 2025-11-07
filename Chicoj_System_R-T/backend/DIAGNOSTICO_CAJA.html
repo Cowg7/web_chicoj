@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diagnóstico de Caja</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: #f5f5f5;
+    }
+    h1 {
+      color: #333;
+      border-bottom: 3px solid #4CAF50;
+      padding-bottom: 0.5rem;
+    }
+    .section {
+      background: white;
+      padding: 1.5rem;
+      margin: 1rem 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .btn {
+      padding: 0.75rem 1.5rem;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin: 0.5rem;
+    }
+    .btn:hover {
+      background: #45a049;
+    }
+    .btn-danger {
+      background: #f44336;
+    }
+    .btn-danger:hover {
+      background: #da190b;
+    }
+    .result {
+      background: #f9f9f9;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-left: 4px solid #4CAF50;
+      font-family: monospace;
+      white-space: pre-wrap;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .error {
+      border-left-color: #f44336;
+      color: #f44336;
+    }
+    .success {
+      border-left-color: #4CAF50;
+      color: #4CAF50;
+    }
+    .warning {
+      border-left-color: #ff9800;
+      color: #ff9800;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔍 Diagnóstico de Vista de Caja</h1>
+
+  <div class="section">
+    <h2>1️⃣ Verificar Elemento HTML</h2>
+    <button class="btn" onclick="verificarElementoHTML()">Verificar modal-detalle-platillos</button>
+    <div id="resultado-html" class="result"></div>
+  </div>
+
+  <div class="section">
+    <h2>2️⃣ Verificar Función loadOrderDetails</h2>
+    <button class="btn" onclick="verificarFuncion()">Verificar si existe la función</button>
+    <div id="resultado-funcion" class="result"></div>
+  </div>
+
+  <div class="section">
+    <h2>3️⃣ Probar Carga de Detalles (Orden 24)</h2>
+    <button class="btn" onclick="probarCargaDetalles()">Cargar detalles de orden 24</button>
+    <div id="resultado-carga" class="result"></div>
+  </div>
+
+  <div class="section">
+    <h2>4️⃣ Verificar Base de Datos</h2>
+    <button class="btn" onclick="verificarComprobante()">Verificar comprobante de orden 24</button>
+    <div id="resultado-db" class="result"></div>
+  </div>
+
+  <div class="section">
+    <h2>5️⃣ Verificar API de Órdenes</h2>
+    <button class="btn" onclick="verificarAPIOrden()">GET /api/orders/24</button>
+    <div id="resultado-api-orden" class="result"></div>
+  </div>
+
+  <div class="section">
+    <h2>6️⃣ Verificar API de Historial</h2>
+    <button class="btn" onclick="verificarAPIHistorial()">GET /api/cashier/history</button>
+    <div id="resultado-api-historial" class="result"></div>
+  </div>
+
+  <div class="section">
+    <h2>🧹 Limpiar Consola</h2>
+    <button class="btn btn-danger" onclick="console.clear(); alert('Consola limpiada')">Limpiar Consola del Navegador</button>
+  </div>
+
+  <script src="/scripts/config.js"></script>
+  <script src="/scripts/api.js"></script>
+  <script>
+    function mostrarResultado(elementId, mensaje, tipo = 'success') {
+      const elemento = document.getElementById(elementId);
+      elemento.className = `result ${tipo}`;
+      elemento.textContent = mensaje;
+    }
+
+    function verificarElementoHTML() {
+      const elemento = document.getElementById('modal-detalle-platillos');
+      
+      if (elemento) {
+        mostrarResultado('resultado-html', 
+          `✅ ELEMENTO ENCONTRADO\n\n` +
+          `ID: modal-detalle-platillos\n` +
+          `Tipo: ${elemento.tagName}\n` +
+          `Padre: ${elemento.parentElement.tagName}\n` +
+          `Contenido actual:\n${elemento.innerHTML.substring(0, 200)}...`,
+          'success'
+        );
+      } else {
+        mostrarResultado('resultado-html', 
+          `❌ ELEMENTO NO ENCONTRADO\n\n` +
+          `El elemento con id="modal-detalle-platillos" NO existe en esta página.\n` +
+          `Esto es normal porque este es un diagnóstico separado.\n\n` +
+          `SOLUCIÓN: Abrir /templates/caja/caja.html y verificar ahí.`,
+          'error'
+        );
+      }
+    }
+
+    function verificarFuncion() {
+      // Cargar caja.js dinámicamente
+      const script = document.createElement('script');
+      script.src = '/scripts/caja.js';
+      script.onload = () => {
+        setTimeout(() => {
+          // Verificar si la función existe
+          const tieneOpenModal = typeof window.cajaApp !== 'undefined' && 
+                                 typeof window.cajaApp.openPaymentModal === 'function';
+          
+          if (tieneOpenModal) {
+            mostrarResultado('resultado-funcion', 
+              `✅ FUNCIÓN ENCONTRADA\n\n` +
+              `window.cajaApp.openPaymentModal existe\n` +
+              `La función debería llamar a loadOrderDetails internamente.`,
+              'success'
+            );
+          } else {
+            mostrarResultado('resultado-funcion', 
+              `❌ FUNCIÓN NO ENCONTRADA\n\n` +
+              `window.cajaApp.openPaymentModal NO existe\n` +
+              `Verifica que caja.js esté cargado correctamente.`,
+              'error'
+            );
+          }
+        }, 500);
+      };
+      script.onerror = () => {
+        mostrarResultado('resultado-funcion', 
+          `❌ ERROR AL CARGAR SCRIPT\n\n` +
+          `No se pudo cargar /scripts/caja.js\n` +
+          `Verifica que el archivo exista.`,
+          'error'
+        );
+      };
+      document.head.appendChild(script);
+    }
+
+    async function probarCargaDetalles() {
+      try {
+        mostrarResultado('resultado-carga', '⏳ Cargando detalles de orden 24...', 'warning');
+        
+        const response = await API.orders.getById(24);
+        const orden = response.data || response;
+        const comandas = orden.comandas || [];
+        
+        let resultado = `✅ DETALLES CARGADOS CORRECTAMENTE\n\n`;
+        resultado += `Orden ID: ${orden.id_orden}\n`;
+        resultado += `Mesa: ${orden.no_mesa}\n`;
+        resultado += `Total: Q ${parseFloat(orden.total || 0).toFixed(2)}\n`;
+        resultado += `Estado: ${orden.estado}\n`;
+        resultado += `Comandas: ${comandas.length} items\n\n`;
+        
+        if (comandas.length > 0) {
+          resultado += `DETALLES DE PLATILLOS:\n`;
+          resultado += `${'='.repeat(60)}\n`;
+          comandas.forEach((item, index) => {
+            const cantidad = item.cantidad || 0;
+            const precioUnit = parseFloat(item.precio_unitario || item.precio || 0);
+            const precioExtra = parseFloat(item.extra_precio || 0);
+            const subtotal = (precioUnit * cantidad) + precioExtra;
+            const nombre = item.platillo_nombre || item.nombre || (item.platillo?.nombre) || 'N/A';
+            
+            resultado += `\n${index + 1}. ${nombre}\n`;
+            resultado += `   Cantidad: ${cantidad}\n`;
+            resultado += `   Precio Unit: Q ${precioUnit.toFixed(2)}\n`;
+            if (precioExtra > 0) {
+              resultado += `   Extra: ${item.extra_observacion} (Q ${precioExtra.toFixed(2)})\n`;
+            }
+            if (item.observaciones) {
+              resultado += `   Observaciones: ${item.observaciones}\n`;
+            }
+            resultado += `   Subtotal: Q ${subtotal.toFixed(2)}\n`;
+          });
+          resultado += `\n${'='.repeat(60)}\n`;
+          resultado += `TOTAL: Q ${parseFloat(orden.total || 0).toFixed(2)}`;
+        } else {
+          resultado += `⚠️ NO HAY COMANDAS en esta orden`;
+        }
+        
+        mostrarResultado('resultado-carga', resultado, 'success');
+      } catch (error) {
+        mostrarResultado('resultado-carga', 
+          `❌ ERROR AL CARGAR DETALLES\n\n` +
+          `${error.message}\n\n` +
+          `Stack: ${error.stack}`,
+          'error'
+        );
+      }
+    }
+
+    async function verificarComprobante() {
+      try {
+        mostrarResultado('resultado-db', '⏳ Consultando base de datos...', 'warning');
+        
+        // Como no podemos consultar directamente la BD desde aquí,
+        // vamos a consultar el historial y buscar la orden 24
+        const response = await API.cashier.getHistory();
+        const data = response.data || response;
+        const orders = data.orders || data || [];
+        
+        const orden24 = orders.find(o => o.id_orden === 24);
+        
+        if (orden24) {
+          const comprobante = orden24.caja_comprobantes?.[0];
+          
+          let resultado = `✅ ORDEN 24 ENCONTRADA EN HISTORIAL\n\n`;
+          resultado += `ID Orden: ${orden24.id_orden}\n`;
+          resultado += `Mesa: ${orden24.no_mesa}\n`;
+          resultado += `Total: Q ${parseFloat(orden24.total || 0).toFixed(2)}\n`;
+          resultado += `Estado: ${orden24.estado}\n`;
+          resultado += `Fecha: ${new Date(orden24.fecha).toLocaleString('es-GT')}\n\n`;
+          
+          if (comprobante) {
+            resultado += `COMPROBANTE DE CAJA:\n`;
+            resultado += `${'='.repeat(60)}\n`;
+            resultado += `ID Comprobante: ${comprobante.id_comprobante}\n`;
+            resultado += `Método de Pago: ${comprobante.metodo_pago || 'NULL (N/A)'}\n`;
+            resultado += `Monto Recibido: ${comprobante.monto_recibido ? 'Q ' + parseFloat(comprobante.monto_recibido).toFixed(2) : 'NULL'}\n`;
+            resultado += `Cambio Devuelto: ${comprobante.cambio_devuelto ? 'Q ' + parseFloat(comprobante.cambio_devuelto).toFixed(2) : 'NULL'}\n`;
+            resultado += `Total Capturado: Q ${parseFloat(comprobante.total_capturado).toFixed(2)}\n`;
+            resultado += `Fecha: ${new Date(comprobante.fecha).toLocaleString('es-GT')}\n`;
+            resultado += `${'='.repeat(60)}\n\n`;
+            
+            if (!comprobante.metodo_pago) {
+              resultado += `⚠️ PROBLEMA DETECTADO:\n`;
+              resultado += `El método de pago es NULL.\n\n`;
+              resultado += `POSIBLES CAUSAS:\n`;
+              resultado += `1. La orden se cobró ANTES de aplicar la migración\n`;
+              resultado += `2. El frontend no envió el método de pago\n`;
+              resultado += `3. Hubo un error al guardar en el backend\n\n`;
+              resultado += `SOLUCIÓN:\n`;
+              resultado += `Prueba cobrar una NUEVA orden y verifica que el método de pago se guarde.`;
+              mostrarResultado('resultado-db', resultado, 'warning');
+            } else {
+              mostrarResultado('resultado-db', resultado, 'success');
+            }
+          } else {
+            resultado += `⚠️ NO HAY COMPROBANTE DE CAJA para esta orden\n`;
+            resultado += `Esto significa que la orden está en estado "${orden24.estado}" pero no se ha finalizado el pago.`;
+            mostrarResultado('resultado-db', resultado, 'warning');
+          }
+        } else {
+          mostrarResultado('resultado-db', 
+            `⚠️ ORDEN 24 NO ENCONTRADA EN HISTORIAL\n\n` +
+            `Esto puede significar:\n` +
+            `1. La orden no existe\n` +
+            `2. La orden no está en estado "Finalizada"\n` +
+            `3. La orden no es de hoy (el historial muestra solo del día actual)\n\n` +
+            `Total de órdenes en historial: ${orders.length}`,
+            'warning'
+          );
+        }
+      } catch (error) {
+        mostrarResultado('resultado-db', 
+          `❌ ERROR AL CONSULTAR HISTORIAL\n\n` +
+          `${error.message}`,
+          'error'
+        );
+      }
+    }
+
+    async function verificarAPIOrden() {
+      try {
+        mostrarResultado('resultado-api-orden', '⏳ Consultando API...', 'warning');
+        
+        const response = await fetch('http://localhost:3000/api/orders/24', {
+          headers: {
+            'Authorization': `Bearer ${AuthManager.getToken()}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        const data = await response.json();
+        
+        mostrarResultado('resultado-api-orden', 
+          `Status: ${response.status} ${response.statusText}\n\n` +
+          `Response:\n${JSON.stringify(data, null, 2)}`,
+          response.ok ? 'success' : 'error'
+        );
+      } catch (error) {
+        mostrarResultado('resultado-api-orden', 
+          `❌ ERROR\n\n${error.message}`,
+          'error'
+        );
+      }
+    }
+
+    async function verificarAPIHistorial() {
+      try {
+        mostrarResultado('resultado-api-historial', '⏳ Consultando API...', 'warning');
+        
+        const today = new Date().toISOString().split('T')[0];
+        const response = await fetch(`http://localhost:3000/api/cashier/history?fecha_desde=${today}&fecha_hasta=${today}`, {
+          headers: {
+            'Authorization': `Bearer ${AuthManager.getToken()}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          const orders = data.data?.orders || [];
+          const orden24 = orders.find(o => o.id_orden === 24);
+          
+          let resultado = `Status: ${response.status} ${response.statusText}\n\n`;
+          resultado += `Total de órdenes hoy: ${orders.length}\n\n`;
+          
+          if (orden24) {
+            resultado += `ORDEN 24 ENCONTRADA:\n`;
+            resultado += `${JSON.stringify(orden24, null, 2)}`;
+          } else {
+            resultado += `ORDEN 24 NO ENCONTRADA en el historial de hoy`;
+          }
+          
+          mostrarResultado('resultado-api-historial', resultado, 'success');
+        } else {
+          mostrarResultado('resultado-api-historial', 
+            `Status: ${response.status} ${response.statusText}\n\n` +
+            `Response:\n${JSON.stringify(data, null, 2)}`,
+            'error'
+          );
+        }
+      } catch (error) {
+        mostrarResultado('resultado-api-historial', 
+          `❌ ERROR\n\n${error.message}`,
+          'error'
+        );
+      }
+    }
+
+    // Auto-ejecutar verificación básica al cargar
+    window.addEventListener('DOMContentLoaded', () => {
+      console.log('🔍 Diagnóstico de Caja cargado');
+      console.log('Presiona los botones para ejecutar las pruebas');
+    });
+  </script>
+</body>
+</html>
+
+
+

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Limpiar Caché - Chicoj</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
+
+    h1 {
+      color: #1E40AF;
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #6B7280;
+      margin-bottom: 30px;
+      font-size: 1.1rem;
+    }
+
+    .status {
+      background: #F3F4F6;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+      font-family: 'Courier New', monospace;
+      text-align: left;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .status div {
+      padding: 5px 0;
+    }
+
+    .success {
+      color: #10B981;
+    }
+
+    .info {
+      color: #2563EB;
+    }
+
+    .warning {
+      color: #F59E0B;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #1E40AF 0%, #2563EB 100%);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 10px;
+      transition: all 0.3s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(30, 64, 175, 0.3);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, #6B7280 0%, #4B5563 100%);
+    }
+
+    .icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+    }
+
+    .instructions {
+      background: #FEF3C7;
+      border-left: 4px solid #F59E0B;
+      padding: 15px;
+      margin: 20px 0;
+      text-align: left;
+      border-radius: 8px;
+    }
+
+    .instructions h3 {
+      color: #92400E;
+      margin-bottom: 10px;
+    }
+
+    .instructions ul {
+      margin-left: 20px;
+      color: #78350F;
+    }
+
+    .instructions li {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">🧹</div>
+    <h1>Limpieza de Caché</h1>
+    <p class="subtitle">Sistema de Gestión Chicoj</p>
+
+    <div class="instructions">
+      <h3>¿Por qué no veo mis cambios?</h3>
+      <ul>
+        <li>El navegador guarda versiones antiguas (caché)</li>
+        <li>En modo incógnito no hay caché (por eso se ven)</li>
+        <li>Usa este botón para limpiar todo</li>
+      </ul>
+    </div>
+
+    <button class="btn" onclick="limpiarTodo()">
+      🗑️ Limpiar Caché Completo
+    </button>
+
+    <button class="btn btn-secondary" onclick="soloRecargar()">
+      🔄 Solo Recargar Página
+    </button>
+
+    <div class="status" id="status">
+      <div class="info">✅ Listo para limpiar caché...</div>
+      <div class="info">💡 Click en el botón para empezar</div>
+    </div>
+
+    <div class="instructions">
+      <h3>Atajos de Teclado:</h3>
+      <ul>
+        <li><strong>Ctrl + Shift + R</strong> - Hard Refresh (Windows/Linux)</li>
+        <li><strong>Ctrl + F5</strong> - Forzar recarga (Windows/Linux)</li>
+        <li><strong>Cmd + Shift + R</strong> - Hard Refresh (Mac)</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    function log(message, type = 'info') {
+      const status = document.getElementById('status');
+      const className = type === 'success' ? 'success' : type === 'warning' ? 'warning' : 'info';
+      const icon = type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
+      
+      const line = document.createElement('div');
+      line.className = className;
+      line.textContent = `${icon} ${message}`;
+      status.appendChild(line);
+      
+      // Auto-scroll al final
+      status.scrollTop = status.scrollHeight;
+    }
+
+    async function limpiarTodo() {
+      const status = document.getElementById('status');
+      status.innerHTML = '';
+      
+      log('Iniciando limpieza completa...', 'info');
+      
+      // 1. Limpiar localStorage
+      try {
+        const itemsLocal = localStorage.length;
+        localStorage.clear();
+        log(`LocalStorage limpiado (${itemsLocal} items)`, 'success');
+      } catch (e) {
+        log('Error al limpiar localStorage: ' + e.message, 'warning');
+      }
+      
+      // 2. Limpiar sessionStorage
+      try {
+        const itemsSession = sessionStorage.length;
+        sessionStorage.clear();
+        log(`SessionStorage limpiado (${itemsSession} items)`, 'success');
+      } catch (e) {
+        log('Error al limpiar sessionStorage: ' + e.message, 'warning');
+      }
+      
+      // 3. Limpiar cookies
+      try {
+        const cookies = document.cookie.split(";");
+        for (let cookie of cookies) {
+          const eqPos = cookie.indexOf("=");
+          const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+          document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+        }
+        log(`Cookies limpiadas (${cookies.length} cookies)`, 'success');
+      } catch (e) {
+        log('Error al limpiar cookies: ' + e.message, 'warning');
+      }
+      
+      // 4. Limpiar caché de Cache API
+      if ('caches' in window) {
+        try {
+          const cacheNames = await caches.keys();
+          for (let name of cacheNames) {
+            await caches.delete(name);
+          }
+          log(`Cache API limpiada (${cacheNames.length} cachés)`, 'success');
+        } catch (e) {
+          log('Error al limpiar Cache API: ' + e.message, 'warning');
+        }
+      }
+      
+      // 5. Limpiar IndexedDB
+      if ('indexedDB' in window) {
+        try {
+          const dbs = await indexedDB.databases();
+          for (let db of dbs) {
+            indexedDB.deleteDatabase(db.name);
+          }
+          log(`IndexedDB limpiada (${dbs.length} bases de datos)`, 'success');
+        } catch (e) {
+          log('IndexedDB no soportado o ya limpio', 'info');
+        }
+      }
+      
+      log('', 'info');
+      log('🎉 Limpieza completa exitosa!', 'success');
+      log('', 'info');
+      log('La página se recargará en 3 segundos...', 'warning');
+      
+      // Recargar después de 3 segundos
+      setTimeout(() => {
+        window.location.href = '/templates/login?cache_cleared=' + Date.now();
+      }, 3000);
+    }
+
+    function soloRecargar() {
+      const status = document.getElementById('status');
+      status.innerHTML = '';
+      
+      log('Recargando página con caché limpio...', 'info');
+      
+      setTimeout(() => {
+        // Hard reload
+        window.location.reload(true);
+      }, 500);
+    }
+
+    // Mostrar info al cargar
+    window.addEventListener('load', () => {
+      log('Sistema de limpieza listo', 'success');
+      log('Tamaño actual de localStorage: ' + localStorage.length + ' items', 'info');
+      log('Tamaño actual de sessionStorage: ' + sessionStorage.length + ' items', 'info');
+    });
+  </script>
+</body>
+</html>
+

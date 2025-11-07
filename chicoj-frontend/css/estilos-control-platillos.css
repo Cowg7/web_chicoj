@@ -1,0 +1,338 @@
+/* ====================================
+   ESTILOS ESPECÍFICOS - CONTROL PLATILLOS
+   ==================================== */
+
+/* Contenedor de tabla */
+.tabla-container {
+  background: var(--panel);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.08);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Header de tabla */
+.tabla-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border);
+}
+
+.tabla-header h2 {
+  margin: 0;
+  color: var(--text);
+  font-size: 1.5rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Sección de área */
+.area-seccion {
+  margin-bottom: 2rem;
+}
+
+.area-seccion:last-child {
+  margin-bottom: 0;
+}
+
+.area-titulo {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  color: white;
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--radius);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(30, 64, 175, 0.2);
+}
+
+/* Lista tipo tabla */
+.tabla-platillos {
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--panel);
+}
+
+/* Fila */
+.fila {
+  display: grid;
+  grid-template-columns: 80px 1.5fr 120px 2fr 140px 320px;
+  gap: 0.75rem;
+  align-items: center;
+  border-top: 1px solid var(--border);
+  padding: 0.875rem 1rem;
+  background: var(--panel);
+  transition: background 0.2s ease;
+}
+
+.fila:first-child {
+  border-top: 0;
+}
+
+/* Encabezados */
+.fila.encabezados {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  font-weight: 700;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.fila.encabezados .col {
+  color: white !important;
+}
+
+/* Filas alternadas */
+.fila:not(.encabezados):nth-child(even) {
+  background: #F5F7FA;
+}
+
+.fila:not(.encabezados):hover {
+  background: #eff6ff;
+  cursor: pointer;
+}
+
+/* Columnas */
+.col {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.col-id {
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.col-nombre {
+  font-weight: 500;
+}
+
+/* Colores solo para filas de datos (NO headers) */
+.fila:not(.encabezados) .col-precio {
+  font-weight: 700;
+  color: var(--success);
+}
+
+.fila:not(.encabezados) .col-desc {
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+/* Headers siempre blancos */
+.fila.encabezados .col-id,
+.fila.encabezados .col-nombre,
+.fila.encabezados .col-precio,
+.fila.encabezados .col-desc,
+.fila.encabezados .col-estado,
+.fila.encabezados .col-acciones {
+  color: white !important;
+  font-weight: 700 !important;
+}
+
+.col-acciones {
+  display: flex;
+  flex-direction: row !important;
+  gap: 0.5rem;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+/* Botones de acción - Solo 2 colores */
+.col-acciones .btn {
+  border: none;
+  font-weight: 600;
+  padding: 0.5rem 0.875rem;
+  min-width: 95px;
+  font-size: 0.8125rem;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+/* Azul para acciones positivas */
+.col-acciones .btn-editar,
+.col-acciones .btn-activar {
+  background: var(--primary-600);
+  color: white;
+}
+
+.col-acciones .btn-editar:hover,
+.col-acciones .btn-activar:hover {
+  background: var(--primary-700);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+/* Rojo para acciones destructivas/negativas */
+.col-acciones .btn-eliminar,
+.col-acciones .btn-desactivar {
+  background: var(--danger-600);
+  color: white;
+}
+
+.col-acciones .btn-eliminar:hover,
+.col-acciones .btn-desactivar:hover {
+  background: var(--danger-700);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+/* Badges de disponibilidad */
+.badge-disponible,
+.badge-no-disponible {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.badge-disponible {
+  background: rgba(168, 181, 161, 0.15);
+  color: var(--success);
+  border: 1px solid var(--success);
+}
+
+.badge-no-disponible {
+  background: rgba(196, 154, 138, 0.15);
+  color: var(--danger);
+  border: 1px solid var(--danger);
+}
+
+/* Botones pequeños en tabla */
+.btn-sm {
+  padding: 0.375rem 0.875rem;
+  font-size: 0.875rem;
+  border-radius: var(--radius);
+  white-space: nowrap;
+}
+
+/* Estado de carga */
+.loading-message {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-light);
+  font-size: 1rem;
+}
+
+/* Mensaje vacío */
+.empty-message {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+/* ====================================
+   RESPONSIVE
+   ==================================== */
+
+/* Tablets (768px - 1024px) */
+@media (max-width: 1024px) {
+  .fila {
+    grid-template-columns: 70px 1.2fr 110px 1.5fr 160px;
+    gap: 0.5rem;
+    padding: 0.75rem 0.875rem;
+  }
+  
+  .tabla-container {
+    padding: 1.25rem;
+  }
+}
+
+/* Mobile (hasta 768px) */
+@media (max-width: 768px) {
+  .tabla-container {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .tabla-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  
+  .tabla-header h2 {
+    font-size: 1.25rem;
+  }
+  
+  .fila {
+    grid-template-columns: 60px 1fr 100px;
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+  
+  .fila.encabezados {
+    display: none; /* Ocultar encabezados en mobile */
+  }
+  
+  .col-desc {
+    grid-column: 1 / -1;
+    font-size: 0.85rem;
+    padding-top: 0.5rem;
+    border-top: 1px dashed var(--border);
+  }
+  
+  .col-acciones {
+    grid-column: 1 / -1;
+    justify-content: stretch;
+  }
+  
+  .col-acciones .btn {
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .area-titulo {
+    font-size: 1rem;
+    padding: 0.375rem 1rem;
+  }
+}
+
+/* Mobile pequeño (hasta 480px) */
+@media (max-width: 480px) {
+  .tabla-container {
+    padding: 0.75rem;
+  }
+  
+  .tabla-header h2 {
+    font-size: 1.1rem;
+  }
+  
+  .fila {
+    grid-template-columns: 1fr;
+    gap: 0.375rem;
+    padding: 0.625rem;
+  }
+  
+  .col {
+    font-size: 0.875rem;
+  }
+  
+  .btn-sm {
+    font-size: 0.8125rem;
+    padding: 0.3125rem 0.75rem;
+  }
+  
+  .area-titulo {
+    font-size: 0.9rem;
+    padding: 0.3125rem 0.875rem;
+  }
+}

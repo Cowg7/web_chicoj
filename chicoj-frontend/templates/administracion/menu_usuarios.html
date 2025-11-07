@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menú Usuarios - Chicoj</title>
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+  
+  <!-- IMPORTANTE: Auth simple sin interferir -->
+  <script src="/scripts/simple-auth.js?v=20251101k"></script>
+  
+  <!-- Meta tags para prevenir caché -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  
+  <link rel="stylesheet" href="/css/base.css?v=20251101g">
+  <link rel="stylesheet" href="/css/components.css?v=20251101g">
+  <link rel="stylesheet" href="/css/utilities.css?v=20251101g">
+  <link rel="stylesheet" href="/css/mejoras-ux.css?v=20251101g">
+  <link rel="stylesheet" href="/css/estilos-menu-usuarios.css?v=20251101g">
+</head>
+<body>
+  <div class="contenedor-app">
+
+    <!-- Header con espacio de logo -->
+    <header class="encabezado">
+      <div class="brand">
+        <div class="logo-placeholder" aria-label="Espacio para el logo"></div>
+        <div class="brand-text">
+          <span class="badge">Somos</span>
+          <h1>Restaurante Chicoj</h1>
+        </div>
+      </div>
+
+      <nav class="acciones" aria-label="Acciones principales">
+        <a class="btn btn-outline" href="/main">Inicio</a>
+        <a class="btn btn-outline" href="/templates/administracion/manual">Ayuda</a>
+        <a class="btn btn-primary" href="#" onclick="return ultraSimpleLogout(event)">Cerrar sesión</a>
+      </nav>
+    </header>
+
+    <!-- Contenido central -->
+    <main class="contenido" role="main">
+      <h2 class="titulo-seccion">Panel de Administración de Usuarios</h2>
+      <section class="grid-opciones">
+        <!-- Tarjeta 1 -->
+        <article class="card-opcion">
+          <h3>Administrador de Usuarios</h3>
+          <p class="desc">Crea, edita y organiza usuarios.</p>
+          <a class="btn btn-primary" href="/templates/administracion/control-usuarios">Administrar Usuarios</a>
+        </article>
+
+        <!-- Tarjeta 2 -->
+        <article class="card-opcion">
+          <h3>Administrador de Colaboradores</h3>
+          <p class="desc">Crea, edita y gestiona colaboradores.</p>
+          <a class="btn btn-primary" href="/templates/administracion/empleados_control">Administrar Colaboradores</a>
+        </article>
+
+    </main>
+
+    <footer class="pie-pagina">
+      <p>© Derechos Reservados</p>
+    </footer>
+  </div>
+  
+  <!-- Scripts -->
+  <script src="/scripts/ultra-simple-logout.js?v=20251108m"></script>
+  <script src="/scripts/config.js"></script>
+  <script src="/scripts/access-control.js"></script>
+</body>
+</html>

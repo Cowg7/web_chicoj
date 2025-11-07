@@ -1,0 +1,321 @@
+/**
+ * ESTILOS RESPONSIVE GLOBALES
+ * Para hacer todas las vistas adaptables a móvil y tablet
+ */
+
+/* ========================================
+   BREAKPOINTS
+   ======================================== */
+/* 
+  Mobile:  < 640px
+  Tablet:  640px - 1024px
+  Desktop: > 1024px
+*/
+
+/* ========================================
+   RESET Y BASE RESPONSIVE
+   ======================================== */
+
+/* Asegurar que todo sea responsive por defecto */
+* {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ========================================
+   CONTENEDOR PRINCIPAL
+   ======================================== */
+
+.contenedor-app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========================================
+   HEADER / ENCABEZADO
+   ======================================== */
+
+.encabezado {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1 1 auto;
+  min-width: 0; /* Permite que se encoja */
+}
+
+.brand h1 {
+  font-size: clamp(1.2rem, 4vw, 1.8rem); /* Tamaño fluido */
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* Mobile: Header apilado verticalmente */
+@media (max-width: 640px) {
+  .encabezado {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .brand {
+    justify-content: center;
+  }
+  
+  .brand h1 {
+    font-size: 1.3rem;
+  }
+  
+  .acciones {
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .acciones .btn {
+    flex: 1 1 auto;
+    min-width: 100px;
+    text-align: center;
+  }
+}
+
+/* ========================================
+   BOTONES RESPONSIVE
+   ======================================== */
+
+.btn {
+  padding: clamp(0.5rem, 2vw, 0.75rem) clamp(1rem, 3vw, 1.5rem);
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* ========================================
+   TABLAS RESPONSIVE
+   ======================================== */
+
+.tabla-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling en iOS */
+}
+
+table {
+  min-width: 100%;
+  width: max-content;
+}
+
+/* Mobile: Tablas con scroll horizontal */
+@media (max-width: 768px) {
+  .tabla-container {
+    margin: 0 -1rem; /* Extender al borde */
+    padding: 0 1rem;
+  }
+  
+  table {
+    font-size: 0.875rem;
+  }
+  
+  th, td {
+    padding: 0.5rem !important;
+    white-space: nowrap;
+  }
+}
+
+/* ========================================
+   GRIDS RESPONSIVE
+   ======================================== */
+
+/* Grids que se adaptan */
+.grid-responsive {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+@media (max-width: 640px) {
+  .grid-responsive {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========================================
+   FORMULARIOS RESPONSIVE
+   ======================================== */
+
+.form-grid,
+.filter-group {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+@media (max-width: 640px) {
+  .form-grid,
+  .filter-group {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  font-size: clamp(0.875rem, 2vw, 1rem);
+}
+
+/* ========================================
+   CARDS RESPONSIVE
+   ======================================== */
+
+.card,
+.form-card,
+.seccion {
+  padding: clamp(1rem, 3vw, 1.5rem);
+  margin: clamp(0.5rem, 2vw, 1rem);
+}
+
+/* ========================================
+   CONTENIDO PRINCIPAL
+   ======================================== */
+
+.contenido {
+  flex: 1;
+  padding: clamp(0.5rem, 2vw, 1.5rem);
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+main {
+  padding: clamp(0.5rem, 2vw, 1.5rem);
+}
+
+/* ========================================
+   FOOTER
+   ======================================== */
+
+.pie-pagina {
+  padding: clamp(0.75rem, 2vw, 1rem);
+  text-align: center;
+  font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+}
+
+/* ========================================
+   UTILIDADES MOBILE
+   ======================================== */
+
+/* Ocultar en mobile */
+@media (max-width: 640px) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+/* Ocultar en tablet y desktop */
+@media (min-width: 641px) {
+  .show-mobile {
+    display: none !important;
+  }
+}
+
+/* ========================================
+   SCROLL SUAVE
+   ======================================== */
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* ========================================
+   TEXTO RESPONSIVE
+   ======================================== */
+
+h1 {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+h2 {
+  font-size: clamp(1.25rem, 3vw, 2rem);
+}
+
+h3 {
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+}
+
+p {
+  font-size: clamp(0.875rem, 2vw, 1rem);
+}
+
+/* ========================================
+   ESPACIADO RESPONSIVE
+   ======================================== */
+
+.spacing-responsive {
+  padding: clamp(0.5rem, 2vw, 1.5rem);
+  margin: clamp(0.5rem, 2vw, 1rem);
+}
+
+/* ========================================
+   LANDSCAPE MOBILE (opcional)
+   ======================================== */
+
+@media (max-width: 768px) and (orientation: landscape) {
+  .encabezado {
+    padding: 0.5rem;
+  }
+  
+  .contenido {
+    padding: 0.5rem;
+  }
+}
+
+/* ========================================
+   PRINT (opcional)
+   ======================================== */
+
+@media print {
+  .encabezado,
+  .pie-pagina,
+  .btn {
+    display: none !important;
+  }
+  
+  .contenido {
+    padding: 0;
+  }
+}
+
+
+

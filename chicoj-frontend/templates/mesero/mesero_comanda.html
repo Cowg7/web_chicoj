@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Toma de Orden - Chicoj</title>
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+  
+  <!-- IMPORTANTE: Auth simple sin interferir -->
+    <script src="/scripts/toast-notifications.js?v=20251107v"></script>
+  <script src="/scripts/simple-auth.js?v=20251101k"></script>
+  
+  <!-- Meta tags para prevenir caché -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  
+  <link rel="stylesheet" href="/css/base.css?v=20251107g">
+  <link rel="stylesheet" href="/css/components.css?v=20251107g">
+  <link rel="stylesheet" href="/css/utilities.css?v=20251101g">
+  <link rel="stylesheet" href="/css/mejoras-ux.css?v=20251101g">
+  <link rel="stylesheet" href="/css/tablas-modernas.css?v=20251107g">
+  <link rel="stylesheet" href="/css/estilos-comanda.css?v=20251107s">
+  
+  <style>
+    .help-text {
+      display: block;
+      font-size: 0.8rem;
+      color: #6B7280;
+      margin-top: 2px;
+    }
+    
+    input[type="number"].error {
+      border-color: #ef4444 !important;
+      background-color: #fef2f2 !important;
+    }
+    
+    input[type="number"].success {
+      border-color: #10B981 !important;
+    }
+  </style>
+  <link rel="stylesheet" href="/css/responsive.css?v=20251101k">
+  <link rel="stylesheet" href="/css/responsive-comanda.css?v=20251101k">
+
+  <link rel="stylesheet" href="/css/toast-notifications.css?v=20251107v">
+</head>
+<body>
+  <div class="contenedor-app">
+    <header class="encabezado">
+      <div class="brand">
+        <div class="logo-placeholder" aria-label="Logo"></div>
+        <div>
+          <span class="badge">Somos</span>
+          <h1>Restaurante Chicoj</h1>
+        </div>
+      </div>
+      <nav class="acciones" aria-label="Acciones">
+        <a class="btn btn-outline" href="/main">Inicio</a>
+        <a class="btn btn-primary" href="#" onclick="return ultraSimpleLogout(event)">Cerrar sesión</a>
+      </nav>
+    </header>
+
+    <main class="contenido" role="main">
+      <section class="form-card">
+        <h2>Ingrese Datos de Orden</h2>
+
+        <div class="formulario" autocomplete="off" id="form-comanda">
+          <fieldset class="seccion seccion_orden">
+            <legend>Información de la Orden</legend>
+            
+            <div class="orden-grid">
+              <div class="campo-grupo">
+                <label for="no-orden">No. Orden</label>
+                <input id="no-orden" type="text" inputmode="numeric" placeholder="Automático" readonly>
+              </div>
+              
+              <div class="campo-grupo">
+                <label for="fecha">Fecha</label>
+                <input id="fecha" type="date" readonly>
+              </div>
+              
+              <div class="campo-grupo">
+                <label for="mesa">Número de Mesa <span class="required">*</span></label>
+                <select id="mesa" required>
+                  <option value="">Seleccionar mesa...</option>
+                </select>
+              </div>
+            </div>
+          </fieldset>
+
+          <h2>Ingrese Datos de Comanda</h2>
+          <fieldset class="seccion seccion_comanda">
+            <legend>Comanda</legend>
+            
+            <!-- Paso 1: Selección de Área con botones -->
+            <div class="campo-grupo campo-full">
+              <label>Paso 1: Seleccione el Área</label>
+              <div class="area-buttons" id="area-buttons" style="display: flex; gap: 1rem; margin-top: 0.5rem;">
+                <!-- Los botones se cargarán dinámicamente -->
+              </div>
+            </div>
+
+            <!-- Paso 2: Selección de Categoría con botones -->
+            <div class="campo-grupo campo-full" id="categoria-container" style="display: none;">
+              <label>Paso 2: Seleccione la Categoría</label>
+              <div class="categoria-buttons" id="categoria-buttons" style="display: flex; gap: 0.75rem; margin-top: 0.5rem; flex-wrap: wrap;">
+                <!-- Los botones se cargarán dinámicamente -->
+              </div>
+            </div>
+
+            <!-- Paso 3: Selección de Platillo -->
+            <div class="campo-grupo campo-full" id="platillo-container" style="display: none;">
+              <label>Paso 3: Seleccione el Platillo</label>
+              <div class="platillo-buttons" id="platillo-buttons" style="display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap;">
+                <!-- Los botones se cargarán dinámicamente -->
+              </div>
+            </div>
+
+            <!-- Fila 2: Cantidad, Precio, Subtotal -->
+            <div class="campo-grupo">
+              <label for="cantidad">Cantidad *</label>
+              <input 
+                id="cantidad" 
+                type="number" 
+                min="1" 
+                step="1" 
+                placeholder="1" 
+                value="1"
+                required
+                oninput="this.value = Math.abs(this.value)"
+                title="La cantidad debe ser un número positivo mayor a 0">
+              <small class="help-text">Mínimo: 1</small>
+            </div>
+
+            <div class="campo-grupo">
+              <label for="precio">Precio</label>
+              <input id="precio" type="number" min="0" step="0.01" placeholder="0.00" readonly>
+            </div>
+
+            <div class="campo-grupo">
+              <label for="subtotal">Subtotal</label>
+              <input id="subtotal" type="number" min="0" step="0.01" placeholder="0.00" readonly>
+            </div>
+
+            <!-- Fila 3: Observaciones (ancho completo) -->
+            <div class="campo-grupo campo-full">
+              <label for="observaciones">Observaciones</label>
+              <input id="observaciones" type="text" placeholder="sin queso, sin sal…">
+            </div>
+          </fieldset>
+
+         
+          <!-- Sección de Extras MOVIDA ARRIBA de la tabla -->
+          <fieldset class="seccion seccion_extras">
+            <legend>Extras</legend>
+
+            <label for="extra-observacion">Observación extra</label>
+            <input id="extra-observacion" type="text" placeholder="Ej.: Empaque / Propina / Recargo">
+
+            <label for="extra-precio">Precio extra</label>
+            <input 
+              id="extra-precio" 
+              type="number" 
+              min="0" 
+              step="0.01" 
+              placeholder="0.00"
+              oninput="this.value = Math.abs(this.value)"
+              title="El precio extra debe ser un número positivo o cero">
+            <small class="help-text">Solo valores positivos. Ejemplo: 5.00</small>
+
+         
+            
+
+            <div class="extras-lista" id="extras-lista" aria-live="polite"></div>
+          </fieldset>
+          
+           <div class="grupo-botones">
+            <button type="button" class="btn btn-success">Agregar</button>
+          </div>
+
+          <!-- Tabla de comandas       -->
+          <div class="tabla-orden" aria-live="polite">
+            <table id="tabla-comanda">
+              <thead>
+                <tr>
+                  <th>Cantidad</th>
+                  <th>Platillo</th>
+                  <th>Observaciones</th>
+                  <th>Precio</th>
+                  <th>Observacion Extra</th>
+                  <th>Precio Extra</th>
+                  <th>Subtotal</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Los items se agregarán dinámicamente aquí -->
+              </tbody>
+            </table>
+          </div>
+          
+        <div class="contenedor_orden_estado">
+
+          <div class="contenedor_estado">
+            <label for="estado">Estado de orden</label>
+            <input id="estado" type="text" value="Pendiente" readonly>
+          </div>
+
+          <div class="total_orden">
+            <label for="total">Total de Orden:</label>
+            <input id="total" type="number" min="0" step="0.01" value="0.00" readonly>
+          </div>
+          
+        </div>
+
+          <div class="boton_guardar">
+            <button class="btn btn-primary" type="submit" id="btn-submit-order">Enviar Orden</button>
+            <a href="/templates/mesero/comanda-control" class="btn btn-outline">Visualizar Órdenes</a>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <footer class="pie-pagina">
+      <p>© Derechos Reservados</p>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/scripts/disable-logs-production.js?v=20251107f"></script>
+  <script src="/scripts/ultra-simple-logout.js?v=20251108m"></script>
+  <script src="/scripts/config.js?v=20251101h"></script>
+  <script src="/scripts/api.js?v=20251101e"></script>
+  <script src="/scripts/access-control.js?v=20251101e"></script>
+  <script src="/scripts/confirm-modal.js?v=20251108b"></script>
+  <script src="/scripts/comanda.js?v=20251108zb"></script>
+  
+  <script>
+    // Validación adicional para evitar números negativos
+    document.addEventListener('DOMContentLoaded', function() {
+      const cantidadInput = document.getElementById('cantidad');
+      const extraPrecioInput = document.getElementById('extra-precio');
+      
+      // Validar cantidad
+      if (cantidadInput) {
+        // Solo validación visual mientras escribe (sin modificar el valor)
+        cantidadInput.addEventListener('input', function() {
+          let value = parseInt(this.value);
+          
+          // Si es negativo, convertir a positivo automáticamente
+          if (value < 0) {
+            this.value = Math.abs(value);
+          }
+          
+          // Validación visual solamente
+          if (this.value !== '' && !isNaN(value)) {
+            if (value < 1) {
+              this.classList.add('error');
+              this.classList.remove('success');
+            } else {
+              this.classList.remove('error');
+              this.classList.add('success');
+            }
+          } else {
+            // Si está vacío, quitar indicadores
+            this.classList.remove('error', 'success');
+          }
+        });
+        
+        // Corrección del valor solo al salir del campo
+        cantidadInput.addEventListener('blur', function() {
+          let value = parseInt(this.value);
+          
+          // Si está vacío, es NaN, 0 o menor que 1, establecer en 1
+          if (this.value === '' || isNaN(value) || value < 1) {
+            this.value = 1;
+            this.classList.remove('error');
+            this.classList.add('success');
+          }
+        });
+      }
+      
+      // Validar precio extra
+      if (extraPrecioInput) {
+        extraPrecioInput.addEventListener('input', function() {
+          let value = parseFloat(this.value);
+          
+          // Si es negativo, convertir a positivo
+          if (value < 0) {
+            this.value = Math.abs(value);
+            this.classList.add('error');
+            setTimeout(() => {
+              this.classList.remove('error');
+              this.classList.add('success');
+            }, 500);
+          } else if (value >= 0) {
+            this.classList.remove('error');
+            this.classList.add('success');
+          } else {
+            this.classList.remove('error', 'success');
+          }
+        });
+        
+        extraPrecioInput.addEventListener('blur', function() {
+          let value = parseFloat(this.value);
+          
+          // Si es negativo, establecer en 0
+          if (value < 0) {
+            this.value = 0;
+          }
+          
+          // Si está vacío, dejar vacío (no es obligatorio)
+          if (this.value === '' || isNaN(value)) {
+            this.value = '';
+            this.classList.remove('error', 'success');
+          }
+        });
+      }
+    });
+  </script>
+  
+  <!-- Estilos para botones y formulario -->
+  <style>
+    /* Grid para campos de orden */
+    .orden-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+    
+    .campo-grupo {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .campo-grupo label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    
+    .campo-grupo .required {
+      color: var(--danger-600);
+    }
+    
+    .area-buttons, .categoria-buttons, .platillo-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.5rem;
+      flex-wrap: wrap;
+    }
+    
+    .area-button {
+      flex: 1;
+      min-width: 150px;
+      padding: 1rem;
+      border: 2px solid #ddd;
+      background: white;
+      border-radius: var(--r-md);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.3s;
+      text-align: center;
+    }
+    
+    .categoria-button {
+      padding: 0.75rem 1.25rem;
+      border: 2px solid #ddd;
+      background: white;
+      border-radius: var(--r-md);
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+      white-space: nowrap;
+    }
+    
+    .platillo-button {
+      padding: 0.6rem 1rem;
+      border: 2px solid #ddd;
+      background: white;
+      border-radius: var(--r-sm);
+      cursor: pointer;
+      font-weight: 400;
+      font-size: 0.85rem;
+      transition: all 0.3s;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      min-width: 140px;
+      max-width: 200px;
+    }
+    
+    .platillo-button .nombre {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    
+    .platillo-button .precio {
+      color: var(--success);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+    
+    .area-button:hover:not(.disabled),
+    .categoria-button:hover:not(.disabled),
+    .platillo-button:hover:not(.disabled) {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .area-button.active {
+      background: linear-gradient(135deg, var(--primary) 0%, #1976D2 100%);
+      color: white !important;
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+    }
+    
+    .categoria-button.active {
+      background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
+      color: white !important;
+      border-color: #4CAF50;
+      box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+    }
+    
+    .platillo-button.active {
+      background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+      color: white !important;
+      border-color: #FF9800;
+      box-shadow: 0 4px 10px rgba(255, 152, 0, 0.3);
+    }
+    
+    .platillo-button.active .nombre {
+      color: white !important;
+      font-weight: 700;
+    }
+    
+    .platillo-button.active .precio {
+      color: white !important;
+      font-weight: 700;
+    }
+    
+    .area-button.disabled,
+    .categoria-button.disabled,
+    .platillo-button.disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    
+    .campo-full {
+      grid-column: 1 / -1;
+    }
+  </style>
+</body>
+</html>

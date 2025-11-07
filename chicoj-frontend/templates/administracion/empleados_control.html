@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Control de Empleados - Chicoj</title>
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+  
+  <!-- IMPORTANTE: Auth simple sin interferir -->
+  <script src="/scripts/toast-notifications.js?v=20251107v"></script>
+  <script src="/scripts/confirm-modal.js?v=20251108b"></script>
+  <script src="/scripts/simple-auth.js?v=20251101k"></script>
+  
+  <!-- Meta tags para prevenir caché -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  
+  <link rel="stylesheet" href="/css/base.css?v=20251025c">
+  <link rel="stylesheet" href="/css/components.css?v=20251025c">
+  <link rel="stylesheet" href="/css/utilities.css?v=20251025">
+  <link rel="stylesheet" href="/css/estilos-empleados-control.css">
+  <link rel="stylesheet" href="/css/toast-notifications.css?v=20251107v">
+</head>
+<body>
+  <div class="contenedor-app">
+
+    <!-- Header -->
+    <header class="encabezado">
+      <div class="brand">
+        <div class="logo-placeholder" aria-label="Logo"></div>
+        <div>
+          <span class="badge">Somos</span>
+          <h1>Restaurante Chicoj</h1>
+        </div>
+      </div>
+      <nav class="acciones" aria-label="Acciones">
+        <a class="btn btn-outline" href="/main">Inicio</a>
+        <a class="btn btn-primary" href="#" onclick="return ultraSimpleLogout(event)">Cerrar sesión</a>
+      </nav>
+    </header>
+
+    <!-- Contenido -->
+    <main class="contenido" role="main">
+      <section class="tabla-container">
+        <div class="tabla-header">
+          <h2>Lista de colaboradores</h2>
+          <a class="btn btn-success" href="/templates/administracion/agregar_empleados">+ Agregar colaborador</a>
+        </div>
+
+        <!-- Lista tipo tabla -->
+        <div class="tabla-empleados" role="table" aria-label="Colaboradores">
+          <!-- Encabezados -->
+          <div class="fila encabezados" role="row">
+            <div class="col col-id" role="columnheader">ID</div>
+            <div class="col col-nombre" role="columnheader">Nombre</div>
+            <div class="col col-apellidos" role="columnheader">Apellidos</div>
+            <div class="col col-edad" role="columnheader">Edad</div>
+            <div class="col col-correo" role="columnheader">Correo</div>
+            <div class="col col-acciones" role="columnheader">Acciones</div>
+          </div>
+
+          <!-- Fila 1 -->
+          <div class="fila" role="row">
+            <div class="col col-id" role="cell">1</div>
+            <div class="col col-nombre" role="cell">Juan</div>
+            <div class="col col-apellidos" role="cell">Pérez López</div>
+            <div class="col col-edad" role="cell">26</div>
+            <div class="col col-correo" role="cell">juan.perez@correo.com</div>
+            <div class="col col-acciones" role="cell">
+              <a class="btn btn-outline" href="/templates/empleados.html?id=1">Editar</a>
+            </div>
+          </div>
+
+          <!-- Fila 2 -->
+          <div class="fila" role="row">
+            <div class="col col-id" role="cell">2</div>
+            <div class="col col-nombre" role="cell">Alma</div>
+            <div class="col col-apellidos" role="cell">Rax Tzunun</div>
+            <div class="col col-edad" role="cell">31</div>
+            <div class="col col-correo" role="cell">alma.rax@correo.com</div>
+            <div class="col col-acciones" role="cell">
+              <a class="btn btn-outline" href="/templates/empleados.html?id=2">Editar</a>
+            </div>
+          </div>
+
+          <!-- Fila 3 -->
+          <div class="fila" role="row">
+            <div class="col col-id" role="cell">3</div>
+            <div class="col col-nombre" role="cell">Diego</div>
+            <div class="col col-apellidos" role="cell">Caal Xol</div>
+            <div class="col col-edad" role="cell">22</div>
+            <div class="col col-correo" role="cell">d.caax@correo.com</div>
+            <div class="col col-acciones" role="cell">
+              <a class="btn btn-outline" href="/templates/empleados.html?id=3">Editar</a>
+            </div>
+          </div>
+
+          <!-- Más filas… -->
+        </div>
+      </section>
+    </main>
+
+    <footer class="pie-pagina">
+      <p>© Derechos Reservados</p>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/scripts/disable-logs-production.js?v=20251107f"></script>
+  <script src="/scripts/ultra-simple-logout.js?v=20251108m"></script>
+  <script src="/scripts/config.js"></script>
+  <script src="/scripts/api.js"></script>
+  <script src="/scripts/empleados-control.js?v=20251108s"></script>
+</body>
+</html>

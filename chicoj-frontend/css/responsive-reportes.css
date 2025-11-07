@@ -1,0 +1,166 @@
+/**
+ * RESPONSIVE PARA REPORTES
+ * Vista: reportes.html
+ */
+
+/* ========================================
+   PANEL DE FILTROS - RESPONSIVE
+   ======================================== */
+
+.filter-panel {
+  padding: clamp(1rem, 2vw, 1.5rem);
+}
+
+.filter-group {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+@media (max-width: 640px) {
+  .filter-group {
+    grid-template-columns: 1fr;
+  }
+}
+
+.filter-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+@media (max-width: 640px) {
+  .filter-actions {
+    flex-direction: column;
+  }
+  
+  .filter-actions .btn {
+    width: 100%;
+  }
+}
+
+/* ========================================
+   KPI CARDS - RESPONSIVE
+   ======================================== */
+
+.kpi-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .kpi-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}
+
+.kpi-card {
+  padding: clamp(1rem, 2vw, 1.25rem);
+  text-align: center;
+}
+
+.kpi-valor {
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  font-weight: 700;
+}
+
+.kpi-label {
+  font-size: clamp(0.8125rem, 2vw, 0.9375rem);
+  margin-top: 0.5rem;
+}
+
+/* ========================================
+   GRÁFICAS - RESPONSIVE
+   ======================================== */
+
+.graficas-container {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+}
+
+@media (max-width: 768px) {
+  .graficas-container {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+.grafica-card {
+  padding: clamp(1rem, 2vw, 1.5rem);
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.grafica-card canvas {
+  max-width: 100%;
+  height: auto !important;
+}
+
+/* Mobile: Gráficas más pequeñas */
+@media (max-width: 640px) {
+  .grafica-card {
+    padding: 0.75rem;
+  }
+  
+  .grafica-card h3 {
+    font-size: 1rem;
+  }
+}
+
+/* ========================================
+   BOTONES DE EXPORTACIÓN - RESPONSIVE
+   ======================================== */
+
+.export-buttons {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+@media (max-width: 640px) {
+  .export-buttons {
+    flex-direction: column;
+    justify-content: stretch;
+  }
+  
+  .export-buttons .btn {
+    width: 100%;
+  }
+}
+
+/* ========================================
+   TABLAS DE DATOS - RESPONSIVE
+   ======================================== */
+
+.tabla-reporte {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-top: 1rem;
+}
+
+.tabla-reporte table {
+  min-width: 600px;
+}
+
+@media (max-width: 768px) {
+  .tabla-reporte table {
+    font-size: 0.8125rem;
+  }
+  
+  .tabla-reporte th,
+  .tabla-reporte td {
+    padding: 0.5rem 0.25rem;
+  }
+}
+
+
+

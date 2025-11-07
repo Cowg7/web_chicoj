@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recuperar Contraseña - Chicooj</title>
+  <link rel="stylesheet" href="/css/base.css?v=20251025c" />
+  <link rel="stylesheet" href="/css/components.css?v=20251025c" />
+  <link rel="stylesheet" href="/css/utilities.css?v=20251025" />
+  <style>
+    body {
+      background: linear-gradient(135deg, #4A90E2 0%, #2E5C8A 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--spacing-md);
+    }
+
+    .recovery-container {
+      width: 100%;
+      max-width: 480px;
+      animation: fadeInUp 0.6s ease;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .recovery-header {
+      text-align: center;
+      margin-bottom: var(--spacing-xl);
+      color: white;
+    }
+
+    .recovery-logo {
+      width: 100px;
+      height: 75px;
+      margin: 0 auto var(--spacing-md);
+      border-radius: var(--r-lg);
+      background: url('/imgs/coffe_tour.jpg') center/cover no-repeat;
+      box-shadow: var(--shadow-xl);
+      border: 4px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .recovery-header h1 {
+      font-size: 1.75rem;
+      margin: 0 0 var(--spacing-sm) 0;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      color: white;
+    }
+
+    .recovery-header p {
+      margin: 0;
+      opacity: 0.95;
+      font-size: 1rem;
+    }
+
+    .recovery-card {
+      background: var(--panel);
+      border-radius: var(--r-xl);
+      padding: var(--spacing-2xl);
+      box-shadow: var(--shadow-xl);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .recovery-card h2 {
+      text-align: center;
+      margin: 0 0 var(--spacing-md) 0;
+      color: var(--text);
+      font-size: 1.5rem;
+    }
+
+    .recovery-description {
+      text-align: center;
+      color: var(--muted);
+      margin-bottom: var(--spacing-xl);
+      font-size: 0.9375rem;
+      line-height: 1.5;
+    }
+
+    .form-group {
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: var(--spacing-sm);
+      font-weight: 600;
+      color: var(--text);
+      font-size: 0.9375rem;
+    }
+
+    .input-with-icon {
+      position: relative;
+    }
+
+    .input-with-icon input {
+      padding-left: 44px;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.25rem;
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .message {
+      min-height: 24px;
+      padding: var(--spacing-sm);
+      margin: var(--spacing-md) 0;
+      border-radius: var(--r-md);
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-align: center;
+      display: none;
+      animation: slideIn 0.3s ease;
+    }
+
+    .message.show {
+      display: block;
+    }
+
+    .message.error {
+      background: #ffebee;
+      color: #c62828;
+      border: 1px solid #ef5350;
+    }
+
+    .message.success {
+      background: #e8f5e9;
+      color: #2e7d32;
+      border: 1px solid #66bb6a;
+    }
+
+    .message.info {
+      background: #e3f2fd;
+      color: #1565c0;
+      border: 1px solid #42a5f5;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .btn-recovery {
+      width: 100%;
+      padding: 14px;
+      font-size: 1.0625rem;
+      margin-top: var(--spacing-md);
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-700) 100%);
+      border: none;
+      box-shadow: var(--shadow);
+    }
+
+    .btn-recovery:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .btn-recovery.loading {
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    .btn-recovery.loading::after {
+      content: '';
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      margin-left: var(--spacing-sm);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .divider {
+      text-align: center;
+      margin: var(--spacing-xl) 0;
+      position: relative;
+    }
+
+    .divider::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .divider span {
+      position: relative;
+      background: var(--panel);
+      padding: 0 var(--spacing-md);
+      color: var(--muted);
+      font-size: 0.875rem;
+    }
+
+    .back-to-login {
+      text-align: center;
+      margin-top: var(--spacing-lg);
+    }
+
+    .back-to-login a {
+      color: var(--primary);
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 0.9375rem;
+      transition: color var(--transition-fast);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+
+    .back-to-login a:hover {
+      color: var(--primary-700);
+      text-decoration: underline;
+    }
+
+    .recovery-footer {
+      text-align: center;
+      margin-top: var(--spacing-xl);
+      color: white;
+      font-size: 0.875rem;
+      opacity: 0.9;
+    }
+
+    .step-indicator {
+      display: flex;
+      justify-content: center;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .step {
+      width: 40px;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      transition: background var(--transition-fast);
+    }
+
+    .step.active {
+      background: var(--primary);
+    }
+
+    .code-display {
+      background: #f5f5f5;
+      border: 2px dashed var(--primary);
+      border-radius: var(--r-md);
+      padding: var(--spacing-lg);
+      margin: var(--spacing-lg) 0;
+      text-align: center;
+    }
+
+    .code-display h3 {
+      margin: 0 0 var(--spacing-sm) 0;
+      color: var(--text);
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .code-display .code {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--primary);
+      font-family: 'Courier New', monospace;
+      letter-spacing: 0.25rem;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 639px) {
+      .recovery-container {
+        max-width: 100%;
+      }
+
+      .recovery-card {
+        padding: var(--spacing-lg);
+        border-radius: var(--r-lg);
+      }
+
+      .recovery-header h1 {
+        font-size: 1.5rem;
+      }
+
+      .recovery-logo {
+        width: 80px;
+        height: 60px;
+      }
+
+      .code-display .code {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="recovery-container">
+    <!-- Header con Logo -->
+    <div class="recovery-header">
+      <div class="recovery-logo" aria-label="Logo Restaurante Chicooj"></div>
+      <h1>Recuperar Contraseña</h1>
+      <p>Sistema de Gestión Chicooj</p>
+    </div>
+
+    <!-- Card de Recuperación -->
+    <div class="recovery-card">
+      
+      <!-- Paso 1: Solicitar código -->
+      <div id="step1">
+        <div class="step-indicator">
+          <div class="step active"></div>
+          <div class="step"></div>
+          <div class="step"></div>
+        </div>
+
+        <h2>[LOCK] Recuperar Acceso</h2>
+        <p class="recovery-description">
+          Ingresa tu nombre de usuario para recibir un código de recuperación
+        </p>
+
+        <form id="form-request-code" novalidate>
+          <div class="form-group">
+            <label for="usuario">Usuario</label>
+            <div class="input-with-icon">
+              <span class="input-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </span>
+              <input 
+                id="usuario" 
+                type="text" 
+                placeholder="Ingresa tu usuario" 
+                required 
+                autocomplete="username"
+                autofocus
+              />
+            </div>
+          </div>
+
+          <div id="msg1" class="message" role="alert" aria-live="polite"></div>
+
+          <button type="submit" class="btn btn-recovery btn-primary" id="btn-request">
+            Solicitar Código
+          </button>
+        </form>
+      </div>
+
+      <!-- Paso 2: Mostrar código -->
+      <div id="step2" class="hidden">
+        <div class="step-indicator">
+          <div class="step active"></div>
+          <div class="step active"></div>
+          <div class="step"></div>
+        </div>
+
+        <h2>[OK] Código Generado</h2>
+        <p class="recovery-description">
+          Usa este código para restablecer tu contraseña. El código es válido por 15 minutos.
+        </p>
+
+        <div class="code-display">
+          <h3>Tu código de recuperación:</h3>
+          <div class="code" id="recovery-code">------</div>
+        </div>
+
+        <div class="message info show">
+          <strong>Nota:</strong> En un entorno de producción, este código se enviaría a tu correo electrónico.
+        </div>
+
+        <button type="button" class="btn btn-recovery btn-success" id="btn-next-step">
+          Continuar →
+        </button>
+      </div>
+
+      <!-- Paso 3: Restablecer contraseña -->
+      <div id="step3" class="hidden">
+        <div class="step-indicator">
+          <div class="step active"></div>
+          <div class="step active"></div>
+          <div class="step active"></div>
+        </div>
+
+        <h2>[AUTH] Nueva Contraseña</h2>
+        <p class="recovery-description">
+          Ingresa el código y tu nueva contraseña
+        </p>
+
+        <form id="form-reset-password" novalidate>
+          <div class="form-group">
+            <label for="codigo">Código de Recuperación</label>
+            <div class="input-with-icon">
+              <span class="input-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+              </span>
+              <input 
+                id="codigo" 
+                type="text" 
+                placeholder="Código de 6 dígitos" 
+                required 
+                maxlength="6"
+                pattern="[0-9]{6}"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="nueva-password">Nueva Contraseña</label>
+            <div class="input-with-icon">
+              <span class="input-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+              </span>
+              <input 
+                id="nueva-password" 
+                type="password" 
+                placeholder="Mínimo 6 caracteres" 
+                required 
+                minlength="6"
+                autocomplete="new-password"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="confirmar-password">Confirmar Contraseña</label>
+            <div class="input-with-icon">
+              <span class="input-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+              </span>
+              <input 
+                id="confirmar-password" 
+                type="password" 
+                placeholder="Repite la contraseña" 
+                required 
+                minlength="6"
+                autocomplete="new-password"
+              />
+            </div>
+          </div>
+
+          <div id="msg3" class="message" role="alert" aria-live="polite"></div>
+
+          <button type="submit" class="btn btn-recovery btn-success" id="btn-reset">
+            Restablecer Contraseña
+          </button>
+        </form>
+      </div>
+
+      <!-- Divider -->
+      <div class="divider">
+        <span>o</span>
+      </div>
+
+      <!-- Link de vuelta al login -->
+      <div class="back-to-login">
+        <a href="/templates/login">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          Volver al inicio de sesión
+        </a>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="recovery-footer">
+      <p>© 2025 Restaurante Chicooj. Todos los derechos reservados.</p>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/scripts/config.js?v=20251025"></script>
+  <script src="/scripts/api.js?v=20251025"></script>
+  <script>
+    // Variables globales
+    let currentUsuario = '';
+    let generatedCode = '';
+
+    // Elementos del DOM
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const step3 = document.getElementById('step3');
+    const formRequestCode = document.getElementById('form-request-code');
+    const formResetPassword = document.getElementById('form-reset-password');
+    const btnNextStep = document.getElementById('btn-next-step');
+
+    // Paso 1: Solicitar código
+    formRequestCode.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const usuario = document.getElementById('usuario').value.trim();
+      const msg = document.getElementById('msg1');
+      const btn = document.getElementById('btn-request');
+
+      if (!usuario) {
+        showMessage(msg, 'Por favor ingresa tu usuario', 'error');
+        return;
+      }
+
+      btn.classList.add('loading');
+      btn.disabled = true;
+
+      try {
+        const response = await api.post('/auth/solicitar-recuperacion', { usuario });
+        
+        if (response.success) {
+          currentUsuario = usuario;
+          generatedCode = response.codigo;
+          document.getElementById('recovery-code').textContent = response.codigo;
+          
+          showMessage(msg, '¡Código generado exitosamente!', 'success');
+          
+          setTimeout(() => {
+            step1.classList.add('hidden');
+            step2.classList.remove('hidden');
+          }, 1000);
+        } else {
+          showMessage(msg, response.message || 'Usuario no encontrado', 'error');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        showMessage(msg, 'Error al solicitar código. Intenta nuevamente.', 'error');
+      } finally {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+      }
+    });
+
+    // Paso 2: Ir al paso 3
+    btnNextStep.addEventListener('click', () => {
+      step2.classList.add('hidden');
+      step3.classList.remove('hidden');
+    });
+
+    // Paso 3: Restablecer contraseña
+    formResetPassword.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const codigo = document.getElementById('codigo').value.trim();
+      const nuevaPassword = document.getElementById('nueva-password').value;
+      const confirmarPassword = document.getElementById('confirmar-password').value;
+      const msg = document.getElementById('msg3');
+      const btn = document.getElementById('btn-reset');
+
+      // Validaciones
+      if (!codigo) {
+        showMessage(msg, 'Ingresa el código de recuperación', 'error');
+        return;
+      }
+
+      if (codigo.length !== 6) {
+        showMessage(msg, 'El código debe tener 6 dígitos', 'error');
+        return;
+      }
+
+      if (!nuevaPassword || nuevaPassword.length < 6) {
+        showMessage(msg, 'La contraseña debe tener al menos 6 caracteres', 'error');
+        return;
+      }
+
+      if (nuevaPassword !== confirmarPassword) {
+        showMessage(msg, 'Las contraseñas no coinciden', 'error');
+        return;
+      }
+
+      btn.classList.add('loading');
+      btn.disabled = true;
+
+      try {
+        const response = await api.post('/auth/restablecer-password', {
+          usuario: currentUsuario,
+          codigo: codigo,
+          nuevaPassword: nuevaPassword
+        });
+        
+        if (response.success) {
+          showMessage(msg, '¡Contraseña restablecida exitosamente!', 'success');
+          
+          setTimeout(() => {
+            window.location.href = '/templates/login.html';
+          }, 2000);
+        } else {
+          showMessage(msg, response.message || 'Código inválido o expirado', 'error');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        showMessage(msg, 'Error al restablecer contraseña. Intenta nuevamente.', 'error');
+      } finally {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+      }
+    });
+
+    // Función auxiliar para mostrar mensajes
+    function showMessage(element, text, type) {
+      element.textContent = text;
+      element.className = `message ${type} show`;
+      
+      if (type === 'success') {
+        setTimeout(() => {
+          element.classList.remove('show');
+        }, 5000);
+      }
+    }
+  </script>
+</body>
+</html>

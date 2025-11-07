@@ -1,0 +1,229 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============ ADMINISTRACIÓN ============
+model roles {
+  id_rol      Int        @id @default(autoincrement())
+  nombre_rol  String     @unique @db.VarChar(60)
+  descripcion String?    @db.VarChar(200)
+  usuarios    usuarios[]
+
+  @@map("roles")
+}
+
+model empleados {
+  id_empleado        Int       @id @default(autoincrement())
+  nombre             String    @db.VarChar(80)
+  apellidos          String    @db.VarChar(120)
+  edad               Int?
+  genero             String?   @db.VarChar(20)
+  correo_electronico String    @unique @db.VarChar(150)
+  usuarios           usuarios?
+
+  @@map("empleados")
+}
+
+model usuarios {
+  id_usuario      Int    @id @default(autoincrement())
+  id_empleado     Int    @unique
+  usuario_nombre  String @unique @db.VarChar(60)
+  contrasena_hash String @db.Text
+  id_rol          Int
+
+  empleado       empleados      @relation(fields: [id_empleado], references: [id_empleado], onDelete: Cascade)
+  rol            roles          @relation(fields: [id_rol], references: [id_rol])
+  cuentas        cuenta[]
+  notificaciones notificacion[]
+
+  @@map("usuarios")
+}
+
+// ============ CATÁLOGOS ============
+model area {
+  id_area     Int     @id @default(autoincrement())
+  nombre      String  @unique @db.VarChar(80)
+  descripcion String? @db.VarChar(200)
+
+  platillos     platillos[]
+  categorias    categorias[]
+  area_registro area_registro[]
+
+  @@map("area")
+}
+
+model categorias {
+  id_categoria Int     @id @default(autoincrement())
+  nombre       String  @db.VarChar(100)
+  descripcion  String? @db.VarChar(200)
+  id_area      Int
+  activa       Boolean @default(true)
+
+  area      area        @relation(fields: [id_area], references: [id_area], onDelete: Cascade)
+  platillos platillos[]
+
+  @@unique([nombre, id_area], name: "unique_categoria_por_area")
+  @@index([id_area], name: "ix_categorias_area")
+  @@index([activa], name: "ix_categorias_activa")
+  @@map("categorias")
+}
+
+model platillos {
+  id_platillo  Int     @id @default(autoincrement())
+  nombre       String  @unique @db.VarChar(120)
+  descripcion  String? @db.VarChar(255)
+  precio       Decimal @db.Decimal(10, 2)
+  id_area      Int
+  id_categoria Int?
+  disponible   Boolean @default(true)
+
+  area      area         @relation(fields: [id_area], references: [id_area])
+  categoria categorias?  @relation(fields: [id_categoria], references: [id_categoria], onDelete: SetNull)
+  comandas  comanda[]
+
+  @@index([id_area], name: "ix_platillos_area")
+  @@index([id_categoria], name: "ix_platillos_categoria")
+  @@index([disponible], name: "ix_platillos_disponible")
+  @@map("platillos")
+}
+
+// ============ OPERACIÓN ============
+model cuenta {
+  id_orden   Int      @id @default(autoincrement())
+  fecha      DateTime @default(now()) @db.Timestamptz(6)
+  no_mesa    String   @default("S/N") @db.VarChar(20)
+  id_usuario Int
+  total      Decimal  @default(0) @db.Decimal(12, 2)
+  estado     String   @default("Abierta") @db.VarChar(20)
+
+  usuario           usuarios           @relation(fields: [id_usuario], references: [id_usuario])
+  comandas          comanda[]
+  area_registros    area_registro[]
+  caja_comprobantes caja_comprobante[]
+  notificaciones    notificacion[]
+
+  @@index([fecha], name: "ix_cuenta_fecha")
+  @@index([estado], name: "ix_cuenta_estado")
+  @@index([id_usuario], name: "ix_cuenta_mesero")
+  @@map("cuenta")
+}
+
+model comanda {
+  id_comanda        Int      @id @default(autoincrement())
+  id_orden          Int
+  id_platillo       Int
+  platillo_nombre   String   @db.VarChar(120)
+  precio_unitario   Decimal  @db.Decimal(10, 2)
+  cantidad          Int
+  observaciones     String?  @db.VarChar(255)
+  extra_observacion String?  @db.VarChar(255)
+  extra_precio      Decimal? @default(0) @db.Decimal(10, 2)
+  subtotal          Decimal? @db.Decimal(12, 2)
+  total_linea       Decimal? @db.Decimal(12, 2)
+
+  cuenta        cuenta         @relation(fields: [id_orden], references: [id_orden], onDelete: Cascade)
+  platillo      platillos      @relation(fields: [id_platillo], references: [id_platillo])
+  area_registro area_registro?
+
+  @@index([id_orden], name: "ix_comanda_orden")
+  @@index([id_platillo], name: "ix_comanda_platillo")
+  @@map("comanda")
+}
+
+model area_registro {
+  id_area_registro  Int       @id @default(autoincrement())
+  id_area           Int
+  id_orden          Int
+  id_comanda        Int       @unique
+  no_mesa           String?   @db.VarChar(10) // Número de mesa
+  fecha             DateTime  @default(now()) @db.Timestamptz(6) // Hora de llegada al KDS
+  fecha_terminado   DateTime? @db.Timestamptz(6) // Hora en que se terminó de preparar
+  platillo          String    @db.VarChar(120)
+  cantidad          Int
+  observaciones     String?   @db.VarChar(255)
+  extra_observacion String?   @db.VarChar(255)
+  extra_precio      Decimal   @default(0) @db.Decimal(10, 2)
+  estado            String    @default("Pendiente") @db.VarChar(20) // Pendiente, Preparado
+
+  area    area    @relation(fields: [id_area], references: [id_area])
+  cuenta  cuenta  @relation(fields: [id_orden], references: [id_orden], onDelete: Cascade)
+  comanda comanda @relation(fields: [id_comanda], references: [id_comanda], onDelete: Cascade)
+
+  @@index([id_area], name: "ix_area_reg_area")
+  @@index([id_orden], name: "ix_area_reg_orden")
+  @@index([fecha], name: "ix_area_reg_fecha")
+  @@index([estado], name: "ix_area_reg_estado")
+  @@map("area_registro")
+}
+
+// ============ CAJA ============
+model caja_comprobante {
+  id_comprobante  Int      @id @default(autoincrement())
+  fecha           DateTime @default(now()) @db.Timestamptz(6)
+  lugar           String   @db.VarChar(120)
+  nombre_cliente  String?  @db.VarChar(120)
+  nit             String?  @db.VarChar(50)
+  id_orden        Int
+  total_capturado Decimal  @db.Decimal(12, 2)
+  metodo_pago     String?  @db.VarChar(50)
+  monto_recibido  Decimal? @db.Decimal(12, 2)
+  cambio_devuelto Decimal? @db.Decimal(12, 2)
+
+  cuenta cuenta @relation(fields: [id_orden], references: [id_orden])
+
+  @@index([fecha], name: "ix_caja_fecha")
+  @@map("caja_comprobante")
+}
+
+// ============ TOUR ============
+model tour {
+  id_tour            Int      @id @default(autoincrement())
+  fecha              DateTime @default(dbgenerated("CURRENT_DATE")) @db.Date
+  nombre_servicio    String   @db.VarChar(100)
+  precio_servicio    Decimal  @db.Decimal(10, 2)
+  tipo_visitante     String   @db.VarChar(50)
+  cantidad_visitante Int
+  idioma             String?  @db.VarChar(50)
+  observaciones      String?  @db.Text
+
+  @@index([fecha], name: "ix_tour_fecha")
+  @@map("tour")
+}
+
+// ============ NOTIFICACIONES ============
+model notificacion {
+  id_notificacion Int      @id @default(autoincrement())
+  id_usuario      Int      // Mesero que recibirá la notificación
+  id_orden        Int      // Orden relacionada
+  tipo            String   @default("platillo_listo") @db.VarChar(50) // platillo_listo, orden_lista, etc.
+  titulo          String   @db.VarChar(200)
+  mensaje         String   @db.VarChar(500)
+  leida           Boolean  @default(false)
+  fecha_creacion  DateTime @default(now()) @db.Timestamptz(6)
+  fecha_leida     DateTime? @db.Timestamptz(6)
+  
+  // Datos adicionales (JSON)
+  id_platillo     Int?
+  nombre_platillo String?  @db.VarChar(120)
+  area_nombre     String?  @db.VarChar(80)
+  no_mesa         String?  @db.VarChar(20)
+
+  usuario usuarios @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
+  cuenta  cuenta   @relation(fields: [id_orden], references: [id_orden], onDelete: Cascade)
+
+  @@index([id_usuario, leida], name: "ix_notif_usuario_leida")
+  @@index([fecha_creacion], name: "ix_notif_fecha")
+  @@map("notificacion")
+}

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TEST - Tour Form</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .resultado { background: #f0f0f0; padding: 15px; margin-top: 20px; border-radius: 4px; }
+    pre { background: #fff; padding: 10px; overflow-x: auto; }
+    input, select, textarea { margin: 5px 0; padding: 8px; width: 100%; max-width: 400px; }
+    button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>🧪 TEST - Formulario de Tour</h1>
+  <p>Este test verifica qué datos se están enviando al backend.</p>
+
+  <form id="test-form">
+    <h3>Datos del Tour:</h3>
+    
+    <label>Fecha:</label><br>
+    <input type="date" id="fecha" required><br>
+
+    <label>Servicio:</label><br>
+    <select id="servicio" required>
+      <option value="">Seleccionar...</option>
+      <option value="Recorrido">Recorrido</option>
+      <option value="Recorrido y Canopy">Recorrido y Canopy</option>
+      <option value="Solo Canopy">Solo Canopy</option>
+    </select><br>
+
+    <label>Precio por persona:</label><br>
+    <input type="number" id="precio-servicio" step="0.01" required><br>
+
+    <label>Tipo de visitante:</label><br>
+    <select id="tipo" required>
+      <option value="">Seleccionar...</option>
+      <option value="Nacional">Nacional</option>
+      <option value="Extranjero">Extranjero</option>
+      <option value="Estudiante">Estudiante</option>
+    </select><br>
+
+    <label>Cantidad:</label><br>
+    <input type="number" id="cantidad-visitante" min="1" required><br>
+
+    <label>Idioma:</label><br>
+    <input type="text" id="idioma" required><br>
+
+    <label>Observaciones:</label><br>
+    <textarea id="observaciones"></textarea><br>
+
+    <button type="button" onclick="testForm()">🧪 Probar Datos</button>
+    <button type="button" onclick="sendToBackend()">🚀 Enviar al Backend</button>
+  </form>
+
+  <div class="resultado">
+    <h3>📊 Resultado:</h3>
+    <div id="resultado"></div>
+  </div>
+
+  <script src="/scripts/config.js"></script>
+  <script src="/scripts/api.js"></script>
+  <script>
+    // Configurar fecha actual
+    document.getElementById('fecha').value = new Date().toISOString().split('T')[0];
+
+    function testForm() {
+      const $ = (id) => document.getElementById(id);
+      
+      console.log('🔍 TEST - Valores del formulario:');
+      
+      const inputs = {
+        fecha: $('fecha').value,
+        servicio: $('servicio').value,
+        precioServicio: $('precio-servicio').value,
+        tipo: $('tipo').value,
+        cantidadVisitante: $('cantidad-visitante').value,
+        idioma: $('idioma').value,
+        observaciones: $('observaciones').value
+      };
+      
+      console.log('📥 Valores raw:', inputs);
+      
+      const tourData = {
+        fecha: inputs.fecha,
+        nombre_servicio: inputs.servicio,
+        precio_servicio: parseFloat(inputs.precioServicio),
+        tipo_visitante: inputs.tipo,
+        cantidad_visitante: parseInt(inputs.cantidadVisitante),
+        idioma: inputs.idioma.trim(),
+        observaciones: inputs.observaciones.trim() || ''
+      };
+      
+      console.log('📤 Datos a enviar:', tourData);
+      
+      document.getElementById('resultado').innerHTML = `
+        <h4>✅ Datos capturados correctamente:</h4>
+        <pre>${JSON.stringify(tourData, null, 2)}</pre>
+        <h4>🔍 Verificación:</h4>
+        <ul>
+          <li>nombre_servicio: ${tourData.nombre_servicio ? '✅' : '❌'}</li>
+          <li>precio_servicio: ${tourData.precio_servicio > 0 ? '✅' : '❌'}</li>
+          <li>tipo_visitante: ${tourData.tipo_visitante ? '✅' : '❌'}</li>
+          <li>cantidad_visitante: ${tourData.cantidad_visitante > 0 ? '✅' : '❌'}</li>
+        </ul>
+        <p><strong>¿Todos los campos requeridos están? ${
+          tourData.nombre_servicio && 
+          tourData.precio_servicio > 0 && 
+          tourData.tipo_visitante && 
+          tourData.cantidad_visitante > 0 
+            ? '✅ SÍ' 
+            : '❌ NO'
+        }</strong></p>
+      `;
+    }
+
+    async function sendToBackend() {
+      const $ = (id) => document.getElementById(id);
+      
+      const tourData = {
+        fecha: $('fecha').value,
+        nombre_servicio: $('servicio').value,
+        precio_servicio: parseFloat($('precio-servicio').value),
+        tipo_visitante: $('tipo').value,
+        cantidad_visitante: parseInt($('cantidad-visitante').value),
+        idioma: $('idioma').value.trim(),
+        observaciones: $('observaciones').value.trim() || ''
+      };
+      
+      console.log('🚀 Enviando al backend:', tourData);
+      
+      try {
+        const response = await API.tour.create(tourData);
+        console.log('✅ Respuesta del backend:', response);
+        
+        document.getElementById('resultado').innerHTML = `
+          <h4 style="color: green;">✅ ¡Tour registrado exitosamente!</h4>
+          <pre>${JSON.stringify(response, null, 2)}</pre>
+          <p><a href="/templates/tour/tour-control.html">Ver tours registrados</a></p>
+        `;
+      } catch (error) {
+        console.error('❌ Error del backend:', error);
+        
+        document.getElementById('resultado').innerHTML = `
+          <h4 style="color: red;">❌ Error al registrar</h4>
+          <p><strong>Mensaje:</strong> ${error.message || error}</p>
+          <pre>${JSON.stringify(error, null, 2)}</pre>
+        `;
+      }
+    }
+  </script>
+</body>
+</html>
+
+

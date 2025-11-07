@@ -1,0 +1,60 @@
+# Variables de entorno
+.env
+.env.local
+.env.*.local
+
+# Dependencias
+node_modules/
+**/node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Backups
+backups/
+*.sql
+*.sql.gz
+
+# Excepciones - NO ignorar migraciones de Prisma
+!**/prisma/migrations/**/*.sql
+
+# Certificados SSL
+certbot/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+*.pid
+*.seed
+*.pid.lock
+
+# Build
+dist/
+build/
+
+# Uploads
+uploads/
+
+# Prisma
+*.db
+*.db-journal
+
+# Testing
+coverage/
+.nyc_output/
+
+# Temporary
+tmp/
+temp/
+

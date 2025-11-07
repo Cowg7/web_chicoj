@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gestión de Categorías - Chicoj</title>
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+  
+  <!-- IMPORTANTE: Auth simple sin interferir -->
+  <script src="/scripts/toast-notifications.js?v=20251107v"></script>
+  <script src="/scripts/confirm-modal.js?v=20251108b"></script>
+  <script src="/scripts/simple-auth.js?v=20251101k"></script>
+  
+  <!-- Meta tags para prevenir caché -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  
+  <link rel="stylesheet" href="/css/base.css?v=20251107g">
+  <link rel="stylesheet" href="/css/components.css?v=20251107g">
+  <link rel="stylesheet" href="/css/utilities.css?v=20251101g">
+  <link rel="stylesheet" href="/css/mejoras-ux.css?v=20251101g">
+  <link rel="stylesheet" href="/css/tablas-modernas.css?v=20251107g">
+  <link rel="stylesheet" href="/css/toast-notifications.css?v=20251107v">
+</head>
+<body>
+  <div class="contenedor-app">
+
+    <!-- Header -->
+    <header class="encabezado">
+      <div class="brand">
+        <div class="logo-placeholder" aria-label="Logo"></div>
+        <div>
+          <span class="badge">Somos</span>
+          <h1>Restaurante Chicoj</h1>
+        </div>
+      </div>
+      <nav class="acciones" aria-label="Acciones">
+        <a class="btn btn-outline" href="/templates/administracion/control-platillos">← Volver a Platillos</a>
+        <a class="btn btn-outline" href="/main">Inicio</a>
+        <a class="btn btn-primary" href="#" onclick="return ultraSimpleLogout(event)">Cerrar sesión</a>
+      </nav>
+    </header>
+
+    <!-- Contenido -->
+    <main class="contenido" role="main">
+      
+      <!-- Sección de Formulario -->
+      <section class="formulario-card">
+        <div class="encabezado-form">
+          <h2 id="form-title">Nueva Categoría</h2>
+        </div>
+
+        <form class="formulario" id="form-categoria">
+          <input type="hidden" id="categoria-id" />
+          
+          <div class="seccion_platillo">
+            <!-- Área -->
+            <div class="campo-grupo">
+              <label for="categoria-area">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                Área <span class="required">*</span>
+              </label>
+              <select id="categoria-area" required>
+                <option value="">Seleccione un área</option>
+              </select>
+            </div>
+            
+            <!-- Nombre -->
+            <div class="campo-grupo">
+              <label for="categoria-nombre">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                </svg>
+                Nombre <span class="required">*</span>
+              </label>
+              <input 
+                type="text" 
+                id="categoria-nombre" 
+                placeholder="Ej: Desayunos, Licuados, Postres" 
+                required 
+                maxlength="100"
+                pattern="^(?!^\d+$)[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s]+$"
+                title="No puede ser solo números. Debe contener al menos una letra" />
+              <small class="help-text-inline">Debe contener al menos una letra (no solo números)</small>
+            </div>
+            
+            <!-- Descripción -->
+            <div class="campo-grupo campo-full">
+              <label for="categoria-descripcion">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                </svg>
+                Descripción
+              </label>
+              <textarea id="categoria-descripcion" rows="2" placeholder="Descripción opcional" maxlength="200"></textarea>
+            </div>
+          </div>
+
+          <div class="boton">
+            <button type="submit" class="btn btn-success" id="btn-guardar-categoria">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                <polyline points="7 3 7 8 15 8"></polyline>
+              </svg>
+              Guardar Categoría
+            </button>
+            <button type="button" class="btn btn-outline" id="btn-cancelar-edicion" style="display: none;">
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Sección de Lista de Categorías -->
+      <section class="tabla-container">
+        <div class="tabla-header">
+          <h2>Categorías Existentes</h2>
+          <div class="header-info">
+            <span id="categorias-count">Cargando...</span>
+          </div>
+        </div>
+
+        <div id="categorias-container" class="categorias-grid">
+          <div style="text-align: center; padding: 40px; color: var(--muted); grid-column: 1 / -1;">
+            <p>Cargando categorías...</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="pie-pagina">
+      <p>© Derechos Reservados</p>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/scripts/disable-logs-production.js?v=20251107f"></script>
+  <script src="/scripts/ultra-simple-logout.js?v=20251108m"></script>
+  <script src="/scripts/config.js?v=20251101h"></script>
+  <script src="/scripts/api.js?v=20251107e"></script>
+  <script src="/scripts/gestion-categorias.js?v=20251108i"></script>
+  
+  <style>
+    .help-text-inline {
+      display: block;
+      font-size: 0.8rem;
+      color: #6B7280;
+      margin-top: 4px;
+      margin-bottom: 8px;
+    }
+    
+    input.error {
+      border-color: #ef4444 !important;
+      background-color: #fef2f2 !important;
+    }
+    
+    input.success {
+      border-color: #10B981 !important;
+    }
+  </style>
+  
+  <!-- Estilos personalizados -->
+  <style>
+    .header-info {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    
+    .categorias-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      padding: 1.5rem;
+    }
+    
+    .categoria-card {
+      background: white;
+      border: 2px solid #E5E7EB;
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: all 0.3s;
+      position: relative;
+    }
+    
+    .categoria-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(30, 64, 175, 0.15);
+      transform: translateY(-2px);
+    }
+    
+    .categoria-card.inactiva {
+      opacity: 0.6;
+      background: #F5F7FA;
+    }
+    
+    .categoria-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+    
+    .categoria-card-header h3 {
+      margin: 0;
+      font-size: 1.25rem;
+      color: var(--text);
+      font-weight: 600;
+    }
+    
+    .categoria-badge {
+      background: rgba(30, 64, 175, 0.1);
+      color: var(--primary);
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      white-space: nowrap;
+      border: 1px solid var(--primary);
+    }
+    
+    .categoria-badge.inactiva {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--danger);
+      border: 1px solid var(--danger);
+    }
+    
+    .categoria-card-body {
+      margin-bottom: 1.25rem;
+    }
+    
+    .categoria-area {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--primary);
+      font-size: 0.9rem;
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+    
+    .categoria-descripcion {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    
+    .categoria-platillos-count {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 0.875rem;
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid #E5E7EB;
+    }
+    
+    .categoria-card-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .categoria-card-actions {
+      margin-top: 1rem;
+    }
+    
+    .categoria-card-actions .btn {
+      padding: 10px 16px;
+      font-size: 0.875rem;
+      flex: 1;
+      min-width: fit-content;
+      font-weight: 600;
+    }
+    
+    .campo-full {
+      grid-column: 1 / -1;
+    }
+    
+    @media (max-width: 768px) {
+      .categorias-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .categoria-card-actions {
+        flex-direction: column;
+      }
+      
+      .categoria-card-actions .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</body>
+</html>
+

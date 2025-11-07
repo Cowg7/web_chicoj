@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Control de Comandas - Chicoj</title>
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+  
+  <!-- IMPORTANTE: Auth simple sin interferir -->
+    <script src="/scripts/toast-notifications.js?v=20251107v"></script>
+  <script src="/scripts/simple-auth.js?v=20251101k"></script>
+  
+  <!-- Meta tags para prevenir caché -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  
+  <link rel="stylesheet" href="/css/base.css?v=20251025c">
+  <link rel="stylesheet" href="/css/components.css?v=20251025c">
+  <link rel="stylesheet" href="/css/utilities.css?v=20251025">
+  <link rel="stylesheet" href="/css/estilos-comanda-control.css?v=20251025">
+  <link rel="stylesheet" href="/css/notifications.css?v=20251108r">
+  <link rel="stylesheet" href="/css/responsive.css?v=20251101k">
+  <link rel="stylesheet" href="/css/responsive-comanda.css?v=20251101k">
+  <style>
+    /* Estilos para el botón de notificaciones */
+    .btn-notification {
+      position: relative;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      margin-right: 1rem;
+      transition: transform 0.2s;
+    }
+
+    .btn-notification:hover {
+      transform: scale(1.1);
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: #f44336;
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    /* Panel de notificaciones */
+    .notifications-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 400px;
+      height: 100vh;
+      background: white;
+      box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      animation: slideInRight 0.3s ease-out;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+      }
+      to {
+        transform: translateX(0);
+      }
+    }
+
+    .notifications-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      border-bottom: 2px solid #e0e0e0;
+      background: #f5f5f5;
+    }
+
+    .notifications-header h3 {
+      margin: 0;
+      font-size: 1.25rem;
+    }
+
+    .btn-close-panel {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #666;
+      padding: 0.25rem 0.5rem;
+      transition: color 0.2s;
+    }
+
+    .btn-close-panel:hover {
+      color: #f44336;
+    }
+
+    .notifications-actions {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .notifications-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+    }
+
+    .notification-item {
+      background: #f9f9f9;
+      border-left: 4px solid #2196F3;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .notification-item.unread {
+      background: #e3f2fd;
+      border-left-color: #2196F3;
+    }
+
+    .notification-item.read {
+      background: #f5f5f5;
+      border-left-color: #bdbdbd;
+      opacity: 0.7;
+    }
+
+    .notification-item:hover {
+      transform: translateX(-4px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .notification-item.orden-lista {
+      border-left-color: #4CAF50;
+    }
+
+    .notification-item.platillo-listo {
+      border-left-color: #FF9800;
+    }
+
+    .notification-title {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .notification-message {
+      font-size: 0.875rem;
+      color: #666;
+      margin-bottom: 0.5rem;
+    }
+
+    .notification-time {
+      font-size: 0.75rem;
+      color: #999;
+    }
+
+    .notification-item .btn-delete {
+      float: right;
+      background: none;
+      border: none;
+      color: #999;
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 0.25rem 0.5rem;
+    }
+
+    .notification-item .btn-delete:hover {
+      color: #f44336;
+    }
+
+    /* Audio oculto para notificaciones */
+    #notification-sound {
+      display: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .notifications-panel {
+        width: 100%;
+      }
+    }
+
+    /* ========================================
+       TABLA DE ORDEN - Paleta Profesional
+       ======================================== */
+    .tabla-orden thead {
+      background: linear-gradient(135deg, #1E40AF 0%, #2563EB 100%);
+      color: #ffffff !important;
+    }
+
+    .tabla-orden th {
+      color: #ffffff !important;
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+    }
+    
+    .tabla-orden tbody tr:nth-child(even) {
+      background: #F5F7FA;
+    }
+    
+    .tabla-orden tbody tr:hover {
+      background: #eff6ff;
+    }
+
+    @media print {
+      .tabla-orden thead {
+        background: #1E40AF !important;
+      }
+      .tabla-orden th {
+        color: #ffffff !important;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="/css/toast-notifications.css?v=20251107v">
+</head>
+<body>
+  <div class="contenedor-app">
+    <!-- Header -->
+    <header class="encabezado">
+      <div class="brand">
+        <div class="logo-placeholder" aria-label="Logo"></div>
+        <div>
+          <span class="badge">Somos</span>
+          <h1>Restaurante Chicoj</h1>
+        </div>
+      </div>
+      <nav class="acciones" aria-label="Acciones">
+        <!-- Botón de Notificaciones -->
+        <button type="button" class="btn-notification" id="btn-notifications" aria-label="Notificaciones">
+          🔔
+          <span class="notification-badge" id="notification-count" style="display: none;">0</span>
+        </button>
+        <a class="btn btn-outline" href="/main">Inicio</a>
+        <a class="btn btn-primary" href="#" onclick="return ultraSimpleLogout(event)">Cerrar sesión</a>
+      </nav>
+    </header>
+
+    <!-- Panel de Notificaciones -->
+    <div class="notifications-panel" id="notifications-panel" style="display: none;">
+      <div class="notifications-header">
+        <h3>🔔 Notificaciones</h3>
+        <button type="button" class="btn-close-panel" id="btn-close-notifications">✕</button>
+      </div>
+      <div class="notifications-actions">
+        <button type="button" class="btn btn-small" id="btn-mark-all-read">✓ Marcar todas como leídas</button>
+      </div>
+      <div class="notifications-list" id="notifications-list">
+        <p style="text-align: center; padding: 2rem; color: #999;">
+          Cargando notificaciones...
+        </p>
+      </div>
+    </div>
+
+    <!-- Contenido -->
+    <main class="contenido" role="main">
+      <section class="visor">
+        <div class="visor-header">
+          <button type="button" class="flecha" id="prev" aria-label="Anterior">‹</button>
+
+          <div class="resumen">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <h2 class="titulo" style="margin: 0;">Comandas por orden</h2>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <label for="filtro-ordenes" style="font-size: 0.9rem; color: #666;">Ver:</label>
+                <select id="filtro-ordenes" style="padding: 0.5rem; border-radius: 4px; border: 2px solid #ddd; font-size: 0.9rem; cursor: pointer;">
+                  <option value="mis-ordenes">👤 Mis Órdenes</option>
+                  <option value="todas">👥 Todas las Órdenes</option>
+                </select>
+              </div>
+            </div>
+            <div class="meta">
+              <span id="orden-id">No. Orden: <strong>-</strong></span>
+              <span id="orden-mesa">Mesa: <strong>-</strong></span>
+              <span id="orden-fecha">Fecha: <strong>-</strong></span>
+              <span id="orden-total" class="total">Total: <strong>Q 0.00</strong></span>
+            </div>
+            <div class="indice">
+              <span id="pos">0</span> de <span id="tot">0</span>
+            </div>
+          </div>
+
+          <button type="button" class="flecha" id="next" aria-label="Siguiente">›</button>
+        </div>
+
+       
+        <div class="visor-acciones">
+          <a href="/templates/mesero/mesero_comanda" class="btn btn-success" id="btn-nueva-orden">+ Nueva Orden</a>
+          <a href="/templates/mesero/mesero_comanda" class="btn btn-outline" id="btn-editar-orden">Agregar platillos a esta orden</a>
+          <button type="button" class="btn btn-warning" id="btn-enviar-cocina" style="display: none;"> Enviar a Cocina</button>
+          <button type="button" class="btn btn-danger" id="btn-eliminar-orden" style="display: none;"> Eliminar Orden</button>
+          <button type="button" class="btn btn-primary" id="btn-cerrar-cuenta" style="display: none;">💰 Cerrar Cuenta</button>
+        </div>
+
+        <div class="visor-cuerpo">
+          <div class="tabla-orden">
+            <table>
+              <thead>
+                <tr>
+                  <th>Cant.</th>
+                  <th>Platillo</th>
+                  <th>Observaciones</th>
+                  <th>Precio</th>
+                  <th>Observación Extra</th>
+                  <th>Precio Extra</th>
+                  <th>Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Los items se cargarán dinámicamente aquí -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="pie-pagina">
+      <p>© Derechos Reservados</p>
+    </footer>
+  </div>
+
+  <!-- Audio para notificaciones (sonido generado dinámicamente) -->
+  <audio id="notification-sound" preload="auto"></audio>
+
+  <!-- Scripts -->
+  <!-- IMPORTANTE: Este debe ser el PRIMER script para desactivar logs en producción -->
+  <script src="/scripts/disable-logs-production.js?v=20251107f"></script>
+  <script src="/scripts/ultra-simple-logout.js?v=20251108m"></script>
+  <script src="/scripts/config.js"></script>
+  <script src="/scripts/api.js?v=20251024c"></script>
+  <script src="/scripts/access-control.js?v=20251107e"></script>
+  <script src="/scripts/confirm-modal.js?v=20251108b"></script>
+  <script src="/scripts/notifications.js?v=20251108r"></script>
+  <script src="/scripts/comanda-control.js?v=20251108o"></script>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Control de Tours - Chicoj</title>
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+  
+  <!-- Desactivar logs en producción (debe ser el primero) -->
+    <script src="/scripts/toast-notifications.js?v=20251107v"></script>
+  <script src="/scripts/disable-logs-production.js?v=20251107f"></script>
+  
+  <!-- IMPORTANTE: Auth simple sin interferir -->
+  <script src="/scripts/simple-auth.js?v=20251101k"></script>
+  
+  <!-- Meta tags para prevenir caché -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  
+  <link rel="stylesheet" href="/css/base.css?v=20251101g">
+  <link rel="stylesheet" href="/css/components.css?v=20251101g">
+  <link rel="stylesheet" href="/css/utilities.css?v=20251101g">
+  <link rel="stylesheet" href="/css/mejoras-ux.css?v=20251101g">
+  <link rel="stylesheet" href="/css/tablas-modernas.css?v=20251101g">
+  <link rel="stylesheet" href="/css/estilos-tour-control.css?v=20251107g">
+  <link rel="stylesheet" href="/css/responsive.css?v=20251101k">
+  <link rel="stylesheet" href="/css/responsive-tour.css?v=20251101k">
+  <link rel="stylesheet" href="/css/toast-notifications.css?v=20251107v">
+</head>
+<body>
+  <div class="contenedor-app">
+    <header class="encabezado">
+      <div class="brand">
+        <div class="logo-placeholder"></div>
+        <div>
+          <span class="badge">Somos</span>
+          <h1>Restaurante Chicoj</h1>
+        </div>
+      </div>
+      <nav class="acciones">
+
+        <a class="btn btn-primary" href="#" onclick="return ultraSimpleLogout(event)">Cerrar sesión</a>
+      </nav>
+    </header>
+
+    <main class="contenido">
+      <section class="tabla-container">
+        <h2>Tickets Registrados</h2>
+
+        <!-- Botón superior -->
+        <div class="tabla-actions">
+          <a class="btn btn-outline" href="/templates/tour/tour" id="btn-editar">Editar seleccionado</a>
+          <button class="btn btn-success" type="button" id="btn-descargar-excel">
+             Descargar Excel
+          </button>
+          <button class="btn btn-danger" type="button" id="btn-descargar-pdf">
+             Descargar PDF
+          </button>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filtros">
+          <div class="campo">
+            <label for="f-fecha-desde">Desde</label>
+            <input id="f-fecha-desde" type="date" max="">
+          </div>
+          <div class="campo">
+            <label for="f-fecha-hasta">Hasta</label>
+            <input id="f-fecha-hasta" type="date" max="">
+          </div>
+          <div class="campo">
+            <label for="f-servicio">Servicio</label>
+            <select id="f-servicio">
+              <option value="">Todos los servicios</option>
+              <option value="Recorrido">Recorrido</option>
+              <option value="Recorrido y Canopy">Recorrido y Canopy</option>
+              <option value="Solo Canopy">Solo Canopy</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label for="f-tipo">Tipo visitante</label>
+            <select id="f-tipo">
+              <option value="">Todos</option>
+              <option value="Nacional">Nacional</option>
+              <option value="Extranjero">Extranjero</option>
+              <option value="Estudiante">Estudiante</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" type="button" id="btn-aplicar-filtros">Buscar</button>
+          <button class="btn btn-outline" type="button" id="btn-limpiar-filtros">Limpiar</button>
+        </div>
+
+        <!-- Tabla -->
+        <div class="tabla-orden">
+          <table id="tabla-tickets">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Servicio</th>
+                <th>Precio Servicio</th>
+                <th>Tipo visitante</th>
+                <th>Cantidad visitante</th>
+                <th>Idioma</th>
+                <th>Observaciones</th>
+                <th>Precio total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Los datos se cargarán dinámicamente -->
+              <tr>
+                <td colspan="9" style="text-align: center; padding: 20px;">
+                  Cargando tickets...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Paginación -->
+        <div class="pagination-container" id="pagination-container" style="display: none;">
+          <div class="pagination-info" id="pagination-info">
+            Mostrando 1-20 de 100 registros
+          </div>
+          <div class="pagination-controls">
+            <button class="btn btn-outline btn-page" id="btn-first-page" title="Primera página">
+              ⏮️
+            </button>
+            <button class="btn btn-outline btn-page" id="btn-prev-page" title="Anterior">
+              ◀️
+            </button>
+            <div class="page-numbers" id="page-numbers">
+              <!-- Se generarán dinámicamente -->
+            </div>
+            <button class="btn btn-outline btn-page" id="btn-next-page" title="Siguiente">
+              [PLAY]
+            </button>
+            <button class="btn btn-outline btn-page" id="btn-last-page" title="Última página">
+              ⏭️
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="pie-pagina">
+      <p>© Derechos Reservados</p>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <!-- Librerías para exportación -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  
+  <script src="/scripts/config.js?v=20251101h"></script>
+  <script src="/scripts/ultra-simple-logout.js?v=20251108m"></script>
+  <script src="/scripts/api.js"></script>
+  <script src="/scripts/tour-control.js?v=20251101k"></script>
+  
+  <!-- Estilos para paginación -->
+  <style>
+    .pagination-container {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      border-top: 2px solid #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: center;
+    }
+    
+    .pagination-info {
+      font-size: 0.95rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    
+    .pagination-controls {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .btn-page {
+      min-width: 40px;
+      height: 40px;
+      padding: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .btn-page:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    
+    .page-numbers {
+      display: flex;
+      gap: 0.25rem;
+    }
+    
+    .page-number {
+      min-width: 40px;
+      height: 40px;
+      padding: 0.5rem;
+      border: 2px solid #e0e0e0;
+      background: white;
+      border-radius: var(--r-sm);
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .page-number:hover:not(.active) {
+      border-color: var(--primary);
+      background: rgba(33, 150, 243, 0.05);
+    }
+    
+    .page-number.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      font-weight: 700;
+    }
+    
+    .page-ellipsis {
+      min-width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-weight: 700;
+    }
+  </style>
+</body>
+</html>

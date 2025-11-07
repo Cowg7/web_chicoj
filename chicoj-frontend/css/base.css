@@ -1,0 +1,324 @@
+/* ====================================
+   BASE.CSS - Sistema de Diseño Base
+   ==================================== */
+
+/* Variables CSS */
+:root {
+  /* Colores Principales - Paleta Profesional Unificada */
+  --bg: #F5F7FA;              /* Fondo principal - gris muy claro */
+  --bg-secondary: #E5E7EB;    /* Fondo secundario */
+  --panel: #ffffff;           /* Paneles y tarjetas */
+  --brand: #1E40AF;           /* Color de marca - azul profundo */
+  --primary: #1E40AF;         /* Primario - azul profundo */
+  --primary-50: #eff6ff;
+  --primary-100: #dbeafe;
+  --primary-200: #bfdbfe;
+  --primary-600: #1E40AF;     /* Base primario */
+  --primary-700: #1e3a8a;
+  --primary-800: #1e3a8a;
+  --primary-900: #1e3a8a;
+  --secondary: #2563EB;       /* Secundario - azul brillante (hover) */
+  
+  /* Colores de Estado */
+  --success: #10B981;         /* Acento natural - verde esmeralda */
+  --success-50: #f0fdf4;
+  --success-600: #10B981;
+  --success-700: #059669;
+  
+  --warning: #f59e0b;
+  --warning-50: #fffbeb;
+  --warning-600: #f59e0b;
+  --warning-700: #d97706;
+  
+  --danger: #ef4444;
+  --danger-50: #fef2f2;
+  --danger-600: #ef4444;
+  --danger-700: #dc2626;
+  
+  --info: #2563EB;            /* Info usa el secundario */
+  --info-50: #eff6ff;
+  --info-600: #2563EB;
+  --info-700: #1E40AF;
+  
+  /* Textos */
+  --text: #111827;            /* Texto principal - gris casi negro */
+  --text-secondary: #4b5563;
+  --text-light: #6b7280;
+  --muted: #9ca3af;
+  
+  /* Bordes y Fondos */
+  --border: #E5E7EB;          /* Bordes - gris claro */
+  --border-light: #f3f4f6;
+  
+  /* Espaciado */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  
+  /* Bordes */
+  --r-sm: 6px;
+  --r-md: 12px;
+  --r-lg: 18px;
+  --r-xl: 24px;
+  --r-full: 999px;
+  
+  /* Sombras */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow: 0 4px 12px rgba(16, 24, 40, 0.08);
+  --shadow-lg: 0 8px 24px rgba(16, 24, 40, 0.12);
+  --shadow-xl: 0 12px 48px rgba(16, 24, 40, 0.16);
+  
+  /* Focus */
+  --focus: 0 0 0 3px rgba(33, 150, 243, 0.25);
+  
+  /* Transiciones */
+  --transition-fast: 150ms ease;
+  --transition-base: 200ms ease;
+  --transition-slow: 300ms ease;
+  
+  /* Breakpoints (para JS) */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+}
+
+/* Reset y Base */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+/* Layout Principal */
+.contenedor-app {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+/* Header */
+.encabezado {
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  gap: var(--spacing-md);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  min-width: 0;
+}
+
+.logo-placeholder {
+  width: 76px;
+  height: 56px;
+  border-radius: var(--r-md);
+  background: url('/imgs/coffe_tour.jpg') center/cover no-repeat;
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+}
+
+.brand h1 {
+  margin: 0;
+  color: var(--brand);
+  font-size: 1.25rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.acciones {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Contenido Principal */
+.contenido {
+  max-width: 1400px;
+  width: 100%;
+  margin: var(--spacing-lg) auto;
+  padding: 0 var(--spacing-md);
+}
+
+/* Footer */
+.pie-pagina {
+  background: var(--panel);
+  border-top: 1px solid var(--border);
+  text-align: center;
+  padding: var(--spacing-md);
+  color: var(--text-light);
+  font-size: 0.875rem;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--text);
+}
+
+h1 { font-size: 2rem; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.25rem; }
+h4 { font-size: 1.125rem; }
+h5 { font-size: 1rem; }
+h6 { font-size: 0.875rem; }
+
+p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--primary-700);
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: var(--r-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
+
+/* ====================================
+   RESPONSIVE BREAKPOINTS
+   ==================================== */
+
+/* Mobile First - Base styles above are for mobile */
+
+/* Small tablets and large phones (landscape) */
+@media (min-width: 640px) {
+  .encabezado {
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+  
+  .contenido {
+    padding: 0 var(--spacing-lg);
+  }
+  
+  .brand h1 {
+    font-size: 1.35rem;
+  }
+}
+
+/* Tablets (portrait) */
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+  
+  .contenido {
+    margin: var(--spacing-xl) auto;
+  }
+  
+  h1 { font-size: 2.25rem; }
+  h2 { font-size: 1.75rem; }
+  h3 { font-size: 1.5rem; }
+}
+
+/* Desktops and tablets (landscape) */
+@media (min-width: 1024px) {
+  .contenido {
+    max-width: 1200px;
+  }
+  
+  .encabezado {
+    padding: var(--spacing-md) var(--spacing-xl);
+  }
+}
+
+/* Large desktops */
+@media (min-width: 1280px) {
+  .contenido {
+    max-width: 1400px;
+  }
+}
+
+/* Mobile specific adjustments */
+@media (max-width: 639px) {
+  .brand h1 {
+    font-size: 1rem;
+  }
+  
+  .logo-placeholder {
+    width: 56px;
+    height: 42px;
+  }
+  
+  .acciones {
+    gap: var(--spacing-xs);
+  }
+  
+  h1 { font-size: 1.5rem; }
+  h2 { font-size: 1.25rem; }
+  h3 { font-size: 1.125rem; }
+}
+
+/* Print styles */
+@media print {
+  .encabezado,
+  .pie-pagina,
+  .acciones {
+    display: none;
+  }
+  
+  .contenido {
+    margin: 0;
+    padding: 0;
+    max-width: 100%;
+  }
+}

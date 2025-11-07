@@ -1,0 +1,183 @@
+/**
+ * RESPONSIVE PARA COMANDAS
+ * Vistas: mesero_comanda.html, comanda-control.html
+ */
+
+/* ========================================
+   LAYOUT PRINCIPAL - COMANDA
+   ======================================== */
+
+.comanda-layout {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: 1fr 1fr;
+}
+
+/* Tablet: Mantener 2 columnas pero más compacto */
+@media (max-width: 1024px) and (min-width: 641px) {
+  .comanda-layout {
+    gap: 1rem;
+  }
+}
+
+/* Mobile: 1 columna */
+@media (max-width: 640px) {
+  .comanda-layout {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+/* ========================================
+   SELECCIÓN DE ÁREA Y CATEGORÍA - RESPONSIVE
+   ======================================== */
+
+#area-buttons,
+#categoria-buttons,
+#platillo-buttons {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+
+@media (max-width: 640px) {
+  #area-buttons,
+  #categoria-buttons {
+    grid-template-columns: 1fr;
+  }
+  
+  #platillo-buttons {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ========================================
+   FORMULARIO DE ORDEN - RESPONSIVE
+   ======================================== */
+
+.orden-info {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+@media (max-width: 640px) {
+  .orden-info {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========================================
+   TABLA DE ORDEN - RESPONSIVE
+   ======================================== */
+
+.orden-tabla {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.orden-tabla table {
+  min-width: 100%;
+}
+
+@media (max-width: 640px) {
+  .orden-tabla table {
+    font-size: 0.8125rem;
+  }
+  
+  .orden-tabla th,
+  .orden-tabla td {
+    padding: 0.5rem 0.25rem;
+  }
+  
+  /* Ocultar columnas menos importantes en móvil */
+  .orden-tabla .hide-mobile {
+    display: none;
+  }
+}
+
+/* ========================================
+   BOTONES DE PLATILLOS - RESPONSIVE
+   ======================================== */
+
+.platillo-btn {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem;
+  text-align: left;
+  width: 100%;
+}
+
+.platillo-nombre {
+  font-weight: 600;
+  font-size: clamp(0.875rem, 2vw, 1rem);
+}
+
+.platillo-precio {
+  font-size: clamp(0.8125rem, 1.8vw, 0.9375rem);
+  opacity: 0.8;
+}
+
+@media (max-width: 640px) {
+  .platillo-btn {
+    padding: 0.625rem;
+  }
+}
+
+/* ========================================
+   TOTALES - RESPONSIVE
+   ======================================== */
+
+.total-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: var(--bg-light, #f5f5f5);
+  border-radius: 8px;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.total-label {
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  font-weight: 600;
+}
+
+.total-valor {
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  font-weight: 700;
+  color: var(--success, #27ae60);
+}
+
+@media (max-width: 640px) {
+  .total-container {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+/* ========================================
+   ACCIONES DE COMANDA - RESPONSIVE
+   ======================================== */
+
+.comanda-acciones {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .comanda-acciones {
+    flex-direction: column;
+  }
+  
+  .comanda-acciones .btn {
+    width: 100%;
+  }
+}
+
+
+

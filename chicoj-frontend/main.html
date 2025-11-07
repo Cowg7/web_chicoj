@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inicio - Chicoj</title>
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+  <link rel="manifest" href="/assets/site.webmanifest">
+  
+  <!-- IMPORTANTE: Auth simple sin interferir con la vista -->
+  <script src="/scripts/simple-auth.js?v=20251101k"></script>
+  
+  <!-- Meta tags para prevenir caché -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  
+<link rel="stylesheet" href="/css/base.css?v=20251101g">
+<link rel="stylesheet" href="/css/components.css?v=20251101g">
+<link rel="stylesheet" href="/css/utilities.css?v=20251101g">
+  <link rel="stylesheet" href="/css/mejoras-ux.css?v=20251101g">
+  <link rel="stylesheet" href="/css/estilos-inicio.css?v=20251101g">
+  <style>
+    /* ========================================
+       RESPONSIVE PARA BOTONES EN MAIN.HTML
+       ======================================== */
+    
+    /* Mobile: mejorar visualización de botones en header */
+    @media (max-width: 768px) {
+      .encabezado {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+      }
+      
+      .brand {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .acciones {
+        width: 100%;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      
+      .acciones .btn {
+        width: 100%;
+        padding: 0.875rem 1.25rem;
+        font-size: 1rem;
+        justify-content: center;
+      }
+    }
+    
+    /* Mobile pequeño: optimizar aún más */
+    @media (max-width: 480px) {
+      .encabezado {
+        padding: 0.75rem;
+      }
+      
+      .brand {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+      }
+      
+      .brand-text {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .brand h1 {
+        font-size: 1.1rem !important;
+      }
+      
+      .badge {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.625rem;
+      }
+      
+      .acciones .btn {
+        font-size: 0.95rem;
+        padding: 0.75rem 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="contenedor-app">
+
+    <!-- Header con espacio de logo -->
+    <header class="encabezado">
+      <div class="brand">
+        <div class="logo-placeholder" aria-label="Espacio para el logo"></div>
+        <div class="brand-text">
+          <span class="badge">Somos</span>
+          <h1>Restaurante Chicooj</h1>
+        </div>
+      </div>
+
+      <nav class="acciones" aria-label="Acciones principales">
+        <a class="btn btn-outline" href="/templates/administracion/menu_usuarios">Gestionar Usuarios</a>
+        <a class="btn btn-primary" href="#" onclick="return ultraSimpleLogout(event)">Cerrar sesión</a>
+      </nav>
+    </header>
+
+    <!-- Contenido central -->
+    <main class="contenido" role="main">
+      <h2 class="titulo-seccion">Panel de Administración</h2>
+
+      <section class="grid-opciones">
+        <!-- Tarjeta 1 -->
+        <article class="card-opcion">
+          <h3>Administrador de Platillos</h3>
+          <div class="media">
+            <img src="imgs/platillos.jpg" alt="Imagen de platillos">
+          </div>
+          <p class="desc">Crea, edita y organiza el menú.</p>
+          <a class="btn btn-primary" href="/templates/administracion/control-platillos">Administrar Platillos</a>
+        </article>
+
+        <!-- Tarjeta 2 -->
+        <article class="card-opcion">
+          <h3>Administrador de Tours</h3>
+          <div class="media">
+            <img src="imgs/tour.jpg" alt="Imagen de tour">
+          </div>
+          <p class="desc">Gestiona horarios, rutas y reservas.</p>
+          <a class="btn btn-primary" href="/templates/tour/tour-control">Administrar Tours</a>
+        </article>
+
+        <!-- Nueva tarjeta 3 -->
+        <article class="card-opcion">
+          <h3>Administrador de Cocina</h3>
+          <div class="media">
+            <img src="imgs/cocina.jpg" alt="Imagen de cocina">
+          </div>
+          <p class="desc">Controla órdenes, tiempos y estados de platillos.</p>
+          <a class="btn btn-primary" href="/templates/cocina/menu_cocina">Administrar Cocina</a>
+        </article>
+
+        <!-- 🔹 Nueva tarjeta 4 -->
+        <article class="card-opcion">
+          <h3>Administrador de Comandas Restaurante</h3>
+          <div class="media">
+            <img src="imgs/comandas.jpg" alt="Imagen de comandas">
+          </div>
+          <p class="desc">Registra órdenes, calcula totales y genera reportes.</p>
+          <a class="btn btn-primary" href="/templates/mesero/comanda-control">Administrar Comandas</a>
+        </article>
+
+        <!-- 🔹 Nueva tarjeta 5: Caja -->
+        <article class="card-opcion">
+          <h3> Caja</h3>
+          <div class="media">
+            <img src="imgs/caja.png" alt="Imagen de caja">
+          </div>
+          <p class="desc">Gestiona pagos, comprobantes y cierre de caja.</p>
+          <a class="btn btn-primary" href="/templates/caja/caja">Ir a Caja</a>
+        </article>
+
+        <!-- 🔹 Nueva tarjeta 6: Reportes -->
+        <article class="card-opcion">
+          <h3> Reportes y Estadísticas</h3>
+          <div class="media">
+            <img src="imgs/reportes.jpg" alt="Imagen de reportes">
+          </div>
+          <p class="desc">Visualiza ventas, platillos más vendidos y análisis.</p>
+          <a class="btn btn-primary" href="/templates/reportes/reportes">Ver Reportes</a>
+        </article>
+      </section>
+    </main>
+
+    <footer class="pie-pagina">
+      <p>© Derechos Reservados</p>
+    </footer>
+  </div>
+  
+  <!-- Scripts -->
+  <script src="/scripts/ultra-simple-logout.js?v=20251101j"></script>
+  <script src="/scripts/config.js?v=20251101h"></script>
+  <script src="/scripts/access-control.js?v=20251101h"></script>
+</body>
+</html>
