@@ -11,17 +11,12 @@ import reportsRoutes from './reports.routes.js';
 import employeesRoutes from './employees.routes.js';
 import usersRoutes from './users.routes.js';
 import notificationsRoutes from '../modules/notifications/notifications.routes.js';
+import healthRoutes from './health.routes.js';
 
 const router = express.Router();
 
-// Health check
-router.get('/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
-    timestamp: new Date().toISOString(),
-    service: 'Chicoj Backend API'
-  });
-});
+// Health check routes (completo con monitoreo de DB)
+router.use('/', healthRoutes);
 
 // Rutas de módulos
 router.use('/auth', authRoutes);
