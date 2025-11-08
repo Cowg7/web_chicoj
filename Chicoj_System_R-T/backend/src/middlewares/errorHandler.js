@@ -19,12 +19,15 @@ export const errorHandler = (err, req, res, next) => {
   error.statusCode = err.statusCode || 500;
   
   // Log del error
-  console.error('Error:', {
+  console.error('❌ Error:', {
     message: error.message,
     statusCode: error.statusCode,
     stack: config.env === 'development' ? err.stack : undefined,
     path: req.path,
     method: req.method,
+    originalError: err.message,
+    errorName: err.name,
+    errorCode: err.code,
   });
   
   // Errores de Prisma

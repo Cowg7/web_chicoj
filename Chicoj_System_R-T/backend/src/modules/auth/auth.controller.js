@@ -52,6 +52,17 @@ export const login = asyncHandler(async (req, res) => {
   
   console.log('✅ Usuario encontrado:', usuario.usuario_nombre);
   
+  // Validar que el usuario tenga empleado y rol asociados
+  if (!usuario.empleado) {
+    console.error('❌ Usuario sin empleado asociado:', usuario.id_usuario);
+    throw new AppError('Usuario sin empleado asociado. Contacte al administrador.', 500);
+  }
+  
+  if (!usuario.rol) {
+    console.error('❌ Usuario sin rol asociado:', usuario.id_usuario);
+    throw new AppError('Usuario sin rol asociado. Contacte al administrador.', 500);
+  }
+  
   // Verificar contraseña
   const isValidPassword = await bcrypt.compare(password, usuario.contrasena_hash);
   console.log('🔐 Verificación de contraseña:', isValidPassword ? '✅ Correcta' : '❌ Incorrecta');
@@ -60,17 +71,29 @@ export const login = asyncHandler(async (req, res) => {
     throw new AppError('Credenciales inválidas', 401);
   }
   
+  // Validar configuración de JWT
+  if (!config.jwt.secret) {
+    console.error('❌ JWT_SECRET no está configurado');
+    throw new AppError('Error de configuración del servidor', 500);
+  }
+  
   // Generar JWT
-  const token = jwt.sign(
-    { 
-      userId: usuario.id_usuario,
-      username: usuario.usuario_nombre,
-      role: usuario.rol.nombre_rol,
-      empleadoId: usuario.empleado.id_empleado
-    },
-    config.jwt.secret,
-    { expiresIn: config.jwt.expiresIn }
-  );
+  let token;
+  try {
+    token = jwt.sign(
+      { 
+        userId: usuario.id_usuario,
+        username: usuario.usuario_nombre,
+        role: usuario.rol.nombre_rol,
+        empleadoId: usuario.empleado.id_empleado
+      },
+      config.jwt.secret,
+      { expiresIn: config.jwt.expiresIn }
+    );
+  } catch (jwtError) {
+    console.error('❌ Error al generar JWT:', jwtError);
+    throw new AppError('Error al generar token de autenticación', 500);
+  }
   
   // Preparar respuesta sin contraseña
   const { contrasena_hash, ...userWithoutPassword } = usuario;
