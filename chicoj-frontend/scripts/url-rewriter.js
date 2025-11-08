@@ -81,6 +81,6 @@
     addHTML: addHTMLIfNeeded
   };
   
-  console.log('✅ URL Rewriter activo - URLs limpias habilitadas');
+  console.log('[OK] URL Rewriter activo - URLs limpias habilitadas');
 })();
 

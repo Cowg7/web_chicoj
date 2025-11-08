@@ -157,7 +157,8 @@ export const getOrder = asyncHandler(async (req, res) => {
             include: {
               area: true
             }
-          }
+          },
+          area_registro: true // Incluir el registro de KDS de cada comanda
         }
       },
       usuario: {
@@ -178,9 +179,22 @@ export const getOrder = asyncHandler(async (req, res) => {
     throw new AppError('Orden no encontrada', 404);
   }
   
+  // Agregar información de estado KDS a cada comanda
+  const ordenConEstados = {
+    ...orden,
+    comandas: orden.comandas.map(comanda => ({
+      ...comanda,
+      en_kds: !!comanda.area_registro, // Si tiene area_registro, está en KDS
+      estado_kds: comanda.area_registro?.estado || null, // Estado en KDS
+      fecha_terminado_kds: comanda.area_registro?.fecha_terminado || null, // Cuándo se terminó
+      puede_editar: !comanda.area_registro || comanda.area_registro.estado === 'Pendiente', // Solo editable si no está en KDS o está pendiente
+      bloqueado: comanda.area_registro?.estado === 'Preparado' // Bloqueado si ya está preparado
+    }))
+  };
+  
   res.json({
     success: true,
-    data: orden
+    data: ordenConEstados
   });
 });
 
@@ -219,7 +233,7 @@ export const sendToKDS = asyncHandler(async (req, res) => {
   });
   
   // Crear registros en area_registro para cada comanda
-  console.log('📝 Creando registros en KDS...');
+  console.log('[NOTE] Creando registros en KDS...');
   const areaRegistros = [];
   
   for (const comanda of orden.comandas) {
@@ -242,10 +256,10 @@ export const sendToKDS = asyncHandler(async (req, res) => {
     data: areaRegistros
   });
   
-  console.log(`✅ ${areaRegistros.length} items enviados a KDS`);
+  console.log(`[OK] ${areaRegistros.length} items enviados a KDS`);
   
   const areasNotificadas = [...new Set(orden.comandas.map(c => c.platillo.area.nombre))];
-  console.log('📢 Áreas notificadas:', areasNotificadas);
+  console.log('[ALERT] Áreas notificadas:', areasNotificadas);
   
   res.json({
     success: true,
@@ -265,7 +279,7 @@ export const updateOrder = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { items, estado, replaceAllItems } = req.body;
   
-  console.log(`📝 Actualizando orden ${id}:`, { items: items?.length || 0, estado, replaceAllItems });
+  console.log(`[NOTE] Actualizando orden ${id}:`, { items: items?.length || 0, estado, replaceAllItems });
   
   const orden = await prisma.cuenta.findUnique({
     where: { id_orden: parseInt(id) }
@@ -281,28 +295,62 @@ export const updateOrder = asyncHandler(async (req, res) => {
   
   // Si replaceAllItems = true, eliminar todos los items existentes primero
   if (replaceAllItems && items && items.length > 0) {
-    console.log('🗑️ Eliminando comandas existentes antes de reemplazar...');
+    console.log('[DELETE] Eliminando comandas existentes antes de reemplazar...');
     
-    // ⚠️ IMPORTANTE: NO eliminar area_registro si la orden ya fue enviada a cocina
-    // Solo eliminar las comandas (los items de la orden)
+    // [WARN] IMPORTANTE: Manejar area_registro según el estado de la orden
     
     if (orden.estado === 'Pendiente') {
       // Si la orden NO ha sido enviada a cocina, podemos eliminar todo
       await prisma.area_registro.deleteMany({
         where: { id_orden: parseInt(id) }
       });
-      console.log('✅ Registros de KDS eliminados (orden pendiente)');
+      console.log('[OK] Registros de KDS eliminados (orden pendiente)');
     } else {
-      // Si ya fue enviada a cocina, NO tocar los area_registro
-      // Los tickets del KDS deben mantenerse hasta que cocina los termine
-      console.log('⚠️ Orden ya enviada a cocina - manteniendo tickets en KDS');
+      // Si ya fue enviada a cocina, eliminar SOLO los area_registro que NO estén "Preparado"
+      // Los platillos ya preparados deben mantenerse en KDS
+      const registrosEliminados = await prisma.area_registro.deleteMany({
+        where: {
+          id_orden: parseInt(id),
+          estado: {
+            not: 'Preparado' // Eliminar solo los que NO están preparados
+          }
+        }
+      });
+      console.log(`[OK] ${registrosEliminados.count} registros de KDS eliminados (pendientes/en preparación)`);
+      console.log('[INFO] Platillos ya preparados se mantienen en KDS');
     }
     
-    // Eliminar comandas
-    await prisma.comanda.deleteMany({
-      where: { id_orden: parseInt(id) }
+    // Obtener IDs de comandas con area_registro "Preparado" antes de eliminarlas
+    const comandasPreparadas = await prisma.area_registro.findMany({
+      where: {
+        id_orden: parseInt(id),
+        estado: 'Preparado'
+      },
+      select: {
+        id_comanda: true
+      }
     });
-    console.log('✅ Comandas existentes eliminadas');
+    const idsComandaPreparadas = new Set(comandasPreparadas.map(ar => ar.id_comanda));
+    console.log(`[INFO] ${idsComandaPreparadas.size} comandas ya preparadas que se mantendrán`);
+    
+    // Eliminar SOLO las comandas que NO tienen area_registro "Preparado"
+    if (idsComandaPreparadas.size > 0) {
+      await prisma.comanda.deleteMany({
+        where: {
+          id_orden: parseInt(id),
+          id_comanda: {
+            notIn: Array.from(idsComandaPreparadas)
+          }
+        }
+      });
+      console.log('[OK] Comandas sin preparar eliminadas (comandas preparadas se mantienen)');
+    } else {
+      // Si no hay comandas preparadas, eliminar todas
+      await prisma.comanda.deleteMany({
+        where: { id_orden: parseInt(id) }
+      });
+      console.log('[OK] Todas las comandas eliminadas');
+    }
   }
   
   // Agregar items si se proporcionan
@@ -330,7 +378,7 @@ export const updateOrder = asyncHandler(async (req, res) => {
       data: comandasData
     });
     
-    console.log(`✅ ${comandasData.length} items ${replaceAllItems ? 'reemplazados' : 'agregados'}`);
+    console.log(`[OK] ${comandasData.length} items ${replaceAllItems ? 'reemplazados' : 'agregados'}`);
     
     // Si la orden ya fue enviada a cocina, enviar los nuevos items al KDS automáticamente
     if (orden.estado === 'En Preparación' || orden.estado === 'Preparada') {
@@ -381,7 +429,7 @@ export const updateOrder = asyncHandler(async (req, res) => {
         await prisma.area_registro.createMany({
           data: nuevosRegistrosKDS
         });
-        console.log(`✅ ${nuevosRegistrosKDS.length} nuevos items enviados al KDS automáticamente`);
+        console.log(`[OK] ${nuevosRegistrosKDS.length} nuevos items enviados al KDS automáticamente`);
       } else {
         console.log('ℹ️ No hay items nuevos para enviar al KDS');
       }
@@ -474,21 +522,21 @@ export const cancelOrder = asyncHandler(async (req, res) => {
     throw new AppError('No se puede eliminar una orden que ya está en caja o finalizada', 400);
   }
   
-  console.log(`🗑️ Eliminando orden ${id} completamente...`);
+  console.log(`[DELETE] Eliminando orden ${id} completamente...`);
   
   // Eliminar en cascada: primero tickets KDS, luego comandas, luego la orden
   if (orden.area_registros && orden.area_registros.length > 0) {
     await prisma.area_registro.deleteMany({
       where: { id_orden: parseInt(id) }
     });
-    console.log(`✅ ${orden.area_registros.length} tickets de KDS eliminados`);
+    console.log(`[OK] ${orden.area_registros.length} tickets de KDS eliminados`);
   }
   
   if (orden.comandas && orden.comandas.length > 0) {
     await prisma.comanda.deleteMany({
       where: { id_orden: parseInt(id) }
     });
-    console.log(`✅ ${orden.comandas.length} comandas eliminadas`);
+    console.log(`[OK] ${orden.comandas.length} comandas eliminadas`);
   }
   
   // Eliminar la orden principal
@@ -496,7 +544,7 @@ export const cancelOrder = asyncHandler(async (req, res) => {
     where: { id_orden: parseInt(id) }
   });
   
-  console.log(`✅ Orden ${id} eliminada completamente`);
+  console.log(`[OK] Orden ${id} eliminada completamente`);
   
   res.json({
     success: true,
@@ -540,7 +588,7 @@ export const getReadyOrders = asyncHandler(async (req, res) => {
     }
   });
   
-  console.log(`📋 ${ordenes.length} órdenes listas para cerrar`);
+  console.log(`[INFO] ${ordenes.length} órdenes listas para cerrar`);
   
   res.json({
     success: true,

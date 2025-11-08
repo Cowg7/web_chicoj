@@ -153,3 +153,5 @@ Al abrir el calendario de fecha en Tours:
 
 **Haz hard refresh (Ctrl + Shift + R) en la página de tours y debería funcionar.** 🔄
 
+
+

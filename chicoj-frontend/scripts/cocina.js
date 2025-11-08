@@ -22,9 +22,9 @@
     // 🔧 LIMPIEZA AUTOMÁTICA: Verificar si hay valores antiguos incorrectos
     const oldArea = localStorage.getItem('kds_area');
     if (oldArea && (oldArea.toLowerCase() === 'coffe_shop' || oldArea.toLowerCase() === 'coffee_shop' || oldArea.toLowerCase() === 'bar')) {
-      console.warn(`⚠️ Detectado área antigua incorrecta: "${oldArea}"`);
+      console.warn(`[WARN] Detectado área antigua incorrecta: "${oldArea}"`);
       localStorage.removeItem('kds_area');
-      console.log('✅ localStorage limpiado automáticamente');
+      console.log('[OK] localStorage limpiado automáticamente');
     }
 
     // Obtener área de la URL o localStorage
@@ -35,7 +35,7 @@
     if (areaFromUrl) {
       currentArea = areaFromUrl;
       localStorage.setItem('kds_area', currentArea);
-      console.log(`📍 Área desde URL: ${currentArea}`);
+      console.log(`[POINT] Área desde URL: ${currentArea}`);
     } else {
       // Obtener de localStorage o usar default
       const areaFromStorage = localStorage.getItem('kds_area');
@@ -59,7 +59,7 @@
       
       // Guardar la versión corregida
       localStorage.setItem('kds_area', currentArea);
-      console.log(`📍 Área desde localStorage (corregida): ${currentArea}`);
+      console.log(`[POINT] Área desde localStorage (corregida): ${currentArea}`);
     }
     
     // Actualizar título con el área actual
@@ -72,19 +72,19 @@
     // Cargar tickets
     await loadTickets();
 
-    // ⚠️ IMPORTANTE: Limpiar intervalo previo antes de crear uno nuevo
+    // [WARN] IMPORTANTE: Limpiar intervalo previo antes de crear uno nuevo
     if (refreshInterval) {
       clearInterval(refreshInterval);
-      console.log('🧹 Intervalo anterior limpiado');
+      console.log('[CLEAN] Intervalo anterior limpiado');
     }
 
-    // Configurar refresco automático cada 15 segundos (reducido para evitar sobrecarga)
+    // Configurar refresco automático cada 5 segundos para actualización en tiempo real
     refreshInterval = setInterval(() => {
-      console.log(`🔄 Auto-refresh de ${currentArea}...`);
+      console.log(`[REFRESH] Auto-actualización de ${currentArea}...`);
       loadTickets();
-    }, 15000); // Cambiado de 5000 a 10000 ms
+    }, 5000); // Reducido a 5 segundos para ver cambios de otras pantallas rápidamente
 
-    console.log(`✅ Auto-refresh configurado para ${currentArea} cada 15 segundos`);
+    console.log(`[OK] Auto-refresh configurado para ${currentArea} cada 5 segundos`);
 
     // Event listeners
     setupEventListeners();
@@ -94,7 +94,7 @@
   window.addEventListener('beforeunload', () => {
     if (refreshInterval) {
       clearInterval(refreshInterval);
-      console.log('🧹 Intervalo limpiado al salir');
+      console.log('[CLEAN] Intervalo limpiado al salir');
     }
   });
 
@@ -103,7 +103,7 @@
     if (document.hidden) {
       if (refreshInterval) {
         clearInterval(refreshInterval);
-        console.log('⏸️ Auto-refresh pausado (pestaña oculta)');
+        console.log('[PAUSE] Auto-refresh pausado (pestaña oculta)');
       }
     } else {
       // Reanudar cuando vuelve a ser visible
@@ -111,10 +111,10 @@
         clearInterval(refreshInterval);
       }
       refreshInterval = setInterval(() => {
-        console.log(`🔄 Auto-refresh de ${currentArea}...`);
+        console.log(`[REFRESH] Auto-actualización de ${currentArea}...`);
         loadTickets();
-      }, 15000);
-      console.log('▶️ Auto-refresh reanudado');
+      }, 5000); // Reducido a 5 segundos para actualización más rápida
+      console.log('[PLAY] Auto-refresh reanudado (cada 5s)');
       loadTickets(); // Cargar inmediatamente al volver
     }
   });
@@ -129,17 +129,17 @@
 
     try {
       isLoading = true;
-      console.log(`🔄 Cargando tickets del área: ${currentArea}`);
+      console.log(`[LOAD] Cargando tickets del área: ${currentArea}`);
       const response = await API.kds.getByArea(currentArea);
-      console.log('📦 Respuesta del servidor:', response);
+      console.log('[DATA] Respuesta del servidor:', response);
       
       // El backend devuelve: { success: true, data: { area, tickets, total } }
       tickets = response.data?.tickets || response.tickets || [];
-      console.log(`✅ ${tickets.length} tickets cargados`);
+      console.log(`[OK] ${tickets.length} tickets cargados`);
 
       displayTickets();
     } catch (error) {
-      console.error('❌ Error al cargar tickets:', error);
+      console.error('[ERROR] Error al cargar tickets:', error);
       handleError(error, 'Error al cargar tickets de cocina');
     } finally {
       // Siempre liberar el flag de carga
@@ -150,18 +150,18 @@
   // Mostrar tickets en la tabla
   function displayTickets() {
     console.log('🎨 displayTickets() llamado');
-    console.log('📍 tablaBody encontrado:', !!tablaBody);
+    console.log('[POINT] tablaBody encontrado:', !!tablaBody);
     
     if (!tablaBody) {
-      console.error('❌ No se encontró tablaBody');
+      console.error('[ERROR] No se encontró tablaBody');
       return;
     }
 
     tablaBody.innerHTML = '';
-    console.log('🧹 Tabla limpiada');
+    console.log('[CLEAN] Tabla limpiada');
 
     if (tickets.length === 0) {
-      console.log('⚠️ No hay tickets para mostrar');
+      console.log('[WARN] No hay tickets para mostrar');
       tablaBody.innerHTML = `
         <tr>
           <td colspan="9" style="text-align: center; padding: 20px;">
@@ -172,7 +172,7 @@
       return;
     }
 
-    console.log(`📋 Renderizando ${tickets.length} tickets...`);
+    console.log(`[INFO] Renderizando ${tickets.length} tickets...`);
     
     // Cada ticket es un item individual
     tickets.forEach((ticket, idx) => {
@@ -219,12 +219,12 @@
       }
 
       tablaBody.appendChild(row);
-      console.log(`    ✅ Fila ${idx + 1} agregada al DOM`);
+      console.log(`    [OK] Fila ${idx + 1} agregada al DOM`);
     });
     
-    console.log(`📊 ${tickets.length} items mostrados en la tabla`);
+    console.log(`[STATS] ${tickets.length} items mostrados en la tabla`);
     console.log(`📏 Filas en tbody:`, tablaBody.children.length);
-    console.log(`🔍 Contenido de tbody:`, tablaBody.innerHTML.substring(0, 200));
+    console.log(`[CHECK] Contenido de tbody:`, tablaBody.innerHTML.substring(0, 200));
   }
 
   // Manejar click en botón terminar
@@ -234,7 +234,10 @@
       return;
     }
 
-    const confirmed = confirm('¿Marcar este platillo como terminado?');
+    const confirmed = await showConfirm('¿Marcar este platillo como terminado?', {
+      confirmText: 'Marcar como terminado',
+      cancelText: 'Cancelar'
+    });
     
     if (!confirmed) return;
 
@@ -246,12 +249,13 @@
       row.style.opacity = '0.5';
       row.style.transition = 'opacity 0.5s';
       
-      showNotification('Platillo terminado', 'success');
+      Toast.success('Platillo terminado');
 
-      // Recargar tickets después de medio segundo
+      // Recargar inmediatamente para actualizar esta pantalla y otras
       setTimeout(() => {
         loadTickets();
-      }, 500);
+        console.log('[UPDATE] Ticket completado - Vista actualizada');
+      }, 300);
     } catch (error) {
       row.style.opacity = '1';
       handleError(error, 'Error al completar ticket');

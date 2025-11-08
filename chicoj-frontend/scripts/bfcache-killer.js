@@ -17,20 +17,20 @@
   
   // También con beforeunload
   window.addEventListener('beforeunload', function() {
-    console.log('⚠️ Página a punto de descargar');
+    console.log('[WARN] Página a punto de descargar');
   });
   
   // Verificar cuando la página viene del bfcache
   window.addEventListener('pageshow', function(event) {
     if (event.persisted) {
-      console.log('⚠️ PÁGINA RESTAURADA DESDE BFCACHE - FORZANDO RECARGA');
+      console.log('[WARN] PÁGINA RESTAURADA DESDE BFCACHE - FORZANDO RECARGA');
       
       const isLoginPage = window.location.pathname.includes('login');
       const hasToken = localStorage.getItem('auth_token');
       
       // Si no hay token y no es login, recargar completamente
       if (!isLoginPage && !hasToken) {
-        console.log('🔄 Sin token detectado - Recargando página completa...');
+        console.log('[LOAD] Sin token detectado - Recargando página completa...');
         window.location.reload(true); // true = forzar desde servidor
       }
     }
@@ -42,10 +42,10 @@
       const isLoginPage = window.location.pathname.includes('login');
       const hasToken = localStorage.getItem('auth_token');
       
-      console.log('👁️ Página visible - Verificando token...');
+      console.log('[VIEW] Página visible - Verificando token...');
       
       if (!isLoginPage && !hasToken) {
-        console.log('⛔ Token perdido - Redirigiendo a login');
+        console.log('[DENIED] Token perdido - Redirigiendo a login');
         window.location.replace('/templates/login?reason=token_lost');
       }
     }
@@ -63,12 +63,14 @@
       const hasToken = localStorage.getItem('auth_token');
       
       if (!isLoginPage && !hasToken) {
-        console.log('🔄 Sin token - Forzando recarga...');
+        console.log('[LOAD] Sin token - Forzando recarga...');
         window.location.replace('/templates/login?reason=back_navigation');
       }
     }
   }
   
-  console.log('✅ BFCache Killer inicializado');
+  console.log('[OK] BFCache Killer inicializado');
 })();
+
+
 

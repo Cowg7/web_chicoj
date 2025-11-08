@@ -73,7 +73,7 @@ export const getKDSTickets = asyncHandler(async (req, res) => {
 export const getAreaTickets = asyncHandler(async (req, res) => {
   const { area } = req.params;
   
-  console.log(`🔍 Buscando área: "${area}"`);
+  console.log(`[CHECK] Buscando área: "${area}"`);
   
   // Buscar el área (case-insensitive)
   const areaData = await prisma.area.findFirst({
@@ -88,11 +88,11 @@ export const getAreaTickets = asyncHandler(async (req, res) => {
   if (!areaData) {
     // Listar áreas disponibles para debugging
     const areasDisponibles = await prisma.area.findMany({ select: { nombre: true } });
-    console.log('❌ Área no encontrada. Áreas disponibles:', areasDisponibles.map(a => a.nombre));
+    console.log('[ERROR] Área no encontrada. Áreas disponibles:', areasDisponibles.map(a => a.nombre));
     throw new AppError(`Área "${area}" no encontrada. Áreas disponibles: ${areasDisponibles.map(a => a.nombre).join(', ')}`, 404);
   }
   
-  console.log(`✅ Área encontrada: ${areaData.nombre} (ID: ${areaData.id_area})`);
+  console.log(`[OK] Área encontrada: ${areaData.nombre} (ID: ${areaData.id_area})`);
   
   const tickets = await prisma.area_registro.findMany({
     where: {
@@ -116,7 +116,7 @@ export const getAreaTickets = asyncHandler(async (req, res) => {
     }
   });
   
-  console.log(`📊 ${tickets.length} tickets encontrados para ${areaData.nombre}`);
+  console.log(`[STATS] ${tickets.length} tickets encontrados para ${areaData.nombre}`);
   
   res.json({
     success: true,
@@ -168,24 +168,24 @@ export const completeTicket = asyncHandler(async (req, res) => {
     }
   });
   
-  console.log(`✅ Ticket ${ticketId} marcado como Preparado`);
+  console.log(`[OK] Ticket ${ticketId} marcado como Preparado`);
   
-  // 🔔 CREAR NOTIFICACIÓN PARA EL MESERO
+  // [NOTIF] CREAR NOTIFICACIÓN PARA EL MESERO
   try {
     await createNotification({
       id_usuario: ticket.cuenta.id_usuario,
       id_orden: ticket.id_orden,
       tipo: 'platillo_listo',
-      titulo: `✅ Platillo Listo - Mesa ${ticket.no_mesa || ticket.cuenta.no_mesa}`,
+      titulo: `[OK] Platillo Listo - Mesa ${ticket.no_mesa || ticket.cuenta.no_mesa}`,
       mensaje: `${ticket.platillo} está listo para servir`,
       id_platillo: ticket.id_comanda,
       nombre_platillo: ticket.platillo,
       area_nombre: ticket.area?.nombre,
       no_mesa: ticket.no_mesa || ticket.cuenta.no_mesa
     });
-    console.log(`🔔 Notificación enviada al mesero (usuario ${ticket.cuenta.id_usuario})`);
+    console.log(`[NOTIF] Notificación enviada al mesero (usuario ${ticket.cuenta.id_usuario})`);
   } catch (error) {
-    console.error('❌ Error al crear notificación:', error);
+    console.error('[ERROR] Error al crear notificación:', error);
     // No interrumpir el flujo si falla la notificación
   }
   
@@ -203,21 +203,21 @@ export const completeTicket = asyncHandler(async (req, res) => {
       where: { id_orden: ticket.id_orden },
       data: { estado: 'Preparada' }
     });
-    console.log(`📦 Orden ${ticket.id_orden} completamente preparada`);
+    console.log(`[DATA] Orden ${ticket.id_orden} completamente preparada`);
     
-    // 🔔 CREAR NOTIFICACIÓN DE ORDEN COMPLETA
+    // [NOTIF] CREAR NOTIFICACIÓN DE ORDEN COMPLETA
     try {
       await createNotification({
         id_usuario: ticket.cuenta.id_usuario,
         id_orden: ticket.id_orden,
         tipo: 'orden_lista',
-        titulo: `🎉 Orden Completa - Mesa ${ticket.no_mesa || ticket.cuenta.no_mesa}`,
+        titulo: `[SUCCESS] Orden Completa - Mesa ${ticket.no_mesa || ticket.cuenta.no_mesa}`,
         mensaje: `Todos los platillos de la orden #${String(ticket.id_orden).padStart(5, '0')} están listos`,
         no_mesa: ticket.no_mesa || ticket.cuenta.no_mesa
       });
-      console.log(`🔔 Notificación de orden completa enviada`);
+      console.log(`[NOTIF] Notificación de orden completa enviada`);
     } catch (error) {
-      console.error('❌ Error al crear notificación de orden completa:', error);
+      console.error('[ERROR] Error al crear notificación de orden completa:', error);
     }
   }
   

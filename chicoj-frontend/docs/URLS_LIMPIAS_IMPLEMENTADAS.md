@@ -307,3 +307,5 @@ Si las URLs siguen apareciendo con `.html`:
 **Sistema:** Chicoj Restaurant Management  
 **Estado:** ✅ URLs LIMPIAS ACTIVAS
 
+
+

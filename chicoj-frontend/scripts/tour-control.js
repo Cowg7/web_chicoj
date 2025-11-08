@@ -62,27 +62,27 @@
   // Cargar tours
   async function loadTours() {
     try {
-      console.log('🔄 Cargando tours...');
-      console.log('✅ TOUR-CONTROL.JS v20251025a');
+      console.log('[LOAD] Cargando tours...');
+      console.log('[OK] TOUR-CONTROL.JS v20251025a');
       
       const response = await API.tour.getAll();
-      console.log('📦 Respuesta completa del servidor:', response);
+      console.log('[DATA] Respuesta completa del servidor:', response);
       
       const data = response.data || response;
-      console.log('📊 Data extraída:', data);
+      console.log('[STATS] Data extraída:', data);
       
       tours = data.tours || data || [];
-      console.log(`✅ ${tours.length} tours cargados:`, tours);
+      console.log(`[OK] ${tours.length} tours cargados:`, tours);
       
       if (tours.length > 0) {
-        console.log('📋 Primer tour como ejemplo:', tours[0]);
+        console.log('[INFO] Primer tour como ejemplo:', tours[0]);
       }
       
       filteredTours = [...tours];
       displayTours();
     } catch (error) {
-      console.error('❌ Error al cargar tours:', error);
-      console.error('📊 Detalles del error:', error.message, error.stack);
+      console.error('[ERROR] Error al cargar tours:', error);
+      console.error('[STATS] Detalles del error:', error.message, error.stack);
       showNotification('Error al cargar tours', 'error');
       
       if (tablaBody) {
@@ -100,19 +100,19 @@
   // Mostrar tours en la tabla con paginación
   function displayTours() {
     console.log('🎨 displayTours() llamado');
-    console.log('📍 tablaBody existe:', !!tablaBody);
-    console.log('📊 Tours a mostrar:', filteredTours.length);
+    console.log('[POINT] tablaBody existe:', !!tablaBody);
+    console.log('[STATS] Tours a mostrar:', filteredTours.length);
     console.log('📄 Página actual:', currentPage);
 
     if (!tablaBody) {
-      console.error('❌ tablaBody no encontrado');
+      console.error('[ERROR] tablaBody no encontrado');
       return;
     }
 
     tablaBody.innerHTML = '';
 
     if (filteredTours.length === 0) {
-      console.log('⚠️ No hay tours para mostrar');
+      console.log('[WARN] No hay tours para mostrar');
       tablaBody.innerHTML = `
         <tr>
           <td colspan="9" style="text-align: center; padding: 20px; color: #999;">
@@ -130,7 +130,7 @@
     const endIndex = Math.min(startIndex + itemsPerPage, filteredTours.length);
     const toursToShow = filteredTours.slice(startIndex, endIndex);
 
-    console.log(`📋 Renderizando tours ${startIndex + 1}-${endIndex} de ${filteredTours.length}...`);
+    console.log(`[INFO] Renderizando tours ${startIndex + 1}-${endIndex} de ${filteredTours.length}...`);
     
     toursToShow.forEach((tour, index) => {
       const row = document.createElement('tr');
@@ -158,7 +158,7 @@
       tablaBody.appendChild(row);
     });
 
-    console.log(`✅ ${toursToShow.length} tours mostrados (página ${currentPage} de ${totalPages})`);
+    console.log(`[OK] ${toursToShow.length} tours mostrados (página ${currentPage} de ${totalPages})`);
     
     // Actualizar controles de paginación
     updatePaginationControls();
@@ -277,8 +277,8 @@
     row.classList.add('seleccionada');
     selectedTourId = tourId;
     
-    console.log('✅ Tour seleccionado:', tourId);
-    console.log('💡 Ahora puedes hacer clic en el botón "Editar"');
+    console.log('[OK] Tour seleccionado:', tourId);
+    console.log('[TIP] Ahora puedes hacer clic en el botón "Editar"');
   }
 
   // Configurar event listeners
@@ -339,23 +339,23 @@
   // Manejar edición
   function handleEdit(e) {
     console.log('🖱️ Botón Editar clickeado');
-    console.log('🎯 Tour seleccionado:', selectedTourId);
+    console.log('[TARGET] Tour seleccionado:', selectedTourId);
     
     if (!selectedTourId) {
-      console.warn('⚠️ No hay tour seleccionado');
+      console.warn('[WARN] No hay tour seleccionado');
       showNotification('Por favor selecciona un tour primero (haz clic en la fila)', 'warning');
       e.preventDefault();
       return;
     }
 
     const url = `/templates/tour/tour?id=${selectedTourId}`;
-    console.log('✅ Redirigiendo a:', url);
+    console.log('[OK] Redirigiendo a:', url);
     window.location.href = url;
   }
 
   // Aplicar filtros
   function applyFilters() {
-    console.log('🔍 Aplicando filtros...');
+    console.log('[CHECK] Aplicando filtros...');
     
     // Resetear a la primera página
     currentPage = 1;
@@ -396,7 +396,7 @@
     displayTours();
     
     const mensaje = `Mostrando ${filteredTours.length} de ${tours.length} tours`;
-    console.log(`✅ ${mensaje}`);
+    console.log(`[OK] ${mensaje}`);
     showNotification(mensaje, 'info');
   }
 
@@ -439,7 +439,7 @@
     }
 
     // Fallback: console
-    const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️';
+    const icon = type === 'success' ? '[OK]' : type === 'error' ? '[ERROR]' : type === 'warning' ? '[WARN]' : 'ℹ️';
     console.log(`${icon} ${message}`);
   }
 
@@ -559,10 +559,10 @@
       doc.save(`Tours_Chicooj_${fecha}.pdf`);
       
       showNotification('PDF descargado exitosamente', 'success');
-      console.log('✅ PDF generado con', filteredTours.length, 'registros');
+      console.log('[OK] PDF generado con', filteredTours.length, 'registros');
 
     } catch (error) {
-      console.error('❌ Error al generar PDF:', error);
+      console.error('[ERROR] Error al generar PDF:', error);
       showNotification('Error al generar PDF', 'error');
     }
   }
@@ -673,10 +673,10 @@
       XLSX.writeFile(wb, `Tours_Chicooj_${fecha}.xlsx`);
       
       showNotification('Excel descargado exitosamente', 'success');
-      console.log('✅ Excel generado con', filteredTours.length, 'registros');
+      console.log('[OK] Excel generado con', filteredTours.length, 'registros');
 
     } catch (error) {
-      console.error('❌ Error al generar Excel:', error);
+      console.error('[ERROR] Error al generar Excel:', error);
       showNotification('Error al generar Excel', 'error');
     }
   }

@@ -93,15 +93,15 @@
   // Cargar orden existente para edición
   async function loadOrderForEdit(orderId) {
     try {
-      console.log('🔄 Cargando orden para editar:', orderId);
+      console.log('[LOAD] Cargando orden para editar:', orderId);
       
       const response = await API.orders.getById(orderId);
-      console.log('📥 Respuesta del API:', response);
+      console.log('[RECEIVE] Respuesta del API:', response);
       
       const data = response.data || response;
       const order = data.orden || data;
       
-      console.log('📋 Orden extraída:', order);
+      console.log('[INFO] Orden extraída:', order);
 
       if (!order || !order.id_orden) {
         throw new Error('Datos de orden inválidos o incompletos');
@@ -134,7 +134,7 @@
 
       // Cargar items existentes en la orden
       const comandas = order.comandas || order.items || [];
-      console.log('📦 Items de la orden:', comandas);
+      console.log('[DATA] Items de la orden:', comandas);
       
       currentOrder.items = comandas.map(item => {
         const precioUnitario = item.precio_unitario || item.precio || 0;
@@ -152,39 +152,58 @@
           area = item.area_nombre;
         }
         
-        return {
+        const itemProcesado = {
           id_comanda: item.id_comanda, // 👈 ID del item en la BD (para poder eliminarlo)
           platilloId: item.id_platillo,
           nombre: item.platillo_nombre || item.nombre || (item.platillo ? item.platillo.nombre : ''),
           area: area, // 👈 Agregar área del platillo
+          categoria: item.categoria || (item.platillo ? item.platillo.categoria : ''),
           cantidad: cant,
           precio: precioUnitario,
           observaciones: item.observaciones || '',
           observacionExtra: item.extra_observacion || '',
           precioExtra: precioExt,
-          subtotal: subtotalCalc
+          subtotal: subtotalCalc,
+          // Estados de KDS (del backend)
+          en_kds: item.en_kds || false,
+          estado_kds: item.estado_kds || null,
+          bloqueado: item.bloqueado || false, // Si está preparado en KDS, no se puede editar
+          puede_editar: item.puede_editar !== false // Por defecto true si no viene del backend
         };
+        
+        console.log(`[KDS] Item "${itemProcesado.nombre}":`, {
+          en_kds: itemProcesado.en_kds,
+          estado_kds: itemProcesado.estado_kds,
+          bloqueado: itemProcesado.bloqueado,
+          puede_editar: itemProcesado.puede_editar
+        });
+        
+        return itemProcesado;
       });
 
-      console.log('📝 Items procesados:', currentOrder.items);
+      console.log('[NOTE] Items procesados:', currentOrder.items);
+      console.log('[KDS] Resumen de estados:');
+      currentOrder.items.forEach((item, idx) => {
+        console.log(`  ${idx + 1}. ${item.nombre}: bloqueado=${item.bloqueado}, estado=${item.estado_kds}`);
+      });
 
       // Mostrar items en la tabla
-      console.log('🔄 Actualizando tabla...');
+      console.log('[LOAD] Actualizando tabla...');
       updateOrderTable();
       
-      console.log('🔄 Actualizando total...');
+      console.log('[LOAD] Actualizando total...');
       updateTotal();
 
-      console.log('✅ Orden cargada para edición exitosamente');
+      console.log('[OK] Orden cargada para edición exitosamente');
     } catch (error) {
-      console.error('❌ Error al cargar orden:', error);
-      console.error('❌ Stack trace:', error.stack);
-      console.error('❌ Detalles del error:', {
+      console.error('[ERROR] Error al cargar orden:', error);
+      console.error('[ERROR] Stack trace:', error.stack);
+      console.error('[ERROR] Detalles del error:', {
         message: error.message,
         name: error.name,
         orderId: orderId
       });
-      alert(`No se pudo cargar la orden para editar:\n${error.message}`);
+      Toast.error(`No se pudo cargar la orden para editar:\n${error.message}`, 5000);
       // Comentar redirección temporalmente para debug
       // window.location.href = '/templates/mesero/comanda-control';
     }
@@ -226,7 +245,7 @@
       const data = response.data || response;
       areas = data.areas || data || [];
       
-      console.log('✅ Áreas cargadas:', areas);
+      console.log('[OK] Áreas cargadas:', areas);
       
       if (areaButtonsContainer && areas.length > 0) {
         areaButtonsContainer.innerHTML = '';
@@ -254,7 +273,7 @@
 
   // Seleccionar área
   async function selectArea(areaNombre, areaId) {
-    console.log('📍 Área seleccionada:', areaNombre, areaId);
+    console.log('[POINT] Área seleccionada:', areaNombre, areaId);
     
     // Actualizar estado
     selectedArea = { nombre: areaNombre, id: areaId };
@@ -287,28 +306,21 @@
     
     // Mostrar selector de categorías
     if (categoriaContainer) {
-      console.log('👁️ Mostrando contenedor de categorías...');
+      console.log('[VIEW] Mostrando contenedor de categorías...');
       categoriaContainer.style.display = 'block';
-      console.log('✅ Contenedor visible. Display:', categoriaContainer.style.display);
+      console.log('[OK] Contenedor visible. Display:', categoriaContainer.style.display);
       console.log('📏 Altura del contenedor:', categoriaContainer.offsetHeight, 'px');
     } else {
-      console.error('❌ categoriaContainer NO existe!');
+      console.error('[ERROR] categoriaContainer NO existe!');
     }
   }
 
   // Cargar categorías de un área
   async function loadCategorias(areaNombre, areaId) {
     try {
-      console.log('📂 Cargando categorías para área:', areaNombre);
+      console.log('[FOLDER] Cargando categorías para área:', areaNombre);
       
-      // Definir categorías predefinidas por área
-      const categoriasDefinidas = {
-        'Cocina': ['Desayunos', 'Almuerzo', 'Refacciones', 'Refacciones Típicas', 'Menú Infantil'],
-        'Bebidas': ['Bebidas Frías', 'Licuados', 'Cervezas', 'Bebidas Desechables'],
-        'Coffee': ['Café', 'Postres']
-      };
-      
-      // Obtener categorías del menú actual
+      // Obtener categorías del menú actual (dinámicamente desde los platillos)
       const platillosDelArea = menuItems.filter(item => 
         item.area.toLowerCase() === areaNombre.toLowerCase()
       );
@@ -319,10 +331,10 @@
           .filter(c => c && c !== 'null' && c !== '')
       )];
       
-      console.log('📋 Categorías en uso:', categoriasEnUso);
+      console.log('[INFO] Categorías encontradas dinámicamente:', categoriasEnUso);
       
-      // Usar categorías predefinidas o las que están en uso
-      const categorias = categoriasDefinidas[areaNombre] || categoriasEnUso;
+      // Ordenar alfabéticamente
+      const categorias = categoriasEnUso.sort((a, b) => a.localeCompare(b));
       
       // También agregar "Sin Categoría" si hay platillos sin categoría
       const sinCategoria = platillosDelArea.some(p => !p.categoria || p.categoria === '');
@@ -346,19 +358,19 @@
           button.addEventListener('click', () => selectCategoria(cat));
           
           categoriaButtonsContainer.appendChild(button);
-          console.log('  ➕ Botón creado:', cat);
+          console.log('  [ADD] Botón creado:', cat);
         });
-        console.log('✅ Botones agregados al contenedor. Total:', categoriaButtonsContainer.children.length);
+        console.log('[OK] Botones agregados al contenedor. Total:', categoriaButtonsContainer.children.length);
         console.log('📐 Contenedor visible:', categoriaButtonsContainer.offsetHeight, 'px');
       } else if (categoriaButtonsContainer) {
         categoriaButtonsContainer.innerHTML = '<p style="color: var(--muted);">No hay categorías disponibles</p>';
       } else {
-        console.error('❌ categoriaButtonsContainer NO existe!');
+        console.error('[ERROR] categoriaButtonsContainer NO existe!');
       }
       
-      console.log('✅ Categorías cargadas como botones:', categorias);
+      console.log('[OK] Categorías cargadas como botones:', categorias);
     } catch (error) {
-      console.error('❌ Error al cargar categorías:', error);
+      console.error('[ERROR] Error al cargar categorías:', error);
       if (categoriaSelect) {
         categoriaSelect.innerHTML = '<option value="">Error al cargar</option>';
       }
@@ -367,7 +379,7 @@
 
   // Seleccionar categoría
   function selectCategoria(categoria) {
-    console.log('📂 Categoría seleccionada:', categoria);
+    console.log('[FOLDER] Categoría seleccionada:', categoria);
     
     selectedCategoria = categoria;
     
@@ -389,10 +401,10 @@
   // Cargar platillos por categoría
   function loadPlatillosPorCategoria(categoria) {
     console.log('🍽️ Cargando platillos para categoría:', categoria, 'en área:', selectedArea ? selectedArea.nombre : 'ninguna');
-    console.log('📦 Total de platillos en menú:', menuItems.length);
+    console.log('[DATA] Total de platillos en menú:', menuItems.length);
     
     if (!selectedArea) {
-      console.error('❌ No hay área seleccionada');
+      console.error('[ERROR] No hay área seleccionada');
       return;
     }
     
@@ -424,8 +436,8 @@
       });
     }
     
-    console.log('📊 Platillos filtrados:', platillosFiltrados.length);
-    console.log('📋 Platillos encontrados:', platillosFiltrados);
+    console.log('[STATS] Platillos filtrados:', platillosFiltrados.length);
+    console.log('[INFO] Platillos encontrados:', platillosFiltrados);
     
     // Crear botones de platillos
     if (platilloButtonsContainer) {
@@ -456,7 +468,7 @@
           platilloButtonsContainer.appendChild(button);
         });
       } else {
-        platilloButtonsContainer.innerHTML = '<p style="color: var(--warning); padding: 1rem; background: #fff3cd; border-radius: var(--r-sm); border: 1px solid #ffc107;">⚠️ No hay platillos disponibles en esta categoría</p>';
+        platilloButtonsContainer.innerHTML = '<p style="color: var(--warning); padding: 1rem; background: #fff3cd; border-radius: var(--r-sm); border: 1px solid #ffc107;">[WARN] No hay platillos disponibles en esta categoría</p>';
       }
     }
     
@@ -518,8 +530,8 @@
         menuItems = [];
       }
       
-      console.log('✅ Menú cargado:', menuItems.length, 'platillos');
-      console.log('📊 Muestra de platillos:', menuItems.slice(0, 5));
+      console.log('[OK] Menú cargado:', menuItems.length, 'platillos');
+      console.log('[STATS] Muestra de platillos:', menuItems.slice(0, 5));
       
       // Log de estadísticas
       const stats = {
@@ -549,7 +561,7 @@
   function setupEventListeners() {
     // Evitar configurar listeners múltiples veces
     if (listenersConfigured) {
-      console.log('⚠️ Listeners ya configurados, saltando...');
+      console.log('[WARN] Listeners ya configurados, saltando...');
       return;
     }
 
@@ -563,7 +575,7 @@
     // Botón agregar - usar selector específico y remover listener previo
     const btnAgregar = document.querySelector('.btn-success');
     if (btnAgregar) {
-      console.log('🎯 Configurando botón Agregar');
+      console.log('[TARGET] Configurando botón Agregar');
       btnAgregar.removeEventListener('click', addItemToOrder);
       btnAgregar.addEventListener('click', addItemToOrder, { once: false });
     }
@@ -598,18 +610,18 @@
           }
         }
       });
-      console.log('✅ Event delegation configurado para botones de tabla');
+      console.log('[OK] Event delegation configurado para botones de tabla');
     }
 
     listenersConfigured = true;
-    console.log('✅ Listeners configurados');
+    console.log('[OK] Listeners configurados');
   }
 
   // Manejar cambio de área
   // Manejar cambio de categoría
   function handleCategoriaChange(e) {
     const categoria = e.target.value;
-    console.log('📂 Categoría seleccionada:', categoria);
+    console.log('[FOLDER] Categoría seleccionada:', categoria);
     
     if (!categoria || categoria === '') {
       // Ocultar selector de platillos si no hay categoría
@@ -666,7 +678,7 @@
         btnAgregar.style.opacity = '1';
         btnAgregar.style.cursor = 'pointer';
         btnAgregar.title = '';
-        console.log('✅ Botón Agregar habilitado');
+        console.log('[OK] Botón Agregar habilitado');
       }
     }
   }
@@ -688,14 +700,14 @@
   function addItemToOrder(e) {
     // Prevenir ejecución múltiple
     if (isAddingItem) {
-      console.log('⚠️ Ya se está agregando un item, ignorando click duplicado');
+      console.log('[WARN] Ya se está agregando un item, ignorando click duplicado');
       return;
     }
     
     isAddingItem = true;
-    console.log('➕ addItemToOrder() llamado');
-    console.log('📦 Items actuales antes de agregar:', currentOrder.items.length);
-    console.log('📋 Filas en la tabla antes:', tablaBody?.children.length || 0);
+    console.log('[ADD] addItemToOrder() llamado');
+    console.log('[DATA] Items actuales antes de agregar:', currentOrder.items.length);
+    console.log('[INFO] Filas en la tabla antes:', tablaBody?.children.length || 0);
     
     try {
       // Validaciones
@@ -715,7 +727,8 @@
       const item = {
         platilloId: platillo.id,
         nombre: platillo.nombre,
-        area: selectedArea?.nombre || '',
+        area: selectedArea?.nombre || selectedArea || '',
+        categoria: selectedCategoria || platillo.categoria || '',
         cantidad: parseInt(cantidad.value),
         precio: parseFloat(platillo.precio),
         observaciones: observaciones?.value || '',
@@ -723,13 +736,15 @@
         precioExtra: parseFloat(extraPrecio?.value || 0),
         subtotal: parseFloat(subtotal.value)
       };
+      
+      console.log('[DATA] Item creado con categoría:', item.categoria);
 
-      console.log('🆕 Item:', item);
+      console.log('[NEW] Item:', item);
 
       // Verificar si estamos editando o agregando
       if (editingItemIndex >= 0 && editingItemIndex < currentOrder.items.length) {
         // EDITAR: Reemplazar item existente, pero preservar id_comanda si existe
-        console.log(`✏️ Reemplazando item en índice ${editingItemIndex}`);
+        console.log(`[EDIT] Reemplazando item en índice ${editingItemIndex}`);
         const oldItem = currentOrder.items[editingItemIndex];
         
         // Preservar id_comanda del item original (si existe)
@@ -739,20 +754,20 @@
         }
         
         currentOrder.items[editingItemIndex] = item;
-        console.log('📦 Items después de editar:', currentOrder.items.length);
+        console.log('[DATA] Items después de editar:', currentOrder.items.length);
         showNotification('Platillo actualizado', 'success');
       } else {
         // AGREGAR: Nuevo item
-        console.log('➕ Agregando nuevo item');
+        console.log('[ADD] Agregando nuevo item');
         currentOrder.items.push(item);
-        console.log('📦 Items después de agregar:', currentOrder.items.length);
+        console.log('[DATA] Items después de agregar:', currentOrder.items.length);
         showNotification('Platillo agregado a la orden', 'success');
       }
       
       // Re-renderizar toda la tabla desde cero (evita duplicados)
-      console.log('🔄 Re-renderizando tabla completa...');
+      console.log('[LOAD] Re-renderizando tabla completa...');
       updateOrderTable();
-      console.log('📋 Filas en la tabla después:', tablaBody?.children.length || 0);
+      console.log('[INFO] Filas en la tabla después:', tablaBody?.children.length || 0);
 
       // Calcular total
       updateTotal();
@@ -760,7 +775,7 @@
       // Limpiar formulario
       clearItemForm();
 
-      console.log('✅ Operación completada exitosamente');
+      console.log('[OK] Operación completada exitosamente');
     } finally {
       // Liberar el flag después de un pequeño delay
       setTimeout(() => {
@@ -779,8 +794,44 @@
     const precio = parseFloat(item.precio) || 0;
     const precioExtra = parseFloat(item.precioExtra) || 0;
     const subtotal = parseFloat(item.subtotal) || 0;
+    
+    // Determinar si el item está bloqueado (confirmado en KDS)
+    const bloqueado = item.bloqueado || false;
+    const estadoKDS = item.estado_kds;
+    const enKDS = item.en_kds || false;
+    
+    console.log(`[RENDER] Renderizando "${item.nombre}":`, {
+      bloqueado,
+      estadoKDS,
+      enKDS,
+      mostraraBotonesBloqueados: bloqueado ? 'SÍ' : 'NO'
+    });
 
     const row = document.createElement('tr');
+    
+    // Estilo de fila según estado (sin badge redundante)
+    if (bloqueado && estadoKDS === 'Preparado') {
+      row.style.background = '#f0fdf4'; // Verde muy claro
+      row.style.borderLeft = '4px solid #10B981'; // Borde verde
+    } else if (enKDS && estadoKDS === 'Pendiente') {
+      row.style.background = '#fffbeb'; // Amarillo muy claro
+      row.style.borderLeft = '4px solid #f59e0b'; // Borde amarillo
+    }
+    
+    // Botones de acción (deshabilitados si está bloqueado)
+    const botonesAccion = bloqueado ? `
+      <button type="button" class="btn-locked" disabled style="background: #9CA3AF; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: not-allowed; font-size: 0.8rem; opacity: 0.7;">
+        🔒 Confirmado
+      </button>
+    ` : `
+      <button type="button" class="btn-editar-item" data-index="${index}" title="Editar platillo">
+        Editar
+      </button>
+      <button type="button" class="btn-eliminar-item" data-index="${index}" title="Eliminar platillo">
+        Eliminar
+      </button>
+    `;
+    
     row.innerHTML = `
       <td data-label="Cantidad">${cantidad}</td>
       <td data-label="Platillo">${item.nombre || '—'}</td>
@@ -790,12 +841,7 @@
       <td data-label="Precio Extra">Q${precioExtra.toFixed(2)}</td>
       <td data-label="Subtotal">Q${subtotal.toFixed(2)}</td>
       <td data-label="Acciones" class="acciones-cell">
-        <button type="button" class="btn-editar-item" data-index="${index}" title="Editar platillo">
-          ✏️ Editar
-        </button>
-        <button type="button" class="btn-eliminar-item" data-index="${index}" title="Eliminar platillo">
-          🗑️ Eliminar
-        </button>
+        ${botonesAccion}
       </td>
     `;
 
@@ -805,27 +851,27 @@
   // Actualizar tabla completa con todos los items
   function updateOrderTable() {
     if (!tablaBody) {
-      console.log('⚠️ No se encontró tablaBody');
+      console.log('[WARN] No se encontró tablaBody');
       return;
     }
 
-    console.log('🧹 Limpiando tabla...');
-    console.log('📊 Filas antes de limpiar:', tablaBody.children.length);
+    console.log('[CLEAN] Limpiando tabla...');
+    console.log('[STATS] Filas antes de limpiar:', tablaBody.children.length);
     
     // Limpiar tabla
     tablaBody.innerHTML = '';
     
-    console.log('📊 Filas después de limpiar:', tablaBody.children.length);
-    console.log('📦 Total items en currentOrder:', currentOrder.items.length);
+    console.log('[STATS] Filas después de limpiar:', tablaBody.children.length);
+    console.log('[DATA] Total items en currentOrder:', currentOrder.items.length);
 
     // Agregar todos los items
     currentOrder.items.forEach((item, index) => {
-      console.log(`➕ Agregando item ${index + 1}:`, item.nombre);
+      console.log(`[ADD] Agregando item ${index + 1}:`, item.nombre);
       addItemToTable(item, index);
     });
     
-    console.log('📊 Filas después de agregar todos:', tablaBody.children.length);
-    console.log('✅ Tabla actualizada completamente');
+    console.log('[STATS] Filas después de agregar todos:', tablaBody.children.length);
+    console.log('[OK] Tabla actualizada completamente');
   }
 
   // Actualizar total
@@ -840,105 +886,304 @@
 
   // Limpiar formulario de item
   function clearItemForm() {
-    if (platilloSelect) platilloSelect.value = '';
-    if (cantidad) cantidad.value = '';
+    // Resetear selecciones de área, categoría y platillo
+    selectedArea = null;
+    selectedCategoria = null;
+    
+    // Limpiar botones de área
+    document.querySelectorAll('.area-button').forEach(btn => btn.classList.remove('active', 'selected'));
+    
+    // Limpiar botones de categoría
+    document.querySelectorAll('.categoria-button').forEach(btn => btn.classList.remove('active', 'selected'));
+    
+    // Limpiar botones de platillo
+    document.querySelectorAll('.platillo-button').forEach(btn => btn.classList.remove('active', 'selected'));
+    
+    // Ocultar contenedores
+    if (categoriaContainer) categoriaContainer.style.display = 'none';
+    if (platilloContainer) platilloContainer.style.display = 'none';
+    
+    // Limpiar campos
+    if (cantidad) cantidad.value = '1';
     if (precio) precio.value = '';
     if (observaciones) observaciones.value = '';
     if (extraObservacion) extraObservacion.value = '';
     if (extraPrecio) extraPrecio.value = '';
     if (subtotal) subtotal.value = '';
+    
     editingItemIndex = -1; // Resetear índice de edición
   }
 
   // Editar un item existente
   function editItem(index) {
-    console.log(`✏️ Editando item en índice ${index}`);
+    console.log(`[EDIT] Editando item en índice ${index}`);
     
     const item = currentOrder.items[index];
     if (!item) {
-      console.error('❌ Item no encontrado en índice:', index);
+      console.error('[ERROR] Item no encontrado en índice:', index);
+      return;
+    }
+    
+    // Verificar si el item está bloqueado (confirmado en KDS)
+    if (item.bloqueado || (item.estado_kds === 'Preparado')) {
+      Toast.warning(`No se puede editar "${item.nombre}" porque ya fue confirmado en cocina`, 5000);
+      console.warn('[LOCK] Item bloqueado - No se puede editar');
       return;
     }
 
     // Cargar datos del item en el formulario
     editingItemIndex = index;
 
-    // Seleccionar área
-    if (areaSelect && item.area) {
-      areaSelect.value = item.area;
-      handleAreaChange({ target: { value: item.area } });
+    console.log(`[LOAD] Cargando datos del item:`, {
+      area: item.area,
+      categoria: item.categoria,
+      platillo: item.nombre,
+      platilloId: item.platilloId,
+      cantidad: item.cantidad
+    });
+
+    // PASO 1: Seleccionar área (botón) y cargar categorías
+    if (item.area) {
+      console.log(`[LOAD] Buscando botón de área: ${item.area}`);
+      const areaBtns = document.querySelectorAll('.area-button');
+      console.log(`[CHECK] Botones de área encontrados: ${areaBtns.length}`);
+      let areaEncontrada = false;
+      
+      areaBtns.forEach(btn => {
+        btn.classList.remove('active', 'selected');
+        const btnText = btn.textContent.trim();
+        console.log(`[COMPARE] Comparando "${btnText}" con "${item.area}"`);
+        
+        if (btnText === item.area) {
+          btn.classList.add('active', 'selected');
+          selectedArea = { nombre: item.area, id: btn.dataset.areaId }; // Establecer en estado ANTES del click
+          btn.click(); // Simular click para cargar categorías
+          areaEncontrada = true;
+          console.log(`[OK] Área seleccionada: ${item.area}`);
+        }
+      });
+      
+      if (!areaEncontrada) {
+        console.error(`[ERROR] No se encontró botón para área: ${item.area}`);
+        console.log(`[INFO] Áreas disponibles:`, Array.from(areaBtns).map(b => b.textContent.trim()));
+      }
     }
 
-    // Seleccionar platillo
+    // PASO 2: Esperar MÁS TIEMPO a que se carguen las categorías
     setTimeout(() => {
-      if (platilloSelect) {
-        platilloSelect.value = item.platilloId;
-        if (precio) precio.value = parseFloat(item.precio).toFixed(2);
+      console.log(`[WAIT] Esperando categorías... Verificando botones disponibles`);
+      const categoriaBtns = document.querySelectorAll('.categoria-btn');
+      console.log(`[CHECK] Botones de categoría encontrados: ${categoriaBtns.length}`);
+      // Buscar la categoría del platillo en el menú
+      let categoriaDelPlatillo = item.categoria;
+      
+      // Si no tiene categoría, buscarla en el menú
+      if (!categoriaDelPlatillo && item.platilloId) {
+        const platilloEnMenu = menuItems.find(p => p.id === parseInt(item.platilloId));
+        if (platilloEnMenu) {
+          categoriaDelPlatillo = platilloEnMenu.categoria;
+          console.log(`[FIND] Categoría encontrada en menú: ${categoriaDelPlatillo}`);
+        }
       }
-    }, 100);
-
-    // Llenar otros campos
-    if (cantidad) cantidad.value = item.cantidad;
-    if (observaciones) observaciones.value = item.observaciones || '';
-    if (extraObservacion) extraObservacion.value = item.observacionExtra || '';
-    if (extraPrecio) extraPrecio.value = parseFloat(item.precioExtra || 0).toFixed(2);
-    
-    // Calcular subtotal
-    calculateSubtotal();
-
-    // Scroll al formulario
-    document.querySelector('.item-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    
-    showNotification('Modifica los datos y presiona "Agregar" para actualizar', 'info');
-    console.log('📝 Datos cargados para edición:', item);
+      
+      if (categoriaDelPlatillo) {
+        console.log(`[LOAD] Buscando botón de categoría: ${categoriaDelPlatillo}`);
+        const categoriaBtns = document.querySelectorAll('.categoria-button');
+        console.log(`[CHECK] Botones de categoría encontrados después de espera: ${categoriaBtns.length}`);
+        let categoriaEncontrada = false;
+        
+        categoriaBtns.forEach(btn => {
+          btn.classList.remove('active', 'selected');
+          const btnText = btn.textContent.trim();
+          console.log(`[COMPARE] Comparando categoría "${btnText}" con "${categoriaDelPlatillo}"`);
+          
+          if (btnText === categoriaDelPlatillo) {
+            btn.classList.add('active', 'selected');
+            selectedCategoria = categoriaDelPlatillo; // Establecer en estado
+            btn.click(); // Simular click para cargar platillos
+            categoriaEncontrada = true;
+            console.log(`[OK] Categoría seleccionada: ${categoriaDelPlatillo}`);
+          }
+        });
+        
+        if (!categoriaEncontrada) {
+          console.warn(`[WARN] No se encontró botón para categoría: ${categoriaDelPlatillo}`);
+          console.log(`[INFO] Categorías disponibles:`, Array.from(categoriaBtns).map(b => b.textContent.trim()));
+        }
+      } else {
+        console.warn(`[WARN] Item no tiene categoría definida, continuando sin seleccionar categoría`);
+      }
+      
+      // PASO 3: Esperar AÚN MÁS para que se carguen los platillos
+      setTimeout(() => {
+        console.log(`[WAIT] Esperando platillos... Verificando botones disponibles`);
+        const platilloBtns = document.querySelectorAll('.platillo-btn');
+        console.log(`[CHECK] Botones de platillo encontrados: ${platilloBtns.length}`);
+        if (item.platilloId) {
+          console.log(`[LOAD] Buscando botón de platillo ID: ${item.platilloId}`);
+          const platilloBtns = document.querySelectorAll('.platillo-button');
+          console.log(`[CHECK] Botones de platillo encontrados después de espera: ${platilloBtns.length}`);
+          
+          platilloBtns.forEach(btn => {
+            btn.classList.remove('active', 'selected');
+            const btnPlatilloId = btn.dataset.id; // Usar .id en lugar de .platilloId
+            console.log(`[COMPARE] Comparando platillo ID "${btnPlatilloId}" con "${item.platilloId}"`);
+            
+            if (btnPlatilloId && parseInt(btnPlatilloId) === parseInt(item.platilloId)) {
+              btn.classList.add('active', 'selected');
+              
+              // Simular click para cargar precio
+              btn.click();
+              
+              // Destacar visualmente con animación SIN cambiar el fondo
+              // (el CSS ya aplica gradiente naranja cuando está .active)
+              btn.style.transform = 'scale(1.08)';
+              btn.style.boxShadow = '0 6px 16px rgba(255, 152, 0, 0.4)';
+              btn.style.borderWidth = '3px';
+              
+              setTimeout(() => {
+                btn.style.transform = 'scale(1)';
+                btn.style.boxShadow = '0 4px 10px rgba(255, 152, 0, 0.3)';
+                btn.style.borderWidth = '2px';
+              }, 2000);
+              
+              console.log(`[OK] Platillo seleccionado y destacado: ${item.nombre}`);
+            }
+          });
+        }
+        
+        // PASO 4: Llenar campos numéricos y texto
+        setTimeout(() => {
+          if (cantidad) {
+            cantidad.value = item.cantidad;
+            cantidad.style.borderColor = '#2563EB';
+            cantidad.style.background = '#EFF6FF';
+          }
+          
+          if (precio) {
+            precio.value = parseFloat(item.precio).toFixed(2);
+          }
+          
+          if (observaciones) {
+            observaciones.value = item.observaciones || '';
+          }
+          
+          if (extraObservacion) {
+            extraObservacion.value = item.observacionExtra || '';
+          }
+          
+          if (extraPrecio) {
+            extraPrecio.value = item.precioExtra ? parseFloat(item.precioExtra).toFixed(2) : '';
+          }
+          
+          // Calcular subtotal
+          calculateSubtotal();
+          
+          // Scroll al formulario
+          const formElement = document.querySelector('.seccion_comanda');
+          if (formElement) {
+            formElement.style.borderColor = '#2563EB';
+            formElement.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.1)';
+            formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            // Quitar destacado después de 3 segundos
+            setTimeout(() => {
+              formElement.style.borderColor = '';
+              formElement.style.boxShadow = '';
+              if (cantidad) {
+                cantidad.style.borderColor = '';
+                cantidad.style.background = '';
+              }
+            }, 3000);
+          }
+          
+          Toast.info(`Editando: ${item.nombre}. Modifica los campos y presiona "Agregar" para actualizar`, 5000);
+          console.log('[NOTE] Datos cargados para edición completamente');
+        }, 200);
+      }, 700);
+    }, 600);
   }
 
   // Eliminar un item
   async function deleteItem(index) {
-    console.log(`🗑️ Eliminando item en índice ${index}`);
+    console.log(`[DELETE] Eliminando item en índice ${index}`);
     
     const item = currentOrder.items[index];
     if (!item) {
-      console.error('❌ Item no encontrado en índice:', index);
+      console.error('[ERROR] Item no encontrado en índice:', index);
+      return;
+    }
+    
+    // Verificar si el item está bloqueado (confirmado en KDS)
+    if (item.bloqueado || (item.estado_kds === 'Preparado')) {
+      Toast.error(`No se puede eliminar "${item.nombre}" porque ya fue confirmado en cocina`, 5000);
+      console.warn('[LOCK] Item bloqueado - No se puede eliminar');
       return;
     }
 
     // Confirmar eliminación
-    if (!confirm(`¿Eliminar "${item.nombre}" de la orden?`)) {
+    const confirmed = await showConfirm(`¿Eliminar "${item.nombre}" de la orden?`, {
+      confirmText: 'Eliminar',
+      cancelText: 'Cancelar'
+    });
+    
+    if (!confirmed) {
+      console.log('[CANCEL] Eliminación cancelada por el usuario');
       return;
     }
+
+    console.log(`[START] Iniciando eliminación de "${item.nombre}"...`);
 
     try {
       // Si el item existe en la BD (tiene id_comanda), eliminarlo del backend inmediatamente
       if (item.id_comanda && editMode && editOrderId) {
-        console.log(`🔄 Eliminando item de la BD: id_comanda=${item.id_comanda}`);
+        console.log(`[API] Eliminando item de la BD: id_comanda=${item.id_comanda}`);
         await API.orders.deleteItem(editOrderId, item.id_comanda);
-        console.log('✅ Item eliminado del backend');
+        console.log('[OK] Item eliminado del backend exitosamente');
       } else {
-        console.log('📝 Item solo existe en frontend, no requiere eliminación en BD');
+        console.log('[NOTE] Item solo existe en frontend, no requiere eliminación en BD');
       }
 
       // Remover del array local
+      const itemNombre = item.nombre;
       currentOrder.items.splice(index, 1);
-      console.log(`✅ Item eliminado del array. Items restantes: ${currentOrder.items.length}`);
+      console.log(`[OK] Item "${itemNombre}" eliminado del array`);
+      console.log(`[STATS] Items restantes: ${currentOrder.items.length}`);
 
       // Si estábamos editando este item, cancelar edición
       if (editingItemIndex === index) {
+        console.log('[EDIT] Cancelando edición del item eliminado');
         editingItemIndex = -1;
         clearItemForm();
       } else if (editingItemIndex > index) {
         // Ajustar índice si estábamos editando un item posterior
         editingItemIndex--;
+        console.log(`[EDIT] Índice de edición ajustado a: ${editingItemIndex}`);
       }
 
-      // Actualizar vista
+      // FORZAR actualización de vista
+      console.log('[UPDATE] Actualizando tabla...');
+      
+      // Limpiar tabla completamente
+      if (tablaBody) {
+        tablaBody.innerHTML = '';
+        console.log('[CLEAN] Tabla limpiada');
+      }
+      
+      // Re-renderizar todos los items
       updateOrderTable();
       updateTotal();
       
-      showNotification('Platillo eliminado', 'success');
+      console.log('[OK] Vista actualizada - Tabla debería estar limpia');
+      
+      // Notificación de éxito
+      Toast.success(`"${itemNombre}" eliminado de la orden`, 3000);
+      
+      console.log('[COMPLETE] Eliminación completada exitosamente');
     } catch (error) {
-      console.error('❌ Error al eliminar item:', error);
-      showNotification('Error al eliminar el platillo', 'error');
+      console.error('[ERROR] Error al eliminar item:', error);
+      console.error('[STACK] Stack trace:', error.stack);
+      Toast.error(`Error al eliminar "${item.nombre}": ${error.message}`, 6000);
     }
   }
 
@@ -959,9 +1204,28 @@
 
     try {
       // Preparar datos de la orden según el formato que espera el backend
+      let itemsToSend = currentOrder.items;
+      
+      // Si estamos en modo edición, filtrar solo los items que NO están bloqueados
+      if (editMode && editOrderId) {
+        // Filtrar items: solo enviar los que NO están bloqueados (preparados)
+        const itemsNoBloqueados = currentOrder.items.filter(item => !item.bloqueado);
+        const itemsBloqueados = currentOrder.items.filter(item => item.bloqueado);
+        
+        console.log(`[FILTER] Total items: ${currentOrder.items.length}`);
+        console.log(`[FILTER] Items bloqueados (preparados): ${itemsBloqueados.length}`);
+        console.log(`[FILTER] Items a enviar (nuevos/editables): ${itemsNoBloqueados.length}`);
+        
+        if (itemsBloqueados.length > 0) {
+          console.log('[INFO] Items bloqueados que se mantendrán:', itemsBloqueados.map(i => i.nombre));
+        }
+        
+        itemsToSend = itemsNoBloqueados;
+      }
+      
       const orderData = {
         no_mesa: mesa.value,  // Backend espera 'no_mesa'
-        items: currentOrder.items.map(item => ({
+        items: itemsToSend.map(item => ({
           id_platillo: item.platilloId,  // Backend espera 'id_platillo'
           cantidad: item.cantidad,
           observaciones: item.observaciones || null,
@@ -970,10 +1234,10 @@
         }))
       };
 
-      // Si estamos en modo edición, agregar flag para reemplazar todos los items
+      // Si estamos en modo edición, agregar flag para reemplazar todos los items editables
       if (editMode && editOrderId) {
         orderData.replaceAllItems = true;
-        console.log(`📝 Actualizando orden completa: ${currentOrder.items.length} items totales`);
+        console.log(`[NOTE] Actualizando orden - Enviando ${itemsToSend.length} items (${currentOrder.items.length - itemsToSend.length} bloqueados se mantienen)`);
       }
 
       console.log(editMode ? 'Actualizando orden:' : 'Enviando orden:', orderData);
@@ -1004,8 +1268,13 @@
         console.log('Orden creada con ID:', ordenId);
         
         // Preguntar si enviar a cocina
-        setTimeout(() => {
-          if (confirm('¿Deseas enviar la orden a cocina ahora?')) {
+        setTimeout(async () => {
+          const enviarACocina = await showConfirm('¿Deseas enviar la orden a cocina ahora?', {
+            confirmText: 'Enviar a cocina',
+            cancelText: 'Más tarde'
+          });
+          
+          if (enviarACocina) {
             sendOrderToKDS(ordenId);
           } else {
             // Redirigir a comanda-control para ver la orden creada
@@ -1035,7 +1304,7 @@
 
   // Resetear formulario
   async function resetForm() {
-    console.log('🔄 Reseteando formulario...');
+    console.log('[LOAD] Reseteando formulario...');
     
     // Limpiar campos
     if (mesa) {
@@ -1071,7 +1340,7 @@
     updateTotal();
     clearItemForm();
     
-    console.log('✅ Formulario reseteado');
+    console.log('[OK] Formulario reseteado');
   }
 
   // Inicializar cuando el DOM esté listo

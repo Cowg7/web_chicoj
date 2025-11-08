@@ -40,8 +40,8 @@
     const user = AuthManager.getUser();
     currentUserId = user?.id || user?.id_usuario || user?.userId;
     
-    console.log('👤 Usuario actual:', user);
-    console.log('🔑 User ID:', currentUserId);
+    console.log('[USER] Usuario actual:', user);
+    console.log('[AUTH] User ID:', currentUserId);
 
     // Cargar preferencia de filtro desde localStorage
     const filtroGuardado = localStorage.getItem('filtro-ordenes') || 'mis-ordenes';
@@ -57,7 +57,7 @@
         filtroOrdenes.value = filtroGuardado;
       }
       
-      console.log(`📋 Filtro inicial: ${filtroOrdenes.value} ${esAdminOGerente ? '(Admin/Gerente)' : ''}`);
+      console.log(`[INFO] Filtro inicial: ${filtroOrdenes.value} ${esAdminOGerente ? '(Admin/Gerente)' : ''}`);
     }
 
     // Verificar si viene de crear/editar (parámetro refresh en URL)
@@ -65,7 +65,7 @@
     const shouldRefresh = urlParams.get('refresh');
     
     if (shouldRefresh) {
-      console.log('🔄 Recarga forzada detectada desde creación/edición de orden');
+      console.log('[LOAD] Recarga forzada detectada desde creación/edición de orden');
       // Limpiar el parámetro de la URL sin recargar la página
       window.history.replaceState({}, '', '/templates/mesero/comanda-control');
     }
@@ -81,15 +81,15 @@
       displayOrder(0);
     }
 
-    // ⚠️ IMPORTANTE: Limpiar intervalo previo antes de crear uno nuevo
+    // [WARN] IMPORTANTE: Limpiar intervalo previo antes de crear uno nuevo
     if (refreshInterval) {
       clearInterval(refreshInterval);
-      console.log('🧹 Intervalo anterior limpiado');
+      console.log('[CLEAN] Intervalo anterior limpiado');
     }
 
     // Auto-refresh cada 30 segundos para ver cambios de estado
     refreshInterval = setInterval(async () => {
-      console.log('🔄 Auto-refresh de órdenes...');
+      console.log('[LOAD] Auto-refresh de órdenes...');
       await loadOrders();
       // Mantener la orden actual visible si existe
       if (orders.length > 0 && currentIndex < orders.length) {
@@ -100,14 +100,14 @@
       }
     }, 30000); // 30 segundos (30000 ms)
 
-    console.log('✅ Auto-refresh configurado cada 30 segundos');
+    console.log('[OK] Auto-refresh configurado cada 30 segundos');
   }
 
   // Limpiar intervalo cuando se abandona la página
   window.addEventListener('beforeunload', () => {
     if (refreshInterval) {
       clearInterval(refreshInterval);
-      console.log('🧹 Intervalo limpiado al salir');
+      console.log('[CLEAN] Intervalo limpiado al salir');
     }
   });
 
@@ -116,7 +116,7 @@
     if (document.hidden) {
       if (refreshInterval) {
         clearInterval(refreshInterval);
-        console.log('⏸️ Auto-refresh pausado (pestaña oculta)');
+        console.log('[PAUSE] Auto-refresh pausado (pestaña oculta)');
       }
     } else {
       // Reanudar cuando vuelve a ser visible
@@ -124,7 +124,7 @@
         clearInterval(refreshInterval);
       }
       refreshInterval = setInterval(async () => {
-        console.log('🔄 Auto-refresh de órdenes...');
+        console.log('[LOAD] Auto-refresh de órdenes...');
         await loadOrders();
         if (orders.length > 0 && currentIndex < orders.length) {
           displayOrder(currentIndex);
@@ -133,7 +133,7 @@
           displayOrder(0);
         }
       }, 30000); // 30 segundos
-      console.log('▶️ Auto-refresh reanudado (cada 30 segundos)');
+      console.log('[PLAY] Auto-refresh reanudado (cada 30 segundos)');
       loadOrders().then(() => {
         if (orders.length > 0 && currentIndex < orders.length) {
           displayOrder(currentIndex);
@@ -179,7 +179,7 @@
       const filtroSeleccionado = filtroOrdenes?.value || 'mis-ordenes';
       applyFilter(filtroSeleccionado);
 
-      console.log('📊 Órdenes totales:', allOrders.length, '| Mostrando:', orders.length, `(${filtroSeleccionado})`);
+      console.log('[STATS] Órdenes totales:', allOrders.length, '| Mostrando:', orders.length, `(${filtroSeleccionado})`);
 
       if (tot) {
         tot.textContent = orders.length;
@@ -226,7 +226,7 @@
         const ordenUserId = orden.id_usuario || orden.usuario?.id_usuario || orden.usuario_id;
         return ordenUserId === currentUserId;
       });
-      console.log(`👤 Mostrando mis órdenes (User ID: ${currentUserId}):`, orders.length);
+      console.log(`[USER] Mostrando mis órdenes (User ID: ${currentUserId}):`, orders.length);
     } else {
       // Mostrar todas las órdenes
       orders = [...allOrders];
@@ -288,7 +288,7 @@
     if (filtroOrdenes) {
       filtroOrdenes.addEventListener('change', (e) => {
         const nuevoFiltro = e.target.value;
-        console.log(`🔄 Cambiando filtro a: ${nuevoFiltro}`);
+        console.log(`[LOAD] Cambiando filtro a: ${nuevoFiltro}`);
         
         // Aplicar el nuevo filtro
         applyFilter(nuevoFiltro);
@@ -417,8 +417,11 @@
     // Configurar botones según el estado
     if (btnEditarOrden && btnEnviarCocina && btnEliminarOrden && btnCerrarCuenta) {
       if (estado === 'Preparada') {
-        // Orden preparada: ocultar editar y enviar, mostrar cerrar cuenta
-        btnEditarOrden.style.display = 'none';
+        // Orden preparada: MOSTRAR editar (para agregar más platillos), mostrar cerrar cuenta
+        btnEditarOrden.style.display = 'inline-block';
+        btnEditarOrden.href = `/templates/mesero/mesero_comanda?edit=${orderId}`;
+        btnEditarOrden.textContent = '+ Agregar Platillos'; // Cambiar texto para claridad
+        btnEditarOrden.title = 'Agregar más platillos a esta orden';
         btnEnviarCocina.style.display = 'none';
         btnEliminarOrden.style.display = 'none';
         btnCerrarCuenta.style.display = 'inline-block';
@@ -427,15 +430,19 @@
         // Orden pendiente: mostrar editar, enviar a cocina y eliminar
         btnEditarOrden.style.display = 'inline-block';
         btnEditarOrden.href = `/templates/mesero/mesero_comanda?edit=${orderId}`;
+        btnEditarOrden.textContent = '✏️ Editar Orden';
+        btnEditarOrden.title = 'Editar platillos de la orden';
         btnEnviarCocina.style.display = 'inline-block';
         btnEnviarCocina.onclick = () => handleEnviarCocina(orderId);
         btnEliminarOrden.style.display = 'inline-block';
         btnEliminarOrden.onclick = () => handleEliminarOrden(orderId);
         btnCerrarCuenta.style.display = 'none';
       } else if (estado === 'En Preparación') {
-        // Orden en preparación: mostrar editar y eliminar (ya está en cocina)
+        // Orden en preparación: mostrar editar (agregar platillos) y eliminar
         btnEditarOrden.style.display = 'inline-block';
         btnEditarOrden.href = `/templates/mesero/mesero_comanda?edit=${orderId}`;
+        btnEditarOrden.textContent = '+ Agregar Platillos';
+        btnEditarOrden.title = 'Agregar más platillos a esta orden';
         btnEnviarCocina.style.display = 'none';
         btnEliminarOrden.style.display = 'inline-block';
         btnEliminarOrden.onclick = () => handleEliminarOrden(orderId);
@@ -452,7 +459,10 @@
 
   // Enviar orden a cocina
   async function handleEnviarCocina(orderId) {
-    const confirmed = confirm('¿Enviar esta orden a cocina? Los platillos aparecerán en el KDS.');
+    const confirmed = await showConfirm('¿Enviar esta orden a cocina? Los platillos aparecerán en el KDS.', {
+      confirmText: 'Enviar a cocina',
+      cancelText: 'Cancelar'
+    });
     
     if (!confirmed) return;
 
@@ -477,7 +487,13 @@
 
   // Eliminar orden completa
   async function handleEliminarOrden(orderId) {
-    const confirmed = confirm('⚠️ ¿Eliminar esta orden completa?\n\nEsta acción NO se puede deshacer.\n\n- Se eliminarán todos los platillos\n- Se eliminarán los tickets del KDS\n- La orden no se podrá recuperar\n\n¿Estás seguro?');
+    const confirmed = await showConfirm(
+      '¿Eliminar esta orden completa?\n\nEsta acción NO se puede deshacer.\n\n• Se eliminarán todos los platillos\n• Se eliminarán los tickets del KDS\n• La orden no se podrá recuperar', 
+      {
+        confirmText: 'Eliminar orden',
+        cancelText: 'Cancelar'
+      }
+    );
     
     if (!confirmed) return;
 
@@ -517,15 +533,81 @@
 
   // Cerrar cuenta (enviar orden a caja)
   async function handleCerrarCuenta(orderId) {
-    const confirmed = confirm('¿El cliente pidió la cuenta? Esto enviará la orden a caja para su cobro.');
-    
-    if (!confirmed) return;
-
     try {
+      // Primero, verificar el estado de todos los platillos en KDS
+      console.log(`[CHECK] Verificando estado de platillos para orden ${orderId}...`);
+      
+      const response = await API.orders.getById(orderId);
+      const data = response.data || response;
+      const orderDetails = data.order || data.orden || data;
+      const comandas = orderDetails.comandas || [];
+      
+      console.log(`[DATA] Orden ${orderId} tiene ${comandas.length} platillos`);
+      
+      // Verificar que todos los platillos estén terminados
+      const platillosPendientes = [];
+      const platillosEnPreparacion = [];
+      
+      comandas.forEach((comanda, index) => {
+        const nombrePlatillo = comanda.platillo_nombre || comanda.platillo?.nombre || 'Platillo sin nombre';
+        const estadoKDS = comanda.area_registro?.estado || null;
+        const enKDS = !!comanda.area_registro;
+        
+        console.log(`  [ITEM ${index + 1}] "${nombrePlatillo}": en_kds=${enKDS}, estado="${estadoKDS}"`);
+        
+        if (!enKDS) {
+          // El platillo no ha sido enviado a KDS
+          platillosPendientes.push(`• ${nombrePlatillo} (No enviado a cocina)`);
+        } else if (estadoKDS !== 'Preparado') {
+          // El platillo está en KDS pero no terminado
+          if (estadoKDS === 'Pendiente') {
+            platillosPendientes.push(`• ${nombrePlatillo} (Pendiente en cocina)`);
+          } else if (estadoKDS === 'En Preparación') {
+            platillosEnPreparacion.push(`• ${nombrePlatillo} (En preparación)`);
+          } else {
+            platillosPendientes.push(`• ${nombrePlatillo} (Estado: ${estadoKDS || 'Desconocido'})`);
+          }
+        }
+      });
+      
+      // Si hay platillos sin terminar, no permitir cerrar
+      if (platillosPendientes.length > 0 || platillosEnPreparacion.length > 0) {
+        console.warn('[BLOCK] No se puede cerrar: hay platillos sin terminar');
+        
+        let mensaje = '⚠️ No se puede cerrar la cuenta\n\n';
+        mensaje += 'Los siguientes platillos aún NO están listos:\n\n';
+        
+        if (platillosPendientes.length > 0) {
+          mensaje += platillosPendientes.join('\n');
+        }
+        if (platillosEnPreparacion.length > 0) {
+          if (platillosPendientes.length > 0) mensaje += '\n';
+          mensaje += platillosEnPreparacion.join('\n');
+        }
+        
+        mensaje += '\n\nPor favor, espera a que todos los platillos estén marcados como "Preparado" en KDS antes de cerrar la cuenta.';
+        
+        Toast.warning(mensaje.replace(/\n/g, '<br>'));
+        return;
+      }
+      
+      console.log('[OK] Todos los platillos están preparados. Procediendo a cerrar cuenta...');
+      
+      // Si todos están terminados, pedir confirmación
+      const confirmed = await showConfirm(
+        '✅ Todos los platillos están listos\n\n¿El cliente pidió la cuenta?\n\nEsto enviará la orden a caja para su cobro.', 
+        {
+          confirmText: 'Cerrar cuenta',
+          cancelText: 'Cancelar'
+        }
+      );
+      
+      if (!confirmed) return;
+
       console.log(`💰 Cerrando cuenta de orden ${orderId}`);
       await API.orders.close(orderId);
       
-      showNotification('Cuenta cerrada. La orden se envió a caja.', 'success');
+      Toast.success('Cuenta cerrada. La orden se envió a caja.');
       
       // Recargar órdenes
       await loadOrders();

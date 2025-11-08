@@ -205,3 +205,5 @@ El sistema de logout seguro está **100% implementado** en todas las vistas.
 **Estado:** ✅ PRODUCCIÓN  
 **Versión:** 20251101k
 
+
+

@@ -221,3 +221,5 @@ console.log('   2. Actualiza los HTML para usar /dist/scripts/*.js');
 console.log('   3. Reinicia nginx: docker compose restart nginx');
 console.log('');
 
+
+

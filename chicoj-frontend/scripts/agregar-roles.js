@@ -13,7 +13,7 @@
 
   // Inicializar
   async function init() {
-    console.log('🚀 Iniciando agregar-roles.js');
+    console.log('[START] Iniciando agregar-roles.js');
     
     // Verificar autenticación
     if (!AuthManager.isAuthenticated()) {
@@ -27,7 +27,7 @@
     nombreRolInput = document.getElementById('nombre_rol');
     descripcionInput = document.getElementById('descripcion');
 
-    console.log('📋 Elementos del DOM encontrados:');
+    console.log('[INFO] Elementos del DOM encontrados:');
     console.log('  - form:', !!form);
     console.log('  - nombreRolInput:', !!nombreRolInput);
     console.log('  - descripcionInput:', !!descripcionInput);
@@ -45,7 +45,7 @@
     // Configurar event listeners
     setupEventListeners();
     
-    console.log('✅ Inicialización completada');
+    console.log('[OK] Inicialización completada');
   }
 
   // Configurar event listeners
@@ -53,12 +53,74 @@
     if (form) {
       form.addEventListener('submit', handleSubmit);
     }
+    
+    // Validación en tiempo real para nombre de rol
+    if (nombreRolInput) {
+      nombreRolInput.addEventListener('input', (e) => validateRoleName(e.target));
+      nombreRolInput.addEventListener('blur', (e) => validateRoleName(e.target));
+    }
+  }
+  
+  // Validar nombre de rol (no puede ser solo números)
+  function validateRoleName(input) {
+    const value = input.value.trim();
+    
+    // Limpiar mensaje de error previo
+    removeErrorMessage(input);
+    
+    if (value === '') {
+      input.classList.remove('error', 'success');
+      return false;
+    }
+    
+    // Verificar que no sea solo números
+    if (/^\d+$/.test(value)) {
+      input.classList.add('error');
+      input.classList.remove('success');
+      showFieldError(input, 'El nombre del rol no puede ser solo números. Debe contener al menos una letra');
+      return false;
+    }
+    
+    // Verificar que tenga al menos una letra
+    if (!/[a-zA-ZáéíóúÁÉÍÓÚñÑ]/.test(value)) {
+      input.classList.add('error');
+      input.classList.remove('success');
+      showFieldError(input, 'El nombre del rol debe contener al menos una letra');
+      return false;
+    }
+    
+    if (value.length < 2) {
+      input.classList.add('error');
+      input.classList.remove('success');
+      showFieldError(input, 'El nombre del rol debe tener al menos 2 caracteres');
+      return false;
+    }
+    
+    input.classList.remove('error');
+    input.classList.add('success');
+    return true;
+  }
+  
+  // Mostrar mensaje de error en campo
+  function showFieldError(input, message) {
+    const errorSpan = document.createElement('span');
+    errorSpan.className = 'error-message';
+    errorSpan.textContent = message;
+    input.parentNode.insertBefore(errorSpan, input.nextSibling);
+  }
+  
+  // Remover mensaje de error
+  function removeErrorMessage(input) {
+    const nextElement = input.nextSibling;
+    if (nextElement && nextElement.classList && nextElement.classList.contains('error-message')) {
+      nextElement.remove();
+    }
   }
 
   // Cargar rol para editar
   async function loadRoleForEdit(id) {
     try {
-      console.log('📝 Cargando rol para editar, ID:', id);
+      console.log('[NOTE] Cargando rol para editar, ID:', id);
       
       // Obtener el rol desde el backend
       const response = await API.users.getRoles();
@@ -89,9 +151,9 @@
         submitButton.textContent = 'Actualizar Rol';
       }
 
-      console.log('✅ Rol cargado para edición:', role.nombre_rol);
+      console.log('[OK] Rol cargado para edición:', role.nombre_rol);
     } catch (error) {
-      console.error('❌ Error al cargar rol:', error);
+      console.error('[ERROR] Error al cargar rol:', error);
       showError('No se pudo cargar el rol para editar');
     }
   }
@@ -100,7 +162,7 @@
   async function handleSubmit(e) {
     e.preventDefault();
 
-    console.log('📤 Enviando formulario de rol...');
+    console.log('[SEND] Enviando formulario de rol...');
 
     // Obtener valores
     const nombreRol = nombreRolInput?.value.trim();
@@ -109,6 +171,12 @@
     // Validar
     if (!nombreRol) {
       showError('El nombre del rol es requerido');
+      return;
+    }
+    
+    // Validar que no sea solo números
+    if (!validateRoleName(nombreRolInput)) {
+      showError('Por favor corrige el nombre del rol. No puede ser solo números');
       return;
     }
 
@@ -123,22 +191,22 @@
       descripcion: descripcion
     };
 
-    console.log('📋 Datos del rol a guardar:', roleData);
+    console.log('[INFO] Datos del rol a guardar:', roleData);
 
     try {
       let response;
 
       if (editMode && editRoleId) {
         // Actualizar rol existente
-        console.log('📝 Actualizando rol ID:', editRoleId);
+        console.log('[NOTE] Actualizando rol ID:', editRoleId);
         response = await API.users.updateRole(editRoleId, roleData);
-        console.log('✅ Rol actualizado:', response);
+        console.log('[OK] Rol actualizado:', response);
         showSuccess('Rol actualizado exitosamente');
       } else {
         // Crear nuevo rol
-        console.log('➕ Creando nuevo rol...');
+        console.log('[ADD] Creando nuevo rol...');
         response = await API.users.createRole(roleData);
-        console.log('✅ Rol creado:', response);
+        console.log('[OK] Rol creado:', response);
         showSuccess('Rol creado exitosamente');
       }
 
@@ -148,21 +216,21 @@
       }, 1500);
 
     } catch (error) {
-      console.error('❌ Error al guardar rol:', error);
+      console.error('[ERROR] Error al guardar rol:', error);
       showError(error.message || 'No se pudo guardar el rol');
     }
   }
 
   // Mostrar mensaje de éxito
   function showSuccess(message) {
-    console.log('✅', message);
-    alert(`✅ ${message}`);
+    console.log('[OK]', message);
+    Toast.success(message);
   }
 
   // Mostrar mensaje de error
   function showError(message) {
-    console.error('❌', message);
-    alert(`❌ ${message}`);
+    console.error('[ERROR]', message);
+    Toast.error(message);
   }
 
   // Iniciar cuando el DOM esté listo

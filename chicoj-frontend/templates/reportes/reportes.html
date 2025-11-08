@@ -10,6 +10,10 @@
   <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
   
+  <!-- Desactivar logs en producción (debe ser el primero) -->
+    <script src="/scripts/toast-notifications.js?v=20251107v"></script>
+  <script src="/scripts/disable-logs-production.js?v=20251107f"></script>
+  
   <!-- IMPORTANTE: Auth simple sin interferir -->
   <script src="/scripts/simple-auth.js?v=20251101k"></script>
   
@@ -22,7 +26,7 @@
   <link rel="stylesheet" href="/css/components.css?v=20251101g">
   <link rel="stylesheet" href="/css/utilities.css?v=20251101g">
   <link rel="stylesheet" href="/css/mejoras-ux.css?v=20251101g">
-  <link rel="stylesheet" href="/css/tablas-modernas.css?v=20251101g">
+  <link rel="stylesheet" href="/css/tablas-modernas.css?v=20251108cache">
   <link rel="stylesheet" href="/css/responsive.css?v=20251101k">
   <link rel="stylesheet" href="/css/responsive-reportes.css?v=20251101k">
   <style>
@@ -135,25 +139,25 @@
       margin-bottom: 1.5rem;
     }
     .kpi-card {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
       padding: 1rem;
       border-radius: var(--r-md);
       color: white;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
       transition: all 0.3s;
     }
     .kpi-card:nth-child(1) {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
     }
     .kpi-card:nth-child(2) {
-      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
     }
     .kpi-card:nth-child(3) {
-      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
     }
     .kpi-card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      box-shadow: 0 8px 16px rgba(37, 99, 235, 0.3);
     }
     .kpi-label {
       font-size: 0.85rem;
@@ -237,12 +241,20 @@
       font-size: 0.9rem;
     }
     .report-table th {
-      background: #f5f5f5;
+      background: linear-gradient(135deg, #1E40AF 0%, #2563EB 100%);
+      color: #ffffff;
       padding: 0.75rem;
       text-align: left;
       font-weight: 600;
-      border-bottom: 2px solid var(--border);
+      border-bottom: 2px solid #1E40AF;
       font-size: 0.85rem;
+      text-transform: uppercase;
+    }
+    .report-table tbody tr:nth-child(even) {
+      background: #F5F7FA;
+    }
+    .report-table tbody tr:hover {
+      background: #eff6ff;
     }
     .report-table td {
       padding: 0.75rem;
@@ -292,6 +304,7 @@
       }
     }
   </style>
+  <link rel="stylesheet" href="/css/toast-notifications.css?v=20251107v">
 </head>
 <body>
   <div class="contenedor-app">
@@ -335,12 +348,12 @@
           </div>
         </div>
         <div class="filter-actions">
-          <button class="btn-generar" id="btn-generar">📊 Generar</button>
-          <button class="btn-limpiar" id="btn-limpiar">🔄 Limpiar</button>
-          <button class="btn-excel" id="btn-descargar-excel">📊 Excel Completo</button>
-          <button class="btn-pdf" id="btn-pdf-platillos">📄 PDF Platillos</button>
-          <button class="btn-pdf" id="btn-pdf-areas">📄 PDF Áreas</button>
-          <button class="btn-pdf" id="btn-pdf-horas">📄 PDF Horas</button>
+          <button class="btn-generar" id="btn-generar"> Generar</button>
+          <button class="btn-limpiar" id="btn-limpiar"> Limpiar</button>
+          <button class="btn-excel" id="btn-descargar-excel"> Excel Completo</button>
+          <button class="btn-pdf" id="btn-pdf-platillos"> PDF Platillos</button>
+          <button class="btn-pdf" id="btn-pdf-areas"> PDF Áreas</button>
+          <button class="btn-pdf" id="btn-pdf-horas"> PDF Horas</button>
         </div>
       </div>
 
@@ -348,21 +361,21 @@
       <div class="kpi-grid">
         <!-- Ventas Totales -->
         <div class="kpi-card">
-          <div class="kpi-label">💰 Ventas Totales</div>
+          <div class="kpi-label"> Ventas Totales</div>
           <div class="kpi-value" id="stat-ventas-totales">Q 0.00</div>
           <div class="kpi-subtitle">En el período seleccionado</div>
         </div>
 
         <!-- Órdenes Completadas -->
         <div class="kpi-card">
-          <div class="kpi-label">✅ Órdenes Completadas</div>
+          <div class="kpi-label"> Órdenes Completadas</div>
           <div class="kpi-value" id="stat-ordenes-totales">0</div>
           <div class="kpi-subtitle">Finalizadas</div>
         </div>
 
         <!-- Ticket Promedio -->
         <div class="kpi-card">
-          <div class="kpi-label">🎫 Ticket Promedio</div>
+          <div class="kpi-label"> Ticket Promedio</div>
           <div class="kpi-value" id="stat-ticket-promedio">Q 0.00</div>
           <div class="kpi-subtitle">Por orden</div>
         </div>
@@ -374,11 +387,11 @@
         <div class="report-card">
           <h3>
             <span class="card-title">
-              <span class="icon-stat">🍽️</span> Top 10 - Platillos Más Vendidos
+              <span class="icon-stat"> </span> Platillos Más Vendidos
             </span>
             <div class="chart-actions">
               <button class="btn-download-chart" id="btn-download-platillos" title="Descargar gráfica">
-                📥 PNG
+                 PNG
               </button>
             </div>
           </h3>
@@ -394,11 +407,11 @@
         <div class="report-card">
           <h3>
             <span class="card-title">
-              <span class="icon-stat">⏰</span> Horas Pico
+              <span class="icon-stat"></span> Horas Pico
             </span>
             <div class="chart-actions">
               <button class="btn-download-chart" id="btn-download-horas" title="Descargar gráfica">
-                📥 PNG
+                 PNG
               </button>
             </div>
           </h3>
@@ -417,11 +430,11 @@
       <div class="report-card">
         <h3>
           <span class="card-title">
-            <span class="icon-stat">📍</span> Ingresos por Área
+            <span class="icon-stat"></span> Ingresos por Área
           </span>
           <div class="chart-actions">
             <button class="btn-download-chart" id="btn-download-areas" title="Descargar gráfica">
-              📥 PNG
+               PNG
             </button>
           </div>
         </h3>
@@ -447,11 +460,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   
   <!-- App Scripts -->
-  <script src="/scripts/ultra-simple-logout.js?v=20251101k"></script>
+  <script src="/scripts/ultra-simple-logout.js?v=20251108m"></script>
   <script src="/scripts/config.js?v=20251101h"></script>
   <script src="/scripts/api.js?v=20251101d"></script>
   <script src="/scripts/access-control.js?v=20251101d"></script>
-  <script src="/scripts/reportes.js?v=20251101d"></script>
+  <script src="/scripts/reportes.js?v=20251108zc"></script>
   <script src="/scripts/reportes-pdf.js?v=20251101d"></script>
 </body>
 </html>

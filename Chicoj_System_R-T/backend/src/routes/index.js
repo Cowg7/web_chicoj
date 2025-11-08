@@ -2,6 +2,7 @@
 import express from 'express';
 import authRoutes from './auth.routes.js';
 import menuRoutes from './menu.routes.js';
+import categoriasRoutes from './categorias.routes.js';
 import ordersRoutes from './orders.routes.js';
 import kdsRoutes from './kds.routes.js';
 import cashierRoutes from './cashier.routes.js';
@@ -10,21 +11,17 @@ import reportsRoutes from './reports.routes.js';
 import employeesRoutes from './employees.routes.js';
 import usersRoutes from './users.routes.js';
 import notificationsRoutes from '../modules/notifications/notifications.routes.js';
+import healthRoutes from './health.routes.js';
 
 const router = express.Router();
 
-// Health check
-router.get('/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
-    timestamp: new Date().toISOString(),
-    service: 'Chicoj Backend API'
-  });
-});
+// Health check routes (completo con monitoreo de DB)
+router.use('/', healthRoutes);
 
 // Rutas de módulos
 router.use('/auth', authRoutes);
 router.use('/menu', menuRoutes);
+router.use('/categorias', categoriasRoutes);
 router.use('/orders', ordersRoutes);
 router.use('/kds', kdsRoutes);
 router.use('/cashier', cashierRoutes);

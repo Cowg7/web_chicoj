@@ -46,11 +46,11 @@ export const login = asyncHandler(async (req, res) => {
   }
   
   if (!usuario) {
-    console.log('❌ Usuario no encontrado:', loginIdentifier);
+    console.log('[ERROR] Usuario no encontrado:', loginIdentifier);
     throw new AppError('Credenciales inválidas', 401);
   }
   
-  console.log('✅ Usuario encontrado:', usuario.usuario_nombre);
+  console.log('[OK] Usuario encontrado:', usuario.usuario_nombre);
   
   // Validar que el usuario tenga empleado y rol asociados
   if (!usuario.empleado) {
@@ -65,7 +65,7 @@ export const login = asyncHandler(async (req, res) => {
   
   // Verificar contraseña
   const isValidPassword = await bcrypt.compare(password, usuario.contrasena_hash);
-  console.log('🔐 Verificación de contraseña:', isValidPassword ? '✅ Correcta' : '❌ Incorrecta');
+  console.log('[SECURE] Verificación de contraseña:', isValidPassword ? '[OK] Correcta' : '[ERROR] Incorrecta');
   
   if (!isValidPassword) {
     throw new AppError('Credenciales inválidas', 401);
@@ -225,7 +225,7 @@ setInterval(() => {
   for (const [key, value] of codigosRecuperacion.entries()) {
     if (ahora > value.expira) {
       codigosRecuperacion.delete(key);
-      console.log('🗑️ Código expirado eliminado:', key);
+      console.log('[DELETE] Código expirado eliminado:', key);
     }
   }
 }, 5 * 60 * 1000);
@@ -261,7 +261,7 @@ export const solicitarRecuperacion = asyncHandler(async (req, res) => {
     intentos: 0
   });
   
-  console.log(`🔐 Código de recuperación generado para ${usuario}: ${codigo}`);
+  console.log(`[SECURE] Código de recuperación generado para ${usuario}: ${codigo}`);
   console.log(`⏰ Expira en: ${new Date(expira).toLocaleString()}`);
   
   // Intentar enviar email
@@ -275,7 +275,7 @@ export const solicitarRecuperacion = asyncHandler(async (req, res) => {
     emailEnviado = true;
     console.log('📧 Código enviado por email a:', usuarioEncontrado.empleado.correo_electronico);
   } catch (error) {
-    console.warn('⚠️ No se pudo enviar el email:', error.message);
+    console.warn('[WARN] No se pudo enviar el email:', error.message);
     // En desarrollo, continuamos sin email. En producción, podrías lanzar un error.
   }
   
@@ -357,7 +357,7 @@ export const restablecerPassword = asyncHandler(async (req, res) => {
   // Eliminar código usado
   codigosRecuperacion.delete(usuario.toLowerCase());
   
-  console.log(`✅ Contraseña restablecida para: ${usuario}`);
+  console.log(`[OK] Contraseña restablecida para: ${usuario}`);
   
   // Enviar email de confirmación
   try {
@@ -367,7 +367,7 @@ export const restablecerPassword = asyncHandler(async (req, res) => {
     );
     console.log('📧 Confirmación enviada por email');
   } catch (error) {
-    console.warn('⚠️ No se pudo enviar email de confirmación:', error.message);
+    console.warn('[WARN] No se pudo enviar email de confirmación:', error.message);
     // No lanzamos error porque el cambio ya se realizó
   }
   

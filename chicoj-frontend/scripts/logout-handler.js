@@ -1,7 +1,7 @@
 // Script global para manejar logout y prevenir acceso con botón "atrás"
 
 (function() {
-  console.log('🔒 Logout handler cargado');
+  console.log('[LOCK] Logout handler cargado');
 
   // Prevenir acceso con botón "atrás" después de logout
   function preventBackAfterLogout() {
@@ -9,10 +9,10 @@
     const isLoginPage = window.location.pathname.includes('login');
     const hasToken = localStorage.getItem('auth_token');
     
-    console.log('🔍 Verificando token:', { hasToken: !!hasToken, isLoginPage });
+    console.log('[CHECK] Verificando token:', { hasToken: !!hasToken, isLoginPage });
     
     if (!isLoginPage && !hasToken) {
-      console.log('⛔ Sin token detectado, redirigiendo a login...');
+      console.log('[DENIED] Sin token detectado, redirigiendo a login...');
       // Ocultar todo el contenido inmediatamente
       document.body.style.display = 'none';
       // Redirigir sin permitir historial
@@ -22,12 +22,12 @@
     
     // Si estamos en login Y hay token, permitir continuar
     if (isLoginPage && hasToken) {
-      console.log('✅ Usuario ya autenticado en página de login');
+      console.log('[OK] Usuario ya autenticado en página de login');
     }
     
     // Mostrar el contenido si está autenticado
     if (!isLoginPage && hasToken) {
-      console.log('✅ Token válido, mostrando contenido');
+      console.log('[OK] Token válido, mostrando contenido');
       if (document.body) {
         document.body.style.display = '';
       }
@@ -43,7 +43,7 @@
   window.addEventListener('pageshow', function(event) {
     // event.persisted indica si la página viene del caché del navegador (botón atrás)
     if (event.persisted) {
-      console.log('📜 Página cargada desde caché (botón atrás detectado)');
+      console.log(' Página cargada desde caché (botón atrás detectado)');
       preventBackAfterLogout();
     }
   });
@@ -54,7 +54,7 @@
     const isLoginPage = window.location.pathname.includes('login');
     
     if (!isLoginPage && !hasToken) {
-      console.log('⛔ Intento de navegar atrás sin token');
+      console.log('[DENIED] Intento de navegar atrás sin token');
       window.location.replace('/templates/login');
     }
   });
@@ -77,21 +77,24 @@
     metaExpires.content = '0';
     document.head.appendChild(metaExpires);
     
-    console.log('🚫 Cache deshabilitado para esta página');
+    console.log(' Cache deshabilitado para esta página');
   }
 
   // Función global para cerrar sesión desde cualquier vista
-  window.handleLogout = function(event) {
+  window.handleLogout = async function(event) {
     if (event) {
       event.preventDefault();
     }
     
-    console.log('🚪 Ejecutando logout...');
+    console.log('[LOGOUT] Ejecutando logout...');
     
     // Confirmar
-    const confirm = window.confirm('¿Estás seguro de que deseas cerrar sesión?');
-    if (!confirm) {
-      console.log('❌ Logout cancelado por el usuario');
+    const confirmarCierre = await showConfirm('¿Estás seguro de que deseas cerrar sesión?', {
+      confirmText: 'Cerrar sesión',
+      cancelText: 'Cancelar'
+    });
+    if (!confirmarCierre) {
+      console.log('[ERROR] Logout cancelado por el usuario');
       return;
     }
     
@@ -104,7 +107,7 @@
       document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
     });
     
-    console.log('✅ Sesión limpiada completamente');
+    console.log('[OK] Sesión limpiada completamente');
     
     // Prevenir botón atrás
     window.history.pushState(null, '', window.location.href);
@@ -116,7 +119,7 @@
   // Hacer disponible globalmente
   window.preventBackAfterLogout = preventBackAfterLogout;
 
-  console.log('✅ Logout handler inicializado');
+  console.log('[OK] Logout handler inicializado');
 })();
 
 

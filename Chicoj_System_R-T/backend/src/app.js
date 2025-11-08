@@ -28,17 +28,17 @@ app.use(cors({
       if (origin.includes('localhost') || 
           origin.includes('127.0.0.1') || 
           origin.match(/^http:\/\/172\.20\.\d+\.\d+:\d+$/)) {
-        console.log('✅ Origin permitido (desarrollo):', origin);
+        console.log('[OK] Origin permitido (desarrollo):', origin);
         return callback(null, true);
       }
     }
     
     // Verificar si el origin está en la lista permitida
     if (config.cors.origins.indexOf(origin) !== -1) {
-      console.log('✅ Origin permitido (lista):', origin);
+      console.log('[OK] Origin permitido (lista):', origin);
       callback(null, true);
     } else {
-      console.log('❌ Origin no permitido:', origin);
+      console.log('[ERROR] Origin no permitido:', origin);
       console.log('   Origins permitidos:', config.cors.origins);
       callback(new Error('Not allowed by CORS'));
     }

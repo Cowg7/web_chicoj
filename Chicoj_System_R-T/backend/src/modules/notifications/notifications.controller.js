@@ -244,10 +244,10 @@ export const createNotification = async ({
       }
     });
     
-    console.log(`🔔 Notificación creada: "${titulo}" para usuario ${id_usuario}`);
+    console.log(`[NOTIF] Notificación creada: "${titulo}" para usuario ${id_usuario}`);
     return notificacion;
   } catch (error) {
-    console.error('❌ Error al crear notificación:', error);
+    console.error('[ERROR] Error al crear notificación:', error);
     throw error;
   }
 };

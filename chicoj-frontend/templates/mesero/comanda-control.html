@@ -11,6 +11,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
   
   <!-- IMPORTANTE: Auth simple sin interferir -->
+    <script src="/scripts/toast-notifications.js?v=20251107v"></script>
   <script src="/scripts/simple-auth.js?v=20251101k"></script>
   
   <!-- Meta tags para prevenir caché -->
@@ -21,7 +22,9 @@
   <link rel="stylesheet" href="/css/base.css?v=20251025c">
   <link rel="stylesheet" href="/css/components.css?v=20251025c">
   <link rel="stylesheet" href="/css/utilities.css?v=20251025">
+  <link rel="stylesheet" href="/css/tablas-modernas.css?v=20251108cache">
   <link rel="stylesheet" href="/css/estilos-comanda-control.css?v=20251025">
+  <link rel="stylesheet" href="/css/notifications.css?v=20251108r">
   <link rel="stylesheet" href="/css/responsive.css?v=20251101k">
   <link rel="stylesheet" href="/css/responsive-comanda.css?v=20251101k">
   <style>
@@ -202,7 +205,42 @@
         width: 100%;
       }
     }
+
+    /* ========================================
+       TABLA DE ORDEN - Paleta Profesional
+       ======================================== */
+    .tabla-orden thead {
+      background: linear-gradient(135deg, #1E40AF 0%, #2563EB 100%);
+      color: #ffffff !important;
+    }
+
+    .tabla-orden th {
+      color: #ffffff !important;
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+    }
+    
+    .tabla-orden tbody tr:nth-child(even) {
+      background: #F5F7FA;
+    }
+    
+    .tabla-orden tbody tr:hover {
+      background: #eff6ff;
+    }
+
+    @media print {
+      .tabla-orden thead {
+        background: #1E40AF !important;
+      }
+      .tabla-orden th {
+        color: #ffffff !important;
+      }
+    }
   </style>
+  <link rel="stylesheet" href="/css/toast-notifications.css?v=20251107v">
 </head>
 <body>
   <div class="contenedor-app">
@@ -277,8 +315,8 @@
         <div class="visor-acciones">
           <a href="/templates/mesero/mesero_comanda" class="btn btn-success" id="btn-nueva-orden">+ Nueva Orden</a>
           <a href="/templates/mesero/mesero_comanda" class="btn btn-outline" id="btn-editar-orden">Agregar platillos a esta orden</a>
-          <button type="button" class="btn btn-warning" id="btn-enviar-cocina" style="display: none;">🍳 Enviar a Cocina</button>
-          <button type="button" class="btn btn-danger" id="btn-eliminar-orden" style="display: none;">🗑️ Eliminar Orden</button>
+          <button type="button" class="btn btn-warning" id="btn-enviar-cocina" style="display: none;"> Enviar a Cocina</button>
+          <button type="button" class="btn btn-danger" id="btn-eliminar-orden" style="display: none;"> Eliminar Orden</button>
           <button type="button" class="btn btn-primary" id="btn-cerrar-cuenta" style="display: none;">💰 Cerrar Cuenta</button>
         </div>
 
@@ -310,18 +348,18 @@
     </footer>
   </div>
 
-  <!-- Audio para notificaciones -->
-  <audio id="notification-sound">
-    <!-- Sonido simple usando data URI de un beep -->
-    <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBiZ5yPDak0MNDluu6O2sWhINR6Hn77BnLAonftHy0olCDhFdr+jqpVgYC0So4u+uZS0KKX7P8tmNRRAUXrXq7KVaGg1Iqufwq2IuCSl+0fPajUgRFGC37OyrYR4LTarn8LBnMQspgdPy2pBJExVhuOvtr2MfC02t6e+zaDIKKoHU8tyRShQWY7rr77FiIAxOrujwsmoyDCuC1vLdkksVF2O66/C0YyEMT67p8LNrMw0rhNfz3pNMFhhjuuzysmMiC1Cv6fC0bDQOK4TY9N+TTBgZZbrr8LRjIwxRr+nxtWw0DyuE2fPekUUSGWe67fC2ZCENUq/p8LVtNBArhdry35JFFBlowu32tmUiDVKv6vC1bDQQK4bb8+CRRRUbaMHs9rdmIg5Sr+rwtnAzESuF2/Pok0YVG2jC6/e4aCoQUq/q8LVwMxE..."/>
-  </audio>
+  <!-- Audio para notificaciones (sonido generado dinámicamente) -->
+  <audio id="notification-sound" preload="auto"></audio>
 
   <!-- Scripts -->
-  <script src="/scripts/ultra-simple-logout.js?v=20251101k"></script>
+  <!-- IMPORTANTE: Este debe ser el PRIMER script para desactivar logs en producción -->
+  <script src="/scripts/disable-logs-production.js?v=20251107f"></script>
+  <script src="/scripts/ultra-simple-logout.js?v=20251108m"></script>
   <script src="/scripts/config.js"></script>
   <script src="/scripts/api.js?v=20251024c"></script>
-  <script src="/scripts/access-control.js"></script>
-  <script src="/scripts/notifications.js?v=20251024c"></script>
-  <script src="/scripts/comanda-control.js?v=20251025i"></script>
+  <script src="/scripts/access-control.js?v=20251107e"></script>
+  <script src="/scripts/confirm-modal.js?v=20251108b"></script>
+  <script src="/scripts/notifications.js?v=20251108r"></script>
+  <script src="/scripts/comanda-control.js?v=20251108o"></script>
 </body>
 </html>

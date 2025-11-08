@@ -11,6 +11,8 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
   
   <!-- IMPORTANTE: Auth simple sin interferir -->
+  <script src="/scripts/toast-notifications.js?v=20251107v"></script>
+  <script src="/scripts/confirm-modal.js?v=20251108b"></script>
   <script src="/scripts/simple-auth.js?v=20251101k"></script>
   
   <!-- Meta tags para prevenir caché -->
@@ -22,6 +24,7 @@
   <link rel="stylesheet" href="/css/components.css?v=20251025c">
   <link rel="stylesheet" href="/css/utilities.css?v=20251025">
   <link rel="stylesheet" href="/css/estilos-control-usuarios.css">
+  <link rel="stylesheet" href="/css/toast-notifications.css?v=20251107v">
 </head>
 <body>
   <div class="contenedor-app">
@@ -63,38 +66,7 @@
             <div class="col col-acciones" role="columnheader">Acciones</div>
           </div>
 
-          <!-- Fila 1 -->
-          <div class="fila" role="row">
-            <div class="col col-id" role="cell">1</div>
-            <div class="col col-empleado" role="cell">Pedro López</div>
-            <div class="col col-usuario" role="cell">@pedro</div>
-            <div class="col col-rol" role="cell"><span class="badge badge-admin">Administrador</span></div>
-            <div class="col col-acciones" role="cell">
-              <a class="btn btn-outline" href="/templates/administracion/agregar_usuarios.html?id=1">Editar</a>
-            </div>
-          </div>
-
-          <!-- Fila 2 -->
-          <div class="fila" role="row">
-            <div class="col col-id" role="cell">2</div>
-            <div class="col col-empleado" role="cell">Diego Caal</div>
-            <div class="col col-usuario" role="cell">@dcaal</div>
-            <div class="col col-rol" role="cell"><span class="badge badge-mesero">Mesero</span></div>
-            <div class="col col-acciones" role="cell">
-              <a class="btn btn-outline" href="/templates/administracion/agregar_usuarios.html?id=2">Editar</a>
-            </div>
-          </div>
-
-          <!-- Fila 3 -->
-          <div class="fila" role="row">
-            <div class="col col-id" role="cell">3</div>
-            <div class="col col-empleado" role="cell">Alma Rax</div>
-            <div class="col col-usuario" role="cell">@arax</div>
-            <div class="col col-rol" role="cell"><span class="badge badge-caja">Caja</span></div>
-            <div class="col col-acciones" role="cell">
-              <a class="btn btn-outline" href="/templates/administracion/agregar_usuarios.html?id=3">Editar</a>
-            </div>
-          </div>
+          <!-- Los usuarios se cargan dinámicamente desde la base de datos -->
 
         </div>
       </section>
@@ -106,9 +78,10 @@
   </div>
 
   <!-- Scripts -->
-  <script src="/scripts/ultra-simple-logout.js?v=20251101k"></script>
+  <script src="/scripts/disable-logs-production.js?v=20251107f"></script>
+  <script src="/scripts/ultra-simple-logout.js?v=20251108m"></script>
   <script src="/scripts/config.js"></script>
   <script src="/scripts/api.js"></script>
-  <script src="/scripts/control-usuarios.js"></script>
+  <script src="/scripts/control-usuarios.js?v=20251108t"></script>
 </body>
 </html>

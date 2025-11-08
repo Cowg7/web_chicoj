@@ -187,3 +187,5 @@ También actualicé los títulos de las pestañas para que sean más descriptivo
 
 Haz **Ctrl + Shift + R** o **Ctrl + Shift + N** (modo incógnito) para ver los iconos. 🎨
 
+
+

@@ -73,3 +73,5 @@ console.log('   node chicoj-frontend/build-production.js');
 console.log('   powershell -ExecutionPolicy Bypass -File deploy-ofuscado.ps1');
 console.log('');
 
+
+

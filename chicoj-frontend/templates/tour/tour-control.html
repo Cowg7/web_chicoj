@@ -10,22 +10,27 @@
   <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
   
+  <!-- Desactivar logs en producción (debe ser el primero) -->
+    <script src="/scripts/toast-notifications.js?v=20251108cache"></script>
+  <script src="/scripts/disable-logs-production.js?v=20251108cache"></script>
+  
   <!-- IMPORTANTE: Auth simple sin interferir -->
-  <script src="/scripts/simple-auth.js?v=20251101k"></script>
+  <script src="/scripts/simple-auth.js?v=20251108cache"></script>
   
   <!-- Meta tags para prevenir caché -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   
-  <link rel="stylesheet" href="/css/base.css?v=20251101g">
-  <link rel="stylesheet" href="/css/components.css?v=20251101g">
-  <link rel="stylesheet" href="/css/utilities.css?v=20251101g">
-  <link rel="stylesheet" href="/css/mejoras-ux.css?v=20251101g">
-  <link rel="stylesheet" href="/css/tablas-modernas.css?v=20251101g">
-  <link rel="stylesheet" href="/css/estilos-tour-control.css?v=20251101g">
-  <link rel="stylesheet" href="/css/responsive.css?v=20251101k">
-  <link rel="stylesheet" href="/css/responsive-tour.css?v=20251101k">
+  <link rel="stylesheet" href="/css/base.css?v=20251108cache">
+  <link rel="stylesheet" href="/css/components.css?v=20251108cache">
+  <link rel="stylesheet" href="/css/utilities.css?v=20251108cache">
+  <link rel="stylesheet" href="/css/mejoras-ux.css?v=20251108cache">
+  <link rel="stylesheet" href="/css/tablas-modernas.css?v=20251108cache">
+  <link rel="stylesheet" href="/css/estilos-tour-control.css?v=20251108cache">
+  <link rel="stylesheet" href="/css/responsive.css?v=20251108cache">
+  <link rel="stylesheet" href="/css/responsive-tour.css?v=20251108cache">
+  <link rel="stylesheet" href="/css/toast-notifications.css?v=20251108cache">
 </head>
 <body>
   <div class="contenedor-app">
@@ -38,7 +43,7 @@
         </div>
       </div>
       <nav class="acciones">
-        <a class="btn btn-outline" href="/main">Inicio</a>
+
         <a class="btn btn-primary" href="#" onclick="return ultraSimpleLogout(event)">Cerrar sesión</a>
       </nav>
     </header>
@@ -51,10 +56,10 @@
         <div class="tabla-actions">
           <a class="btn btn-outline" href="/templates/tour/tour" id="btn-editar">Editar seleccionado</a>
           <button class="btn btn-success" type="button" id="btn-descargar-excel">
-            📊 Descargar Excel
+             Descargar Excel
           </button>
           <button class="btn btn-danger" type="button" id="btn-descargar-pdf">
-            📄 Descargar PDF
+             Descargar PDF
           </button>
         </div>
 
@@ -133,7 +138,7 @@
               <!-- Se generarán dinámicamente -->
             </div>
             <button class="btn btn-outline btn-page" id="btn-next-page" title="Siguiente">
-              ▶️
+              [PLAY]
             </button>
             <button class="btn btn-outline btn-page" id="btn-last-page" title="Última página">
               ⏭️
@@ -154,10 +159,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   
-  <script src="/scripts/config.js?v=20251101h"></script>
-  <script src="/scripts/ultra-simple-logout.js?v=20251101k"></script>
-  <script src="/scripts/api.js"></script>
-  <script src="/scripts/tour-control.js?v=20251101k"></script>
+  <script src="/scripts/config.js?v=20251108cache"></script>
+  <script src="/scripts/ultra-simple-logout.js?v=20251108cache"></script>
+  <script src="/scripts/api.js?v=20251108cache"></script>
+  <script src="/scripts/tour-control.js?v=20251108cache"></script>
   
   <!-- Estilos para paginación -->
   <style>

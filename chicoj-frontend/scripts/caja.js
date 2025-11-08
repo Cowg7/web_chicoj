@@ -57,27 +57,27 @@
     await loadPendingOrders();
     await loadHistorial();
 
-    // ⚠️ IMPORTANTE: Limpiar intervalo previo antes de crear uno nuevo
+    // [WARN] IMPORTANTE: Limpiar intervalo previo antes de crear uno nuevo
     if (refreshInterval) {
       clearInterval(refreshInterval);
-      console.log('🧹 Intervalo de caja anterior limpiado');
+      console.log('[CLEAN] Intervalo de caja anterior limpiado');
     }
 
     // Auto-refresh cada 20 segundos (optimizado para múltiples usuarios)
     refreshInterval = setInterval(async () => {
-      console.log('🔄 Auto-refresh de caja...');
+      console.log('[LOAD] Auto-refresh de caja...');
       await loadStats();
       await loadPendingOrders();
     }, 20000); // 20 segundos para soportar 3+ meseros simultáneos
 
-    console.log('✅ Auto-refresh de caja configurado cada 20 segundos');
+    console.log('[OK] Auto-refresh de caja configurado cada 20 segundos');
   }
 
   // Limpiar intervalo cuando se abandona la página
   window.addEventListener('beforeunload', () => {
     if (refreshInterval) {
       clearInterval(refreshInterval);
-      console.log('🧹 Intervalo de caja limpiado al salir');
+      console.log('[CLEAN] Intervalo de caja limpiado al salir');
     }
   });
 
@@ -86,7 +86,7 @@
     if (document.hidden) {
       if (refreshInterval) {
         clearInterval(refreshInterval);
-        console.log('⏸️ Auto-refresh de caja pausado (pestaña oculta)');
+        console.log('[PAUSE] Auto-refresh de caja pausado (pestaña oculta)');
       }
     } else {
       // Reanudar cuando vuelve a ser visible
@@ -94,11 +94,11 @@
         clearInterval(refreshInterval);
       }
       refreshInterval = setInterval(async () => {
-        console.log('🔄 Auto-refresh de caja...');
+        console.log('[LOAD] Auto-refresh de caja...');
         await loadStats();
         await loadPendingOrders();
       }, 20000);
-      console.log('▶️ Auto-refresh de caja reanudado');
+      console.log('[PLAY] Auto-refresh de caja reanudado');
       loadStats();
       loadPendingOrders();
     }
@@ -300,7 +300,7 @@
                 class="btn btn-small" 
                 onclick="window.cajaApp.verDetallesHistorial(${order.id_orden})"
                 title="Ver ${comandasCount} platillo(s)">
-                📋 Ver
+                [INFO] Ver
               </button>
               <button 
                 class="btn btn-small btn-pdf-orden" 
@@ -345,7 +345,9 @@
     await loadOrderDetails(orderId);
 
     if (modalPago) {
-      modalPago.style.display = 'block';
+      modalPago.style.display = 'flex'; // Flex para centrado
+      modalPago.classList.add('show');
+      document.body.style.overflow = 'hidden'; // Evitar scroll
     }
   }
 
@@ -353,11 +355,11 @@
   async function loadOrderDetails(orderId) {
     const detallePlatillosBody = document.getElementById('modal-detalle-platillos');
     
-    console.log('📋 Cargando detalles de orden:', orderId);
-    console.log('📋 Elemento modal-detalle-platillos:', detallePlatillosBody ? 'Encontrado' : 'NO ENCONTRADO');
+    console.log('[INFO] Cargando detalles de orden:', orderId);
+    console.log('[INFO] Elemento modal-detalle-platillos:', detallePlatillosBody ? 'Encontrado' : 'NO ENCONTRADO');
     
     if (!detallePlatillosBody) {
-      console.error('❌ No se encontró el elemento modal-detalle-platillos');
+      console.error('[ERROR] No se encontró el elemento modal-detalle-platillos');
       return;
     }
 
@@ -372,16 +374,16 @@
       `;
 
       // Obtener detalles de la orden
-      console.log('📡 Obteniendo detalles de orden desde API...');
+      console.log('[FETCH] Obteniendo detalles de orden desde API...');
       const response = await API.orders.getById(orderId);
       const orden = response.data || response;
       const comandas = orden.comandas || [];
       
-      console.log('✅ Orden recibida:', orden);
-      console.log('📦 Comandas:', comandas.length, 'items');
+      console.log('[OK] Orden recibida:', orden);
+      console.log('[DATA] Comandas:', comandas.length, 'items');
 
       if (comandas.length === 0) {
-        console.warn('⚠️ La orden no tiene comandas');
+        console.warn('[WARN] La orden no tiene comandas');
         detallePlatillosBody.innerHTML = `
           <tr>
             <td colspan="4" style="text-align: center; padding: 1rem; color: #999;">
@@ -430,17 +432,17 @@
       }).join('');
 
       detallePlatillosBody.innerHTML = htmlPlatillos;
-      console.log('✅ Tabla de platillos renderizada correctamente');
+      console.log('[OK] Tabla de platillos renderizada correctamente');
 
     } catch (error) {
-      console.error('❌ Error al cargar detalles de platillos:', error);
+      console.error('[ERROR] Error al cargar detalles de platillos:', error);
       console.error('Stack:', error.stack);
       
       if (detallePlatillosBody) {
         detallePlatillosBody.innerHTML = `
           <tr>
             <td colspan="4" style="text-align: center; padding: 1rem; color: #f44336;">
-              ❌ Error al cargar detalles: ${error.message}
+              [ERROR] Error al cargar detalles: ${error.message}
             </td>
           </tr>
         `;
@@ -452,6 +454,8 @@
   function closePaymentModal() {
     if (modalPago) {
       modalPago.style.display = 'none';
+      modalPago.classList.remove('show');
+      document.body.style.overflow = 'auto'; // Restaurar scroll
     }
     currentOrder = null;
   }
@@ -507,11 +511,11 @@
       
       const response = await API.cashier.finalize(currentOrder.id, paymentData);
       
-      console.log('✅ Pago procesado:', response);
+      console.log('[OK] Pago procesado:', response);
       
       await Swal.fire({
         icon: 'success',
-        title: '✅ Pago Exitoso',
+        title: '[OK] Pago Exitoso',
         html: `
           <div style="text-align: left; margin: 1rem 0;">
             <p style="margin: 0.5rem 0;"><strong>Orden:</strong> ${currentOrder.numero}</p>
@@ -534,7 +538,7 @@
       // Cambiar a tab de historial
       switchTab('historial');
     } catch (error) {
-      console.error('❌ Error al procesar pago:', error);
+      console.error('[ERROR] Error al procesar pago:', error);
       Swal.fire({
         icon: 'error',
         title: 'Error al procesar pago',
@@ -547,7 +551,7 @@
   // Ver detalles de orden en historial
   async function verDetallesHistorial(orderId) {
     try {
-      console.log('📋 Cargando detalles de orden del historial:', orderId);
+      console.log('[INFO] Cargando detalles de orden del historial:', orderId);
       
       const response = await API.orders.getById(orderId);
       const orden = response.data || response;
@@ -613,7 +617,7 @@
       
       // Mostrar con SweetAlert2
       Swal.fire({
-        title: `📋 Orden #${String(orden.id_orden).padStart(5, '0')}`,
+        title: `[INFO] Orden #${String(orden.id_orden).padStart(5, '0')}`,
         html: `
           <div style="text-align: left; margin-bottom: 1rem;">
             <p style="margin: 0.5rem 0;"><strong>Mesa:</strong> ${orden.no_mesa}</p>
@@ -623,7 +627,7 @@
           ${platillosHTML}
         `,
         width: '800px',
-        confirmButtonText: '✅ Cerrar',
+        confirmButtonText: '[OK] Cerrar',
         confirmButtonColor: '#2196F3',
         customClass: {
           popup: 'detalle-orden-popup'
@@ -652,7 +656,7 @@
       const comandas = orden.comandas || [];
 
       if (comandas.length === 0) {
-        alert('⚠️ Esta orden no tiene items para generar ticket');
+        Toast.info('[WARN] Esta orden no tiene items para generar ticket', 4000);
         return;
       }
 
@@ -664,12 +668,16 @@
       // Encabezado del ticket
       doc.setFontSize(14);
       doc.setFont(undefined, 'bold');
-      doc.text('Restaurante Chicooj', 40, y, { align: 'center' });
+      doc.text('Restaurante Chicoj', 40, y, { align: 'center' });
       y += 6;
 
-      doc.setFontSize(9);
+      doc.setFontSize(8);
       doc.setFont(undefined, 'normal');
-      doc.text('Sistema de Gestión', 40, y, { align: 'center' });
+      doc.text('Cobán, Alta Verapaz', 40, y, { align: 'center' });
+      y += 4;
+      doc.text('Tel: 5524 1831', 40, y, { align: 'center' });
+      y += 4;
+      doc.text('correotourchicoj@gmail.com', 40, y, { align: 'center' });
       y += 5;
 
       // Línea separadora
@@ -785,11 +793,11 @@
       const ordenNum = String(orden.id_orden).padStart(5, '0');
       doc.save(`Ticket_${ordenNum}_${fecha}.pdf`);
       
-      console.log('✅ Ticket PDF generado para orden:', orderId);
+      console.log('[OK] Ticket PDF generado para orden:', orderId);
 
     } catch (error) {
-      console.error('❌ Error al generar ticket PDF:', error);
-      alert('Error al generar el ticket PDF');
+      console.error('[ERROR] Error al generar ticket PDF:', error);
+      Toast.error('Error al generar el ticket PDF', 5000);
     }
   }
 

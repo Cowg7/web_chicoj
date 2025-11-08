@@ -132,3 +132,5 @@ Esto asegura que:
 
 **Fecha de implementación:** 1 de Noviembre 2025
 
+
+

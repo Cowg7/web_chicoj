@@ -125,7 +125,7 @@ const AuthManager = {
   
   // Cerrar sesión completo y seguro
   logout() {
-    console.log('🚪 Cerrando sesión...');
+    console.log('[LOGOUT] Cerrando sesión...');
     
     // Limpiar TODO el almacenamiento
     try {
@@ -137,7 +137,7 @@ const AuthManager = {
         document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
       });
       
-      console.log('✅ Todo el almacenamiento limpiado');
+      console.log('[OK] Todo el almacenamiento limpiado');
     } catch (e) {
       console.error('Error al limpiar storage:', e);
     }

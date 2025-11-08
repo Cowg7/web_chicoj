@@ -45,20 +45,20 @@
           <strong>Es Login:</strong> <span style="color: ${isLoginPage ? '#00ff00' : '#ff0000'}">${isLoginPage ? 'SÍ' : 'NO'}</span>
         </div>
         <div style="margin: 5px 0;">
-          <strong>Token:</strong> <span style="color: ${token ? '#00ff00' : '#ff0000'}">${token ? '✅ EXISTE' : '❌ NO EXISTE'}</span>
+          <strong>Token:</strong> <span style="color: ${token ? '#00ff00' : '#ff0000'}">${token ? '[OK] EXISTE' : '[ERROR] NO EXISTE'}</span>
         </div>
         <div style="margin: 5px 0;">
-          <strong>User Data:</strong> <span style="color: ${userData ? '#00ff00' : '#ff0000'}">${userData ? '✅ EXISTE' : '❌ NO EXISTE'}</span>
+          <strong>User Data:</strong> <span style="color: ${userData ? '#00ff00' : '#ff0000'}">${userData ? '[OK] EXISTE' : '[ERROR] NO EXISTE'}</span>
         </div>
         <div style="margin: 10px 0; padding-top: 10px; border-top: 1px solid #00ff00;">
           <strong>Decisión:</strong>
           ${!isLoginPage && !token 
-            ? '<span style="color: #ff0000;">⛔ DEBERÍA REDIRIGIR A LOGIN</span>' 
-            : '<span style="color: #00ff00;">✅ ACCESO PERMITIDO</span>'}
+            ? '<span style="color: #ff0000;">[DENIED] DEBERÍA REDIRIGIR A LOGIN</span>' 
+            : '<span style="color: #00ff00;">[OK] ACCESO PERMITIDO</span>'}
         </div>
         <div style="margin-top: 10px;">
           <button onclick="localStorage.clear(); location.reload();" style="background: #ff0000; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
-            🗑️ Limpiar y Recargar
+            [DELETE] Limpiar y Recargar
           </button>
         </div>
       </div>
@@ -90,15 +90,15 @@
   console.log('   → Tiene Token?', !!token);
   
   if (!isLoginPage && !token) {
-    console.log('⛔ DEBUG AUTH: SIN TOKEN - REDIRIGIENDO');
+    console.log('[DENIED] DEBUG AUTH: SIN TOKEN - REDIRIGIENDO');
     
     // Redirigir INMEDIATAMENTE
     window.location.replace('/templates/login?blocked=' + Date.now());
     
     // Detener ejecución
-    throw new Error('⛔ ACCESO BLOQUEADO - Sin token');
+    throw new Error('[DENIED] ACCESO BLOQUEADO - Sin token');
   }
   
-  console.log('✅ DEBUG AUTH: Acceso permitido - Token encontrado');
+  console.log('[OK] DEBUG AUTH: Acceso permitido - Token encontrado');
 })();
 

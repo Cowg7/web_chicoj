@@ -17,17 +17,11 @@
   let editMode = false;
   let platilloId = null;
   let areas = [];
-  
-  // Categorías predefinidas por área
-  const categoriasDefinidas = {
-    'Cocina': ['Desayunos', 'Almuerzo', 'Refacciones', 'Refacciones Típicas', 'Menú Infantil'],
-    'Bebidas': ['Bebidas Frías', 'Licuados', 'Cervezas', 'Bebidas Desechables'],
-    'Coffee': ['Café', 'Postres']
-  };
+  let categoriasPorArea = {}; // Categorías dinámicas cargadas desde la API
 
   // Inicializar
   async function init() {
-    console.log('🚀 Inicializando formulario de platillos...');
+    console.log('[START] Inicializando formulario de platillos...');
     
     // Verificar autenticación
     if (!AuthManager.isAuthenticated()) {
@@ -35,8 +29,11 @@
       return;
     }
 
-    // Cargar áreas disponibles
-    await loadAreas();
+    // Cargar áreas y categorías disponibles
+    await Promise.all([
+      loadAreas(),
+      loadAllCategorias()
+    ]);
 
     // Verificar si estamos en modo edición
     const urlParams = new URLSearchParams(window.location.search);
@@ -44,7 +41,7 @@
 
     if (platilloId) {
       editMode = true;
-      console.log('✏️ Modo EDICIÓN - ID:', platilloId);
+      console.log('[EDIT] Modo EDICIÓN - ID:', platilloId);
       await loadPlatillo(platilloId);
       
       if (btnSubmit) {
@@ -57,7 +54,7 @@
         titulo.textContent = 'Editar Platillo';
       }
     } else {
-      console.log('➕ Modo CREACIÓN');
+      console.log('[ADD] Modo CREACIÓN');
       // Generar ID automático
       if (inputs.id) {
         inputs.id.value = 'AUTO';
@@ -71,13 +68,13 @@
   // Cargar áreas disponibles
   async function loadAreas() {
     try {
-      console.log('🔄 Cargando áreas...');
+      console.log('[LOAD] Cargando áreas...');
       const response = await API.menu.getAreas();
       
       const data = response.data || response;
       areas = data.areas || data || [];
       
-      console.log(`✅ ${areas.length} áreas cargadas:`, areas.map(a => a.nombre));
+      console.log(`[OK] ${areas.length} áreas cargadas:`, areas.map(a => a.nombre));
       
       // Llenar el select
       if (inputs.area && areas.length > 0) {
@@ -92,10 +89,10 @@
           inputs.area.appendChild(option);
         });
         
-        console.log('✅ Select de áreas poblado');
+        console.log('[OK] Select de áreas poblado');
       }
     } catch (error) {
-      console.error('❌ Error al cargar áreas:', error);
+      console.error('[ERROR] Error al cargar áreas:', error);
       showNotification('Error al cargar áreas: ' + error.message, 'error');
     }
   }
@@ -103,13 +100,13 @@
   // Cargar datos del platillo
   async function loadPlatillo(id) {
     try {
-      console.log('📥 Cargando platillo ID:', id);
+      console.log('[RECEIVE] Cargando platillo ID:', id);
       const response = await API.menu.getById(id);
       
       const data = response.data || response;
       const platillo = data.platillo || data;
 
-      console.log('📋 Platillo cargado:', platillo);
+      console.log('[INFO] Platillo cargado:', platillo);
 
       if (platillo) {
         const platilloId = platillo.id_platillo || platillo.id;
@@ -129,16 +126,19 @@
           handleAreaChange({ target: inputs.area });
         }
         
-        // Seleccionar categoría
-        if (inputs.categoria && platillo.categoria) {
-          console.log('📂 Seleccionando categoría:', platillo.categoria);
-          inputs.categoria.value = platillo.categoria;
+        // Seleccionar categoría (ahora es id_categoria)
+        if (inputs.categoria && platillo.id_categoria) {
+          console.log('[FOLDER] Seleccionando categoría ID:', platillo.id_categoria);
+          // Esperar un poco para que el select esté poblado
+          setTimeout(() => {
+            inputs.categoria.value = platillo.id_categoria;
+          }, 100);
         }
         
-        console.log('✅ Datos cargados en el formulario');
+        console.log('[OK] Datos cargados en el formulario');
       }
     } catch (error) {
-      console.error('❌ Error al cargar platillo:', error);
+      console.error('[ERROR] Error al cargar platillo:', error);
       showNotification('Error al cargar platillo: ' + error.message, 'error');
     }
   }
@@ -155,42 +155,69 @@
     }
   }
   
+  // Cargar todas las categorías y agrupar por área
+  async function loadAllCategorias() {
+    try {
+      console.log('[LOAD] Cargando categorías...');
+      const response = await API.categorias.getAll({ activa: 'true' }); // Solo categorías activas
+      
+      const categorias = response.data?.categorias || [];
+      console.log(`[OK] ${categorias.length} categorías cargadas`);
+      
+      // Agrupar por área
+      categoriasPorArea = {};
+      categorias.forEach(categoria => {
+        const areaId = categoria.id_area;
+        if (!categoriasPorArea[areaId]) {
+          categoriasPorArea[areaId] = [];
+        }
+        categoriasPorArea[areaId].push(categoria);
+      });
+      
+      console.log('[FOLDER] Categorías agrupadas por área:', categoriasPorArea);
+    } catch (error) {
+      console.error('[ERROR] Error al cargar categorías:', error);
+      // No mostrar error al usuario, simplemente no habrá categorías disponibles
+    }
+  }
+  
   // Manejar cambio de área
   function handleAreaChange(e) {
     const areaId = e.target.value;
-    console.log('📍 Área seleccionada:', areaId);
+    console.log('[POINT] Área seleccionada:', areaId);
     
     if (!areaId) {
       if (inputs.categoria) {
         inputs.categoria.innerHTML = '<option value="">Primero seleccione un área...</option>';
+        inputs.categoria.disabled = true;
       }
       return;
     }
     
-    // Buscar el nombre del área
-    const area = areas.find(a => a.id_area == areaId);
-    if (!area) {
-      console.error('❌ Área no encontrada');
-      return;
-    }
-    
-    const areaNombre = area.nombre;
-    console.log('📂 Cargando categorías para:', areaNombre);
-    
     // Obtener categorías para esta área
-    const categorias = categoriasDefinidas[areaNombre] || [];
+    const categorias = categoriasPorArea[areaId] || [];
+    console.log('[FOLDER] Categorías disponibles:', categorias.length);
     
     // Actualizar select de categorías
     if (inputs.categoria) {
-      inputs.categoria.innerHTML = '<option value="">Sin categoría</option>';
-      categorias.forEach(cat => {
-        const option = document.createElement('option');
-        option.value = cat;
-        option.textContent = cat;
-        inputs.categoria.appendChild(option);
-      });
-      
-      console.log('✅ Categorías cargadas:', categorias);
+      if (categorias.length === 0) {
+        inputs.categoria.innerHTML = '<option value="">No hay categorías para esta área</option>';
+        inputs.categoria.disabled = true;
+        showNotification('[WARN] No hay categorías creadas para esta área. Ve a "Gestionar Categorías" para crear una.', 'info');
+      } else {
+        inputs.categoria.disabled = false;
+        inputs.categoria.innerHTML = '<option value="">Seleccionar categoría...</option>';
+        
+        categorias.forEach(cat => {
+          const option = document.createElement('option');
+          option.value = cat.id_categoria;
+          option.textContent = cat.nombre;
+          option.dataset.descripcion = cat.descripcion || '';
+          inputs.categoria.appendChild(option);
+        });
+        
+        console.log('[OK] Categorías cargadas en el select');
+      }
     }
   }
 
@@ -198,7 +225,7 @@
   async function handleSubmit(e) {
     e.preventDefault();
 
-    console.log('📤 Enviando formulario...');
+    console.log('[SEND] Enviando formulario...');
 
     // Validaciones
     if (!inputs.nombre?.value.trim()) {
@@ -211,35 +238,43 @@
       return;
     }
 
+    // La categoría ahora es opcional, pero si hay categorías disponibles, se recomienda seleccionar una
+    if (!inputs.categoria?.value && !inputs.categoria?.disabled) {
+      const confirmar = await showConfirm('No has seleccionado una categoría. ¿Deseas continuar sin categoría?', {
+        confirmText: 'Continuar sin categoría',
+        cancelText: 'Cancelar'
+      });
+      if (!confirmar) return;
+    }
+
     if (!inputs.precio?.value || parseFloat(inputs.precio.value) <= 0) {
       showNotification('Ingresa un precio válido', 'error');
       return;
     }
 
     // Preparar datos
-    const categoriaValue = inputs.categoria?.value?.trim();
+    const categoriaId = inputs.categoria?.value ? parseInt(inputs.categoria.value) : null;
     const platilloData = {
       nombre: inputs.nombre.value.trim(),
       precio: parseFloat(inputs.precio.value),
       descripcion: inputs.descripcion?.value.trim() || '',
       id_area: parseInt(inputs.area.value),
-      categoria: categoriaValue && categoriaValue !== '' ? categoriaValue : null // Incluir categoría (null si vacío)
+      id_categoria: categoriaId // Ahora enviamos el ID de la categoría
     };
 
-    console.log('📦 Datos a enviar:', platilloData);
-    console.log('📂 Categoría seleccionada:', categoriaValue, '→', platilloData.categoria);
+    console.log('[DATA] Datos a enviar:', platilloData);
 
     try {
       if (editMode && platilloId) {
         // Actualizar
-        console.log('🔄 Actualizando platillo...');
+        console.log('[LOAD] Actualizando platillo...');
         await API.menu.update(platilloId, platilloData);
-        showNotification('✅ Platillo actualizado exitosamente', 'success');
+        showNotification('[OK] Platillo actualizado exitosamente', 'success');
       } else {
         // Crear
-        console.log('➕ Creando nuevo platillo...');
+        console.log('[ADD] Creando nuevo platillo...');
         await API.menu.create(platilloData);
-        showNotification('✅ Platillo creado exitosamente', 'success');
+        showNotification('[OK] Platillo creado exitosamente', 'success');
       }
 
       // Redirigir después de 1 segundo
@@ -247,15 +282,15 @@
         window.location.href = '/templates/administracion/control-platillos';
       }, 1000);
     } catch (error) {
-      console.error('❌ Error:', error);
+      console.error('[ERROR] Error:', error);
       const mensaje = error.message || (editMode ? 'Error al actualizar platillo' : 'Error al crear platillo');
-      showNotification('❌ ' + mensaje, 'error');
+      showNotification('[ERROR] ' + mensaje, 'error');
     }
   }
 
   // Mostrar notificación
   function showNotification(message, type = 'info') {
-    const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+    const icon = type === 'success' ? '[OK]' : type === 'error' ? '[ERROR]' : 'ℹ️';
     console.log(`${icon} ${message}`);
     
     // Crear notificación visual
@@ -309,3 +344,4 @@
     init();
   }
 })();
+

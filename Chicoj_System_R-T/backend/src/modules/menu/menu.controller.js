@@ -26,6 +26,13 @@ export const getMenu = asyncHandler(async (req, res) => {
           nombre: true,
           descripcion: true
         }
+      },
+      categoria: {
+        select: {
+          id_categoria: true,
+          nombre: true,
+          descripcion: true
+        }
       }
     },
     orderBy: [
@@ -48,7 +55,9 @@ export const getMenu = asyncHandler(async (req, res) => {
       nombre: platillo.nombre,
       descripcion: platillo.descripcion,
       precio: parseFloat(platillo.precio),
-      categoria: platillo.categoria, // ⭐ AGREGAR CATEGORÍA
+      id_categoria: platillo.id_categoria,
+      categoria: platillo.categoria?.nombre || null, // Nombre de la categoría como string (para compatibilidad)
+      categoriaObj: platillo.categoria, // Objeto completo de categoría si se necesita
       disponible: platillo.disponible !== undefined ? platillo.disponible : true
     });
     return acc;
@@ -70,7 +79,8 @@ export const getPlatillo = asyncHandler(async (req, res) => {
   const platillo = await prisma.platillos.findUnique({
     where: { id_platillo: parseInt(id) },
     include: {
-      area: true
+      area: true,
+      categoria: true
     }
   });
   
@@ -86,14 +96,14 @@ export const getPlatillo = asyncHandler(async (req, res) => {
 
 // POST /menu - Crear nuevo platillo (solo admin/gerente)
 export const createPlatillo = asyncHandler(async (req, res) => {
-  console.log('📝 Creando platillo:', req.body);
+  console.log('[NOTE] Creando platillo:', req.body);
   
-  const { nombre, descripcion, precio, id_area, area, categoria } = req.body;
+  const { nombre, descripcion, precio, id_area, area, id_categoria } = req.body;
   
   // Aceptar tanto id_area como area (nombre)
   const areaIdentifier = id_area || area;
   
-  console.log('🔍 Buscando área:', areaIdentifier);
+  console.log('[CHECK] Buscando área:', areaIdentifier);
   
   if (!nombre || !precio || !areaIdentifier) {
     throw new AppError('Nombre, precio y área son requeridos', 400);
@@ -120,11 +130,11 @@ export const createPlatillo = asyncHandler(async (req, res) => {
   }
   
   if (!areaEncontrada) {
-    console.log('❌ Área no encontrada:', areaIdentifier);
+    console.log('[ERROR] Área no encontrada:', areaIdentifier);
     throw new AppError(`Área "${areaIdentifier}" no encontrada`, 404);
   }
   
-  console.log('✅ Área encontrada:', areaEncontrada);
+  console.log('[OK] Área encontrada:', areaEncontrada);
   
   try {
     const platillo = await prisma.platillos.create({
@@ -133,14 +143,15 @@ export const createPlatillo = asyncHandler(async (req, res) => {
         descripcion: descripcion || '',
         precio: parseFloat(precio),
         id_area: areaEncontrada.id_area,
-        categoria: categoria || null // Agregar categoría
+        id_categoria: id_categoria ? parseInt(id_categoria) : null
       },
       include: {
-        area: true
+        area: true,
+        categoria: true
       }
     });
     
-    console.log('✅ Platillo creado exitosamente:', platillo.nombre);
+    console.log('[OK] Platillo creado exitosamente:', platillo.nombre);
     
     res.status(201).json({
       success: true,
@@ -148,7 +159,7 @@ export const createPlatillo = asyncHandler(async (req, res) => {
       data: { platillo }
     });
   } catch (error) {
-    console.error('❌ Error al crear platillo en la BD:', error);
+    console.error('[ERROR] Error al crear platillo en la BD:', error);
     throw error;
   }
 });
@@ -156,7 +167,7 @@ export const createPlatillo = asyncHandler(async (req, res) => {
 // PATCH /menu/:id - Actualizar platillo
 export const updatePlatillo = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { nombre, descripcion, precio, id_area, categoria } = req.body;
+  const { nombre, descripcion, precio, id_area, id_categoria } = req.body;
   
   const platillo = await prisma.platillos.update({
     where: { id_platillo: parseInt(id) },
@@ -165,10 +176,11 @@ export const updatePlatillo = asyncHandler(async (req, res) => {
       ...(descripcion !== undefined && { descripcion }),
       ...(precio && { precio }),
       ...(id_area && { id_area: parseInt(id_area) }),
-      ...(categoria !== undefined && { categoria }) // Agregar categoría
+      ...(id_categoria !== undefined && { id_categoria: id_categoria ? parseInt(id_categoria) : null })
     },
     include: {
-      area: true
+      area: true,
+      categoria: true
     }
   });
   
@@ -183,13 +195,37 @@ export const updatePlatillo = asyncHandler(async (req, res) => {
 export const deletePlatillo = asyncHandler(async (req, res) => {
   const { id } = req.params;
   
+  // Verificar si el platillo existe
+  const platillo = await prisma.platillos.findUnique({
+    where: { id_platillo: parseInt(id) }
+  });
+  
+  if (!platillo) {
+    throw new AppError('Platillo no encontrado', 404);
+  }
+  
+  // Verificar si el platillo tiene comandas asociadas
+  const comandasAsociadas = await prisma.comanda.count({
+    where: { id_platillo: parseInt(id) }
+  });
+  
+  if (comandasAsociadas > 0) {
+    throw new AppError(
+      `No se puede eliminar el platillo "${platillo.nombre}" porque tiene ${comandasAsociadas} orden(es) asociada(s). ` +
+      `Por seguridad, los platillos con historial de órdenes no pueden ser eliminados. ` +
+      `Si deseas que no aparezca en el menú, puedes desactivarlo en su lugar.`,
+      400
+    );
+  }
+  
+  // Si no tiene comandas, eliminar
   await prisma.platillos.delete({
     where: { id_platillo: parseInt(id) }
   });
   
   res.json({
     success: true,
-    message: 'Platillo eliminado'
+    message: 'Platillo eliminado exitosamente'
   });
 });
 
@@ -214,7 +250,7 @@ export const toggleDisponibilidad = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { disponible } = req.body;
   
-  console.log(`🔄 Cambiando disponibilidad del platillo ${id} a:`, disponible);
+  console.log(`[LOAD] Cambiando disponibilidad del platillo ${id} a:`, disponible);
   
   const platillo = await prisma.platillos.update({
     where: { id_platillo: parseInt(id) },
@@ -226,7 +262,7 @@ export const toggleDisponibilidad = asyncHandler(async (req, res) => {
     }
   });
   
-  console.log(`✅ Platillo "${platillo.nombre}" ahora está ${disponible ? 'DISPONIBLE' : 'NO DISPONIBLE'}`);
+  console.log(`[OK] Platillo "${platillo.nombre}" ahora está ${disponible ? 'DISPONIBLE' : 'NO DISPONIBLE'}`);
   
   res.json({
     success: true,

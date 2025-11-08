@@ -149,3 +149,5 @@ docker compose restart nginx
 
 **Realiza los tests 1, 2 y 3. Si aún ves las carpetas/archivos, hay un problema con la configuración.**
 
+
+

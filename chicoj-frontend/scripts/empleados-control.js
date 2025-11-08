@@ -27,7 +27,7 @@
 
       displayEmployees();
     } catch (error) {
-      console.error('❌ Error al cargar empleados:', error);
+      console.error('[ERROR] Error al cargar empleados:', error);
       showError('No se pudieron cargar los empleados');
     }
   }
@@ -80,29 +80,37 @@
 
   // Eliminar empleado
   window.deleteEmployee = async function(id) {
-    if (!confirm('¿Estás seguro de eliminar este empleado? Esta acción no se puede deshacer.')) {
+    const confirmed = await showConfirm(
+      '¿Estás seguro de eliminar este empleado? Esta acción no se puede deshacer.', 
+      {
+        confirmText: 'Eliminar',
+        cancelText: 'Cancelar'
+      }
+    );
+    
+    if (!confirmed) {
       return;
     }
 
     try {
       await API.employees.delete(id);
-      console.log(`✅ Empleado ${id} eliminado`);
+      console.log(`[OK] Empleado ${id} eliminado`);
       showSuccess('Empleado eliminado exitosamente');
       await loadEmployees();
     } catch (error) {
-      console.error('❌ Error al eliminar empleado:', error);
+      console.error('[ERROR] Error al eliminar empleado:', error);
       showError(error.message || 'No se pudo eliminar el empleado');
     }
   };
 
   // Mostrar mensaje de éxito
   function showSuccess(message) {
-    alert(`✅ ${message}`);
+    Toast.success(message);
   }
 
   // Mostrar mensaje de error
   function showError(message) {
-    alert(`❌ ${message}`);
+    Toast.error(message);
   }
 
   // Iniciar cuando el DOM esté listo

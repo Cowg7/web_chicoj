@@ -129,3 +129,5 @@ Verás el badge "Somos" en la esquina superior izquierda, encima del nombre "Res
 **Estado:** ✅ COMPLETADO  
 **Consistencia visual:** ✅ Todas las vistas iguales
 
+
+

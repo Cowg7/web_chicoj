@@ -27,7 +27,7 @@
 
       displayUsers();
     } catch (error) {
-      console.error('❌ Error al cargar usuarios:', error);
+      console.error('[ERROR] Error al cargar usuarios:', error);
       showError('No se pudieron cargar los usuarios');
     }
   }
@@ -98,29 +98,37 @@
 
   // Eliminar usuario
   window.deleteUser = async function(id) {
-    if (!confirm('¿Estás seguro de eliminar este usuario? Esta acción no se puede deshacer.')) {
+    const confirmed = await showConfirm(
+      '¿Estás seguro de eliminar este usuario? Esta acción no se puede deshacer.', 
+      {
+        confirmText: 'Eliminar',
+        cancelText: 'Cancelar'
+      }
+    );
+    
+    if (!confirmed) {
       return;
     }
 
     try {
       await API.users.delete(id);
-      console.log(`✅ Usuario ${id} eliminado`);
+      console.log(`[OK] Usuario ${id} eliminado`);
       showSuccess('Usuario eliminado exitosamente');
       await loadUsers();
     } catch (error) {
-      console.error('❌ Error al eliminar usuario:', error);
+      console.error('[ERROR] Error al eliminar usuario:', error);
       showError(error.message || 'No se pudo eliminar el usuario');
     }
   };
 
   // Mostrar mensaje de éxito
   function showSuccess(message) {
-    alert(`✅ ${message}`);
+    Toast.success(message);
   }
 
   // Mostrar mensaje de error
   function showError(message) {
-    alert(`❌ ${message}`);
+    Toast.error(message);
   }
 
   // Iniciar cuando el DOM esté listo

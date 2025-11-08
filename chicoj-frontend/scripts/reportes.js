@@ -191,10 +191,10 @@
       document.body.removeChild(a);
       window.URL.revokeObjectURL(downloadUrl);
 
-      console.log('✅ PDF generado exitosamente');
+      console.log('[OK] PDF generado exitosamente');
     } catch (error) {
-      console.error('❌ Error al generar PDF:', error);
-      alert('Error al generar el PDF. Por favor intente nuevamente.');
+      console.error('[ERROR] Error al generar PDF:', error);
+      Toast.error('Error al generar el PDF. Por favor intente nuevamente.', 5000);
     }
   }
 
@@ -221,7 +221,7 @@
   async function loadAllReports() {
     const params = getFilterParams();
     
-    console.log('📊 Cargando reportes con parámetros:', params);
+    console.log('[STATS] Cargando reportes con parámetros:', params);
 
     // Cargar en paralelo
     await Promise.all([
@@ -269,7 +269,7 @@
         chartTicket.innerHTML = `<span style="color: #FF9800;">Promedio por orden</span>`;
       }
     } catch (error) {
-      console.error('❌ Error al cargar resumen de ventas:', error);
+      console.error('[ERROR] Error al cargar resumen de ventas:', error);
       if (statVentasTotales) statVentasTotales.textContent = 'Error';
       if (statOrdenesTotales) statOrdenesTotales.textContent = 'Error';
       if (statTicketPromedio) statTicketPromedio.textContent = 'Error';
@@ -472,7 +472,7 @@
 
       contentPlatillos.innerHTML = html;
     } catch (error) {
-      console.error('❌ Error al cargar platillos más vendidos:', error);
+      console.error('[ERROR] Error al cargar platillos más vendidos:', error);
       if (contentPlatillos) {
         contentPlatillos.innerHTML = `<div class="error">Error al cargar datos: ${error.message}</div>`;
       }
@@ -526,7 +526,7 @@
 
       contentHoras.innerHTML = html;
     } catch (error) {
-      console.error('❌ Error al cargar horas pico:', error);
+      console.error('[ERROR] Error al cargar horas pico:', error);
       if (contentHoras) {
         contentHoras.innerHTML = `<div class="error">Error al cargar datos: ${error.message}</div>`;
       }
@@ -540,7 +540,7 @@
       const data = response.data || response;
       const areas = data.ventas_por_area || data.revenue_by_area || [];
 
-      console.log('📍 Ingresos por área:', areas);
+      console.log('[POINT] Ingresos por área:', areas);
 
       if (!contentAreas) return;
 
@@ -586,7 +586,7 @@
 
       contentAreas.innerHTML = html;
     } catch (error) {
-      console.error('❌ Error al cargar ingresos por área:', error);
+      console.error('[ERROR] Error al cargar ingresos por área:', error);
       if (contentAreas) {
         contentAreas.innerHTML = `<div class="error">Error al cargar datos: ${error.message}</div>`;
       }
@@ -600,7 +600,7 @@
     try {
       const canvas = $(canvasId);
       if (!canvas) {
-        console.error('❌ Canvas no encontrado:', canvasId);
+        console.error('[ERROR] Canvas no encontrado:', canvasId);
         return;
       }
 
@@ -615,11 +615,11 @@
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
         
-        console.log('✅ Gráfica descargada:', nombreArchivo);
+        console.log('[OK] Gráfica descargada:', nombreArchivo);
       });
     } catch (error) {
-      console.error('❌ Error al descargar gráfica:', error);
-      alert('Error al descargar la gráfica');
+      console.error('[ERROR] Error al descargar gráfica:', error);
+      Toast.error('Error al descargar la gráfica', 5000);
     }
   }
 
@@ -627,7 +627,7 @@
   async function descargarExcel() {
     try {
       const params = getFilterParams();
-      console.log('📊 Generando Excel con parámetros:', params);
+      console.log('[STATS] Generando Excel con parámetros:', params);
 
       // Obtener todos los datos
       const [salesData, dishesData, hoursData, areasData] = await Promise.all([
@@ -721,12 +721,12 @@
       const fecha = new Date().toISOString().split('T')[0];
       XLSX.writeFile(wb, `Reporte_Completo_Chicoj_${fecha}.xlsx`);
       
-      console.log('✅ Excel generado exitosamente');
-      alert('✅ Reporte Excel descargado exitosamente');
+      console.log('[OK] Excel generado exitosamente');
+      Toast.success('Reporte Excel descargado exitosamente');
 
     } catch (error) {
-      console.error('❌ Error al generar Excel:', error);
-      alert('Error al generar el Excel. Por favor intente nuevamente.');
+      console.error('[ERROR] Error al generar Excel:', error);
+      Toast.error('Error al generar el Excel. Por favor intente nuevamente.');
     }
   }
 
@@ -978,12 +978,12 @@
       const fecha = new Date().toISOString().split('T')[0];
       doc.save(`Reporte_Detallado_Chicoj_${fecha}.pdf`);
       
-      console.log('✅ PDF detallado generado exitosamente');
-      alert('✅ Reporte PDF con registros detallados descargado');
+      console.log('[OK] PDF detallado generado exitosamente');
+      Toast.success('Reporte PDF con registros detallados descargado');
 
     } catch (error) {
-      console.error('❌ Error al generar PDF:', error);
-      alert('Error al generar el PDF. Por favor intente nuevamente.');
+      console.error('[ERROR] Error al generar PDF:', error);
+      Toast.error('Error al generar el PDF. Por favor intente nuevamente.');
     }
   }
 
@@ -992,8 +992,8 @@
     try {
       const canvas = $(canvasId);
       if (!canvas) {
-        console.error('❌ Canvas no encontrado:', canvasId);
-        alert('No se pudo descargar la gráfica');
+        console.error('[ERROR] Canvas no encontrado:', canvasId);
+        Toast.error('No se pudo descargar la gráfica', 5000);
         return;
       }
 
@@ -1009,11 +1009,11 @@
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
         
-        console.log('✅ Gráfica descargada:', nombreArchivo);
+        console.log('[OK] Gráfica descargada:', nombreArchivo);
       });
     } catch (error) {
-      console.error('❌ Error al descargar gráfica:', error);
-      alert('Error al descargar la gráfica');
+      console.error('[ERROR] Error al descargar gráfica:', error);
+      Toast.error('Error al descargar la gráfica', 5000);
     }
   }
 
