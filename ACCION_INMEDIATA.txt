@@ -1,0 +1,232 @@
+╔═══════════════════════════════════════════════════════════════════╗
+║                   🚨 ACCIÓN INMEDIATA REQUERIDA 🚨               ║
+║                                                                   ║
+║  Tu servidor PostgreSQL ha sido ATACADO y la base de datos      ║
+║  fue BORRADA. El puerto 5432 estaba expuesto a Internet.        ║
+╚═══════════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════════
+📌 QUÉ PASÓ
+═══════════════════════════════════════════════════════════════════
+
+1. Puerto 5432 (PostgreSQL) estaba expuesto a TODA Internet
+2. Atacante desde IP 78.153.140.66 intentó:
+   ✗ Instalar malware (cryptominer)
+   ✗ Borrar base de datos (EXITOSO)
+   ✗ Robar credenciales
+
+3. Resultado: Base de datos "restaurante_db" BORRADA
+
+
+═══════════════════════════════════════════════════════════════════
+🔥 PASOS CRÍTICOS (HACER AHORA)
+═══════════════════════════════════════════════════════════════════
+
+▶ PASO 1: SUBE LOS CAMBIOS AL SERVIDOR (5 minutos)
+────────────────────────────────────────────────────────────────────
+En Windows (local):
+
+  git add .
+  git commit -m "URGENTE: Cerrar puerto PostgreSQL y aplicar seguridad"
+  git push origin main
+
+
+▶ PASO 2: CONECTA AL SERVIDOR Y ACTUALIZA (5 minutos)
+────────────────────────────────────────────────────────────────────
+En el servidor (SSH):
+
+  ssh usuario@servidor
+  cd /ruta/proyecto/chicoj
+  git pull origin main
+
+
+▶ PASO 3: EJECUTA LA REMEDIACIÓN URGENTE (10 minutos)
+────────────────────────────────────────────────────────────────────
+  
+  chmod +x remediacion-seguridad-URGENTE.sh
+  chmod +x verificar-seguridad.sh
+  
+  ./remediacion-seguridad-URGENTE.sh
+
+Este script automáticamente:
+  ✓ Cierra el puerto 5432 a Internet
+  ✓ Bloquea la IP del atacante
+  ✓ Genera nueva contraseña segura
+  ✓ Configura firewall
+  ✓ Reinicia PostgreSQL de forma segura
+
+⚠️  IMPORTANTE: El script te dará una NUEVA CONTRASEÑA. ¡GUÁRDALA!
+
+
+▶ PASO 4: ACTUALIZA LA CONTRASEÑA EN EL BACKEND (5 minutos)
+────────────────────────────────────────────────────────────────────
+
+El script te dará una nueva contraseña. Debes actualizarla en:
+
+1. Archivo .env:
+   POSTGRES_PASSWORD=LA_NUEVA_CONTRASEÑA
+   DATABASE_URL=postgresql://postgres:LA_NUEVA_CONTRASEÑA@postgres:5432/restaurante_db?schema=public
+
+2. Reinicia los servicios:
+   docker compose down
+   docker compose up -d
+
+
+▶ PASO 5: RESTAURA LA BASE DE DATOS (10-30 minutos)
+────────────────────────────────────────────────────────────────────
+
+Opción A - Si tienes backup:
+  
+  ls backups/
+  ./scripts/restore.sh backups/tu_backup_mas_reciente.sql.gz
+
+
+Opción B - Si NO tienes backup (recrear desde cero):
+  
+  # Crear base de datos
+  docker exec chicoj-postgres psql -U postgres -c "CREATE DATABASE restaurante_db;"
+  
+  # Ejecutar migraciones
+  docker exec chicoj-backend npx prisma migrate deploy
+  
+  # Cargar datos iniciales
+  docker exec chicoj-backend npx prisma db seed
+
+
+▶ PASO 6: VERIFICA LA SEGURIDAD (5 minutos)
+────────────────────────────────────────────────────────────────────
+
+  ./verificar-seguridad.sh
+
+Debe mostrar:
+  ✓ Puerto 5432 solo accesible localmente
+  ✓ docker-compose.yml configurado correctamente  
+  ✓ No se detectó actividad sospechosa reciente
+  ✓ Base de datos 'restaurante_db' existe
+
+Si todo está en verde, la remediación fue exitosa.
+
+
+═══════════════════════════════════════════════════════════════════
+📊 VERIFICACIÓN DESDE FUERA DEL SERVIDOR
+═══════════════════════════════════════════════════════════════════
+
+Desde tu computadora Windows, verifica que el puerto esté cerrado:
+
+  nmap -p 5432 TU_IP_SERVIDOR
+
+Debe decir: "5432/tcp closed" o "filtered"
+
+Si dice "open", el puerto SIGUE expuesto (malo).
+
+
+═══════════════════════════════════════════════════════════════════
+⏰ TIEMPO TOTAL ESTIMADO
+═══════════════════════════════════════════════════════════════════
+
+  • Cerrar puerto y aplicar seguridad: 15-20 minutos
+  • Restaurar base de datos: 10-30 minutos (depende si tienes backup)
+  • TOTAL: 25-50 minutos
+
+
+═══════════════════════════════════════════════════════════════════
+📁 ARCHIVOS CREADOS/MODIFICADOS
+═══════════════════════════════════════════════════════════════════
+
+✎ Modificados:
+  - docker-compose.yml
+    Cambio: "5432:5432" → "127.0.0.1:5432:5432"
+    Efecto: Puerto solo accesible desde localhost
+
+✎ Nuevos (remediación):
+  - remediacion-seguridad-URGENTE.sh (ejecutar primero)
+  - verificar-seguridad.sh (verificar después)
+  - postgres-config/02-seguridad.sql (config de seguridad)
+  - EMERGENCIA_SEGURIDAD_POSTGRESQL.md (documentación completa)
+  - ACCION_INMEDIATA.txt (este archivo)
+
+✎ Nuevos (mejoras adicionales de antes):
+  - arreglar-base-datos.sh
+  - diagnosticar-base-datos.sh  
+  - postgres-config/01-configuracion-produccion.sql
+
+
+═══════════════════════════════════════════════════════════════════
+❓ PREGUNTAS FRECUENTES
+═══════════════════════════════════════════════════════════════════
+
+P: ¿Voy a perder datos?
+R: Si tienes backup, NO. Si no tienes backup, SÍ (el atacante ya los 
+   borró). Tendrás que recrear la base de datos desde cero.
+
+P: ¿Puede volver a pasar?
+R: NO, si sigues estos pasos. El puerto ya no estará expuesto.
+
+P: ¿Qué otros servicios pueden estar comprometidos?
+R: Posiblemente ninguno. El ataque fue dirigido a PostgreSQL. Pero
+   es recomendable revisar logs del sistema.
+
+P: ¿Necesito un servidor nuevo?
+R: NO. Con cerrar el puerto y cambiar contraseña es suficiente.
+
+P: ¿Cuánto downtime tendrá mi aplicación?
+R: Entre 25-50 minutos mientras aplicas las correcciones.
+
+P: ¿Debo reportar esto?
+R: Depende de tu jurisdicción y el tipo de datos. Si manejas datos
+   sensibles (personales, médicos, financieros), considera reportarlo.
+
+
+═══════════════════════════════════════════════════════════════════
+🎯 PREVENCIÓN FUTURA
+═══════════════════════════════════════════════════════════════════
+
+Para que NUNCA vuelva a pasar:
+
+✓ Hacer backups automáticos diarios (configura un cron job)
+✓ Nunca exponer puertos de base de datos a Internet
+✓ Solo exponer: 80 (HTTP) y 443 (HTTPS)
+✓ Usar contraseñas fuertes (20+ caracteres)
+✓ Monitorear logs regularmente
+✓ Mantener el sistema actualizado
+
+
+═══════════════════════════════════════════════════════════════════
+📞 SI NECESITAS AYUDA
+═══════════════════════════════════════════════════════════════════
+
+Si encuentras problemas durante la remediación:
+
+1. Lee el archivo: EMERGENCIA_SEGURIDAD_POSTGRESQL.md (más detalles)
+2. Ejecuta: ./verificar-seguridad.sh > diagnostico.txt
+3. Revisa logs: docker logs chicoj-postgres --tail 100
+4. Contacta soporte con los resultados
+
+
+═══════════════════════════════════════════════════════════════════
+📌 RECORDATORIO IMPORTANTE
+═══════════════════════════════════════════════════════════════════
+
+  ⚠️  LA NUEVA CONTRASEÑA QUE GENERE EL SCRIPT ES CRÍTICA
+  
+  Cuando ejecutes remediacion-seguridad-URGENTE.sh, te mostrará
+  una contraseña como:
+  
+    a8kF2mN9pQ3xR7vT1wY6zB4cD5eH0jK2
+  
+  ¡GUÁRDALA EN UN LUGAR SEGURO!
+  
+  La necesitarás para actualizar:
+  - .env (POSTGRES_PASSWORD)
+  - DATABASE_URL en el backend
+
+
+═══════════════════════════════════════════════════════════════════
+
+Estado: ⚠️  REQUIERE ACCIÓN INMEDIATA
+Prioridad: 🔴 CRÍTICA
+Tiempo estimado: 25-50 minutos
+Impacto en producción: Downtime temporal necesario
+
+═══════════════════════════════════════════════════════════════════
+

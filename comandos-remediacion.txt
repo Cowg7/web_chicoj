@@ -1,0 +1,244 @@
+# ════════════════════════════════════════════════════════════
+# COMANDOS DE REMEDIACIÓN - COPIAR Y PEGAR
+# ════════════════════════════════════════════════════════════
+
+# ═══════════════════════════════════════════════════════════
+# EN WINDOWS (Tu computadora local)
+# ═══════════════════════════════════════════════════════════
+
+# Commit y push de los cambios de seguridad
+git add .
+git commit -m "URGENTE: Cerrar puerto PostgreSQL y aplicar correcciones de seguridad"
+git push origin main
+
+
+# ═══════════════════════════════════════════════════════════
+# EN EL SERVIDOR (Vía SSH)
+# ═══════════════════════════════════════════════════════════
+
+# 1. Conectarse al servidor (reemplaza con tus datos)
+ssh usuario@tu-servidor.com
+
+# 2. Ir al directorio del proyecto (reemplaza con tu ruta)
+cd /ruta/de/tu/proyecto/chicoj
+
+# 3. Actualizar código desde Git
+git pull origin main
+
+# 4. Dar permisos de ejecución a los scripts
+chmod +x remediacion-seguridad-URGENTE.sh
+chmod +x verificar-seguridad.sh
+chmod +x arreglar-base-datos.sh
+chmod +x diagnosticar-base-datos.sh
+
+# 5. EJECUTAR LA REMEDIACIÓN URGENTE
+./remediacion-seguridad-URGENTE.sh
+
+# ⚠️  IMPORTANTE: El script te mostrará una contraseña nueva.
+#    COPIA ESA CONTRASEÑA Y GUÁRDALA EN UN LUGAR SEGURO.
+
+# 6. (DESPUÉS del script) Actualizar la contraseña en .env
+nano .env
+# Busca la línea POSTGRES_PASSWORD y DATABASE_URL
+# Reemplaza con la nueva contraseña que te dio el script
+# Guarda con Ctrl+O, Enter, Ctrl+X
+
+# 7. Verificar que la base de datos existe
+docker exec chicoj-postgres psql -U postgres -l | grep restaurante_db
+
+# ─────────────────────────────────────────────────────────────
+# SI LA BASE DE DATOS EXISTE (se ve en el comando anterior)
+# ─────────────────────────────────────────────────────────────
+
+# Reiniciar todos los servicios con nueva configuración
+docker compose down
+docker compose up -d
+
+# Verificar que todo esté corriendo
+docker ps
+
+# ─────────────────────────────────────────────────────────────
+# SI LA BASE DE DATOS NO EXISTE (necesitas restaurarla)
+# ─────────────────────────────────────────────────────────────
+
+# OPCIÓN A: Restaurar desde backup (si tienes)
+ls backups/
+# Copia el nombre del backup más reciente y úsalo abajo
+./scripts/restore.sh backups/nombre-del-backup.sql.gz
+
+# OPCIÓN B: Recrear desde cero (si NO tienes backup)
+# Crear la base de datos
+docker exec chicoj-postgres psql -U postgres -c "CREATE DATABASE restaurante_db;"
+
+# Actualizar la DATABASE_URL en .env con la NUEVA contraseña
+nano .env
+# DATABASE_URL=postgresql://postgres:LA_NUEVA_CONTRASEÑA@postgres:5432/restaurante_db?schema=public
+
+# Reiniciar servicios
+docker compose down
+docker compose up -d
+
+# Esperar 20 segundos
+sleep 20
+
+# Ejecutar migraciones de Prisma
+docker exec chicoj-backend npx prisma migrate deploy
+
+# Cargar datos iniciales (seed)
+docker exec chicoj-backend npx prisma db seed
+
+# ─────────────────────────────────────────────────────────────
+# VERIFICACIÓN DE SEGURIDAD
+# ─────────────────────────────────────────────────────────────
+
+# Ejecutar script de verificación
+./verificar-seguridad.sh
+
+# Debe mostrar todo en verde (✓)
+# Si hay errores rojos (✗), hay que corregirlos
+
+# Ver logs en tiempo real (Ctrl+C para salir)
+docker logs -f chicoj-backend
+
+# En otra terminal SSH, ver logs de PostgreSQL
+docker logs -f chicoj-postgres
+
+# Buscar errores críticos en logs
+docker logs chicoj-postgres | grep -E "FATAL|ERROR|DROP|COPY.*PROGRAM" | tail -20
+
+# Ver estado de los contenedores
+docker ps
+
+# Todos deben mostrar "healthy" en STATUS
+
+# ─────────────────────────────────────────────────────────────
+# VERIFICAR QUE EL PUERTO ESTÉ CERRADO
+# ─────────────────────────────────────────────────────────────
+
+# Desde el servidor, verificar que solo escucha en localhost
+netstat -tunlp | grep 5432
+# Debe mostrar "127.0.0.1:5432" NO "0.0.0.0:5432"
+
+# O con ss
+ss -tunlp | grep 5432
+# Debe mostrar "127.0.0.1:5432" NO "0.0.0.0:5432"
+
+# Verificar firewall (UFW)
+sudo ufw status | grep 5432
+# Debe decir "DENY"
+
+# Verificar firewall (iptables)
+sudo iptables -L -n | grep 5432
+# Debe mostrar una regla DROP
+
+# ─────────────────────────────────────────────────────────────
+# MONITOREO POST-REMEDIACIÓN (PRIMERAS 24 HORAS)
+# ─────────────────────────────────────────────────────────────
+
+# Ejecutar verificación cada hora
+watch -n 3600 './verificar-seguridad.sh'
+
+# O configurar un cron job
+(crontab -l 2>/dev/null; echo "0 * * * * /ruta/proyecto/chicoj/verificar-seguridad.sh >> /var/log/postgres-security.log 2>&1") | crontab -
+
+# Ver actividad en PostgreSQL
+docker exec chicoj-postgres psql -U postgres -d restaurante_db -c "SELECT client_addr, usename, state, query_start FROM pg_stat_activity WHERE datname = 'restaurante_db';"
+
+# ─────────────────────────────────────────────────────────────
+# COMANDOS DE DIAGNÓSTICO ADICIONALES
+# ─────────────────────────────────────────────────────────────
+
+# Ver uso de recursos
+docker stats --no-stream
+
+# Ver logs completos de PostgreSQL (últimas 100 líneas)
+docker logs chicoj-postgres --tail 100
+
+# Buscar intentos de hackeo recientes
+docker logs chicoj-postgres | grep -E "password authentication failed|COPY.*PROGRAM|DROP DATABASE" | tail -20
+
+# Ver conexiones de red del contenedor
+docker exec chicoj-postgres netstat -tunlp 2>/dev/null || docker exec chicoj-postgres ss -tunlp
+
+# Verificar que PgAdmin NO esté expuesto públicamente
+curl -I http://localhost:5050
+# Debe dar "Connection refused" desde fuera del servidor
+
+# ─────────────────────────────────────────────────────────────
+# CONFIGURAR BACKUPS AUTOMÁTICOS (IMPORTANTE)
+# ─────────────────────────────────────────────────────────────
+
+# Dar permisos al script de backup
+chmod +x hacer-backup-bd.sh
+
+# Probar que funciona
+./hacer-backup-bd.sh
+
+# Configurar backup automático diario a las 2 AM
+(crontab -l 2>/dev/null; echo "0 2 * * * /ruta/proyecto/chicoj/hacer-backup-bd.sh >> /var/log/chicoj-backup.log 2>&1") | crontab -
+
+# Verificar cron configurado
+crontab -l
+
+# ═══════════════════════════════════════════════════════════
+# VERIFICACIÓN DESDE TU COMPUTADORA (WINDOWS)
+# ═══════════════════════════════════════════════════════════
+
+# Instalar nmap si no lo tienes
+# Descargar de: https://nmap.org/download.html
+
+# Escanear puerto 5432 (debe estar cerrado)
+nmap -p 5432 TU_IP_SERVIDOR
+
+# Resultado CORRECTO: "5432/tcp closed" o "filtered"
+# Resultado INCORRECTO: "5432/tcp open" (si sale esto, el puerto sigue expuesto)
+
+# Verificar que tu aplicación web funciona
+curl http://tu-dominio.com/api/health
+# O abrir en navegador: http://tu-dominio.com
+
+# ═══════════════════════════════════════════════════════════
+# TROUBLESHOOTING
+# ═══════════════════════════════════════════════════════════
+
+# Si el backend no puede conectar después de cambiar contraseña:
+docker compose logs backend | grep -i "database\|connection\|prisma"
+
+# Si PostgreSQL no inicia:
+docker logs chicoj-postgres --tail 50
+
+# Si hay problemas de permisos:
+sudo chown -R $USER:$USER .
+
+# Reiniciar todo desde cero (último recurso):
+docker compose down -v
+docker compose up -d
+
+# Ver todos los contenedores (incluso los detenidos)
+docker ps -a
+
+# Eliminar contenedores problemáticos
+docker rm -f chicoj-postgres chicoj-backend chicoj-nginx
+
+# Recrear desde cero
+docker compose up -d --force-recreate
+
+# ═══════════════════════════════════════════════════════════
+# CONTACTOS DE EMERGENCIA (si nada funciona)
+# ═══════════════════════════════════════════════════════════
+
+# Exportar logs completos para análisis
+docker logs chicoj-postgres > postgres-logs.txt
+docker logs chicoj-backend > backend-logs.txt
+./verificar-seguridad.sh > verificacion-seguridad.txt
+
+# Crear un tarball con toda la info de diagnóstico
+tar -czf diagnostico-completo.tar.gz postgres-logs.txt backend-logs.txt verificacion-seguridad.txt docker-compose.yml .env
+
+# Descargar a tu computadora para compartir
+# scp usuario@servidor:/ruta/diagnostico-completo.tar.gz .
+
+# ═══════════════════════════════════════════════════════════
+
+# FIN - COMANDOS DE REMEDIACIÓN
+

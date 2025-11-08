@@ -7,20 +7,34 @@ services:
     container_name: chicoj-postgres
     restart: unless-stopped
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"  # ⚠️ SEGURIDAD: Solo localhost (NO expuesto a Internet)
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB:-restaurante_db}
+      # Configuraciones de PostgreSQL para producción
+      POSTGRES_INITDB_ARGS: "-c shared_buffers=256MB -c max_connections=100"
+      # Prevenir desconexiones automáticas
+      PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./postgres-config:/docker-entrypoint-initdb.d:ro
     networks:
       - chicoj-network
+    # Límites de recursos para prevenir OOM (Out of Memory)
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+    # Healthcheck MÁS TOLERANTE para evitar reinicios innecesarios
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-restaurante_db}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-restaurante_db} || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
 
   # Backend (API + WebSockets)
   backend:
@@ -42,12 +56,20 @@ services:
         condition: service_healthy
     networks:
       - chicoj-network
+    # Límites de recursos
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+        reservations:
+          memory: 384M
+    # Healthcheck MÁS TOLERANTE
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
+      interval: 60s
+      timeout: 15s
+      retries: 5
+      start_period: 90s
 
   # Nginx (Reverse Proxy + Frontend)
   nginx:

@@ -9,6 +9,9 @@ import { errorHandler, notFound } from './middlewares/errorHandler.js';
 
 const app = express();
 
+// Reconocer encabezados X-Forwarded-* cuando estamos detrás de nginx / Cloudflare
+app.set('trust proxy', 1);
+
 // ============ SEGURIDAD ============
 // Configuración de Helmet más permisiva para desarrollo
 app.use(helmet({

@@ -65,42 +65,46 @@ function createPrismaClient() {
   
   const client = new PrismaClient(prismaClientConfig);
 
-  // Middleware para logging de queries lentas
-  client.$use(async (params, next) => {
-    const before = Date.now();
-    const result = await next(params);
-    const after = Date.now();
-    const queryTime = after - before;
+  if (typeof client.$use === 'function') {
+    // Middleware para logging de queries lentas
+    client.$use(async (params, next) => {
+      const before = Date.now();
+      const result = await next(params);
+      const after = Date.now();
+      const queryTime = after - before;
 
-    // Alertar si la query tarda más de 3 segundos
-    if (queryTime > 3000) {
-      console.warn(`[DB SLOW] ${params.model}.${params.action} tomó ${queryTime}ms`);
-    }
-
-    return result;
-  });
-
-  // Middleware para reconexión automática en caso de error
-  client.$use(async (params, next) => {
-    try {
-      return await next(params);
-    } catch (error) {
-      // Si el error es de conexión, intentar reconectar
-      if (isConnectionError(error)) {
-        console.error('[DB ERROR] Error de conexión detectado:', error.message);
-        await handleConnectionError();
-        
-        // Reintentar la operación
-        try {
-          return await next(params);
-        } catch (retryError) {
-          console.error('[DB ERROR] Reintento falló:', retryError.message);
-          throw retryError;
-        }
+      // Alertar si la query tarda más de 3 segundos
+      if (queryTime > 3000) {
+        console.warn(`[DB SLOW] ${params.model}.${params.action} tomó ${queryTime}ms`);
       }
-      throw error;
-    }
-  });
+
+      return result;
+    });
+
+    // Middleware para reconexión automática en caso de error
+    client.$use(async (params, next) => {
+      try {
+        return await next(params);
+      } catch (error) {
+        // Si el error es de conexión, intentar reconectar
+        if (isConnectionError(error)) {
+          console.error('[DB ERROR] Error de conexión detectado:', error.message);
+          await handleConnectionError();
+
+          // Reintentar la operación
+          try {
+            return await next(params);
+          } catch (retryError) {
+            console.error('[DB ERROR] Reintento falló:', retryError.message);
+            throw retryError;
+          }
+        }
+        throw error;
+      }
+    });
+  } else {
+    console.warn('[DB] Prisma middlewares no disponibles en esta versión del cliente');
+  }
 
   prismaInstance = client;
   return client;
@@ -233,6 +237,25 @@ async function checkConnection() {
 }
 
 /**
+ * Compatibilidad con server.js
+ * Verifica explícitamente la conexión y devuelve un booleano.
+ */
+const checkDatabaseConnection = async () => {
+  try {
+    await connect();
+    if (!prismaInstance) {
+      throw new Error('Prisma instance not initialized');
+    }
+    await prismaInstance.$queryRaw`SELECT 1`;
+    console.log('[DB CHECK] Conexión verificada correctamente');
+    return true;
+  } catch (error) {
+    console.error('[DB CHECK] Error al verificar conexión:', error.message);
+    return false;
+  }
+};
+
+/**
  * Obtener la instancia de Prisma (crear si no existe)
  */
 function getPrisma() {
@@ -338,7 +361,10 @@ process.on('unhandledRejection', (reason, promise) => {
   }
 });
 
-export default {
+const prisma = createPrismaClient();
+
+export default prisma;
+export {
   connect,
   disconnect,
   getPrisma,
@@ -346,10 +372,5 @@ export default {
   healthCheck,
   startKeepAlive,
   stopKeepAlive,
-  get isConnected() {
-    return isConnected;
-  },
-  get keepAliveCount() {
-    return keepAliveQueryCount;
-  }
+  checkDatabaseConnection
 };

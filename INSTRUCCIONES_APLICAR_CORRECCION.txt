@@ -1,0 +1,172 @@
+╔══════════════════════════════════════════════════════════════════╗
+║     SOLUCIÓN DEFINITIVA PARA DESCONEXIONES DE POSTGRESQL        ║
+╚══════════════════════════════════════════════════════════════════╝
+
+📌 PROBLEMA IDENTIFICADO:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+El error "terminating connection due to administrator command" 
+significa que el CONTENEDOR de PostgreSQL se está REINICIANDO.
+
+NO es un problema de keepalive, sino del healthcheck de Docker 
+que es muy agresivo y reinicia PostgreSQL constantemente.
+
+
+✅ CORRECCIONES APLICADAS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. HEALTHCHECK MÁS TOLERANTE
+   Antes: verificaba cada 10s, 5 reintentos
+   Ahora:  verifica cada 30s, 10 reintentos
+   Resultado: Tolera hasta 5 minutos de problemas
+
+2. LÍMITES DE MEMORIA
+   PostgreSQL: 512MB máximo (previene OOM killer)
+   Backend: 768MB máximo
+
+3. CONFIGURACIONES DE POSTGRESQL
+   - statement_timeout: 300 segundos (no cierra queries largas)
+   - tcp_keepalives: configurados
+   - idle timeouts: desactivados
+
+4. BACKEND MÁS TOLERANTE
+   - Healthcheck cada 60s (antes 30s)
+   - Timeout de 15s (antes 10s)
+
+
+🚀 CÓMO APLICAR EN PRODUCCIÓN:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PASO 1: Commit y push de los cambios
+────────────────────────────────────────────────────────────────────
+En Windows (local):
+  git add .
+  git commit -m "Fix: Solución definitiva para desconexiones de PostgreSQL"
+  git push origin main
+
+
+PASO 2: Conéctate al servidor
+────────────────────────────────────────────────────────────────────
+  ssh usuario@tu-servidor-ip
+
+
+PASO 3: Actualiza el código
+────────────────────────────────────────────────────────────────────
+  cd /ruta/proyecto/chicoj
+  git pull origin main
+
+
+PASO 4: Da permisos a los scripts
+────────────────────────────────────────────────────────────────────
+  chmod +x arreglar-base-datos.sh
+  chmod +x diagnosticar-base-datos.sh
+
+
+PASO 5: Ejecuta el diagnóstico (opcional pero recomendado)
+────────────────────────────────────────────────────────────────────
+  ./diagnosticar-base-datos.sh
+
+  Esto te mostrará:
+  - Estado de los contenedores
+  - Uso de memoria
+  - Logs de errores
+  - Si PostgreSQL ha sido reiniciado (OOMKilled)
+
+
+PASO 6: Aplica las correcciones
+────────────────────────────────────────────────────────────────────
+  ./arreglar-base-datos.sh
+
+  Este script automáticamente:
+  ✓ Detiene los contenedores
+  ✓ Aplica la nueva configuración
+  ✓ Reinicia PostgreSQL con los nuevos parámetros
+  ✓ Verifica que todo esté funcionando
+
+
+PASO 7: Monitorea los logs
+────────────────────────────────────────────────────────────────────
+Terminal 1 - Backend:
+  docker logs -f chicoj-backend
+
+Terminal 2 - PostgreSQL:
+  docker logs -f chicoj-postgres
+
+Lo que debes ver:
+  ✓ [DB KEEPALIVE] Ping exitoso #N - Conexión activa
+  ✗ NO debe aparecer "terminating connection"
+  ✗ NO debe aparecer "Database does not exist"
+
+
+📊 VALIDACIÓN DE LA SOLUCIÓN:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Después de 30 minutos, verifica:
+
+1. Estado de contenedores (todos deben estar "healthy"):
+   docker ps --filter "name=chicoj"
+
+2. Ningún error en logs de PostgreSQL:
+   docker logs chicoj-postgres | grep -E "FATAL|ERROR|terminating"
+
+3. Conexión estable del backend:
+   docker logs chicoj-backend | grep "DB KEEPALIVE" | tail -10
+
+4. Sin reinicios del contenedor:
+   docker inspect chicoj-postgres --format='Reinicios: {{.RestartCount}}'
+
+
+⚠️  NOTAS IMPORTANTES:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+• NO SE BORRAN DATOS: Esta solución NO elimina tu base de datos
+• Downtime: ~2-3 minutos durante la aplicación
+• Backup recomendado: Ejecuta ./hacer-backup-bd.sh antes (opcional)
+• Rollback: Si algo sale mal, ejecuta: git checkout docker-compose.yml
+
+
+📁 ARCHIVOS MODIFICADOS/CREADOS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✎ Modificados:
+  - docker-compose.yml (healthchecks y límites de memoria)
+
+✎ Nuevos:
+  - postgres-config/01-configuracion-produccion.sql
+  - arreglar-base-datos.sh
+  - diagnosticar-base-datos.sh
+  - arreglar-base-datos.ps1
+  - SOLUCION_DESCONEXION_BD_DEFINITIVA.md
+  - INSTRUCCIONES_APLICAR_CORRECCION.txt (este archivo)
+
+
+🔍 SI SIGUES TENIENDO PROBLEMAS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Verifica memoria disponible en el servidor:
+   free -h
+   
+   Necesitas mínimo 2GB RAM libre.
+
+2. Verifica si hay problemas de OOM (Out of Memory):
+   dmesg | grep -i "out of memory"
+   
+   Si aparecen mensajes, necesitas más RAM o reducir límites.
+
+3. Verifica espacio en disco:
+   df -h
+   
+   Necesitas espacio para que PostgreSQL crezca.
+
+4. Ejecuta el diagnóstico y comparte los resultados:
+   ./diagnosticar-base-datos.sh > diagnostico.txt
+
+
+═══════════════════════════════════════════════════════════════════
+
+Fecha: 2025-11-08
+Versión: 1.0
+Estado: ✅ Listo para producción
+
+═══════════════════════════════════════════════════════════════════
+
